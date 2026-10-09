@@ -1,0 +1,341 @@
+/* ============================================================
+   Image Squisher - item styles
+   Phone first: one column. From 900px: work on the left,
+   settings in a column on the right.
+   ============================================================ */
+
+.sq {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas: "drop" "settings" "results" "preview";
+  gap: 1.1rem;
+  padding-block: 1.1rem 0;
+}
+.sq-drop     { grid-area: drop; }
+.sq-settings { grid-area: settings; }
+.sq-results  { grid-area: results; }
+.sq-preview  { grid-area: preview; }
+
+@media (min-width: 900px) {
+  .sq {
+    grid-template-columns: minmax(0, 1fr) 340px;
+    grid-template-areas: "drop settings" "results settings" "preview settings";
+    align-items: start;
+    gap: 1.4rem;
+    padding-top: 1.6rem;
+  }
+  .sq-settings { position: sticky; top: calc(var(--bar-h) + 1rem); }
+}
+
+.sq > section { padding-block: 0; }
+.sq > .sq-card { padding: 1.1rem 1.1rem 1.2rem; }
+.sq h2 { font-size: 1.2rem; margin: 0 0 .8rem; }
+
+/* ---- cards ---- */
+.sq-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 1.1rem 1.1rem 1.2rem;
+  min-width: 0;
+}
+
+.sq-hint {
+  font-size: .85rem;
+  color: var(--text-faint);
+  margin: -.4rem 0 1rem;
+  line-height: 1.45;
+}
+.sq-hint:empty { display: none; }
+.sq-warn { color: var(--amber); margin-top: .5rem; }
+
+/* ============================================================
+   1. DROP - the hero
+   ============================================================ */
+.sq > .sq-drop {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: .3rem;
+  padding: 1.8rem 1.1rem 1.4rem;
+  border: 2px dashed var(--accent-line);
+  border-radius: var(--radius);
+  background: var(--accent-dim);
+}
+.sq-drop h2 {
+  font-size: clamp(1.5rem, 6vw, 2.1rem);
+  margin: 0;
+}
+.sq-drop-sub { color: var(--text-dim); margin: 0 0 .7rem; }
+.sq-drop.is-over { border-color: var(--accent); border-style: solid; background: var(--surface-2); }
+
+.sq-pick {
+  min-height: 56px;
+  min-width: min(100%, 240px);
+  font-size: 1.1rem;
+  padding-inline: 2rem;
+}
+/* The real file input is invisible; show its focus on the button. */
+.sq-drop:focus-within .sq-pick { outline: 2px solid var(--cyan); outline-offset: 3px; }
+
+.sq-private { margin: .9rem 0 0; color: var(--text-dim); font-size: .92rem; }
+.sq-private strong { color: var(--green); font-weight: 600; }
+
+/* ============================================================
+   2. SETTINGS
+   ============================================================ */
+.sq-sizes { display: grid; grid-template-columns: 1fr 1fr; gap: .8rem; }
+.sq-sizes .field { margin-bottom: .8rem; }
+
+.sq-formats { border: 0; margin: 0 0 .9rem; padding: 0; min-width: 0; }
+.sq-formats legend {
+  font-family: var(--font-mono);
+  font-size: .72rem;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: .45rem;
+  padding: 0;
+}
+
+/* Three big radio "pills" in one row. */
+.sq-seg {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border: 1px solid var(--line-field);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+.sq-seg input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.sq-seg label {
+  display: grid;
+  place-items: center;
+  min-height: var(--tap);
+  font-family: var(--font-display);
+  font-weight: 600;
+  cursor: pointer;
+  color: var(--text-dim);
+  border-left: 1px solid var(--line-field);
+  -webkit-user-select: none;
+          user-select: none;
+}
+.sq-seg label:first-of-type { border-left: 0; }
+.sq-seg label:hover { color: var(--text); background: var(--surface-2); }
+.sq-seg input:checked + label { background: var(--accent); color: var(--bg); }
+.sq-seg input:focus-visible + label { outline: 2px solid var(--cyan); outline-offset: -4px; border-radius: 6px; }
+
+.sq-quality { margin-bottom: 0; }
+.sq-quality label { display: flex; justify-content: space-between; align-items: baseline; }
+.sq-quality output {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: 0;
+}
+.sq-quality .sq-hint { margin: .5rem 0 0; }
+
+/* A slider with a fat, easy-to-grab thumb. */
+.field input[type="range"] {
+  -webkit-appearance: none;
+          appearance: none;
+  height: var(--tap);
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+.field input[type="range"]:focus { background: transparent; }
+.field input[type="range"]::-webkit-slider-runnable-track { height: 6px; border-radius: 3px; background: var(--line-bright); }
+.field input[type="range"]::-moz-range-track { height: 6px; border-radius: 3px; background: var(--line-bright); }
+.field input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 28px; height: 28px; margin-top: -11px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 3px solid var(--bg);
+}
+.field input[type="range"]::-moz-range-thumb {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 3px solid var(--bg);
+}
+.field input[type="range"]:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
+.field input[type="range"]:disabled { opacity: .4; cursor: not-allowed; }
+
+/* ============================================================
+   3. RESULTS
+   ============================================================ */
+.sq-res-head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: .2rem 1rem;
+  margin-bottom: .4rem;
+}
+.sq-res-head h2 { margin: 0; }
+.sq-total { margin: 0; font-family: var(--font-mono); font-size: .85rem; color: var(--accent); }
+
+.sq-progress progress {
+  width: 100%;
+  height: 10px;
+  -webkit-appearance: none;
+          appearance: none;
+  border: 0;
+  border-radius: 5px;
+  background: var(--surface-2);
+  overflow: hidden;
+}
+.sq-progress progress::-webkit-progress-bar { background: var(--surface-2); }
+.sq-progress progress::-webkit-progress-value { background: var(--accent); }
+.sq-progress progress::-moz-progress-bar { background: var(--accent); }
+
+.sq-status { margin: .3rem 0 .4rem; font-size: .9rem; color: var(--text-dim); min-height: 1.4em; }
+.sq-empty { color: var(--text-faint); margin: .2rem 0 1rem; }
+
+.sq-table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+  font-size: .9rem;
+  margin-bottom: 1rem;
+}
+.sq-table col.c-size { width: 4.6rem; }
+.sq-table col.c-pct  { width: 3.6rem; }
+.sq-table col.c-dl   { width: 3.2rem; }
+.sq-table th,
+.sq-table td {
+  padding: .3rem .25rem;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  vertical-align: middle;
+}
+.sq-table th {
+  font-family: var(--font-mono);
+  font-size: .66rem;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  font-weight: 500;
+}
+.sq-table .num { font-family: var(--font-mono); font-size: .8rem; white-space: nowrap; color: var(--text-dim); }
+.sq-table tr.is-busy .num,
+.sq-table tr.is-wait .num { color: var(--text-faint); }
+.sq-table tr.is-selected td { background: var(--surface-2); }
+.sq-table td.c-dl { text-align: right; }
+
+/* The file name is a button: tap it to preview. */
+.sq-name {
+  display: block;
+  width: 100%;
+  min-height: var(--tap);
+  padding: 0 .3rem;
+  border: 0;
+  background: none;
+  color: var(--text);
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+  border-radius: 6px;
+}
+.sq-name:hover:not(:disabled) { color: var(--cyan); text-decoration: underline; }
+.sq-name[aria-pressed="true"] { color: var(--accent); font-weight: 600; }
+.sq-name:disabled { cursor: default; color: var(--text-dim); }
+
+.sq-pct {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: .8rem;
+  font-weight: 700;
+  color: var(--green);
+}
+.sq-pct.is-bigger { color: var(--hot); }
+
+.sq-dl { min-height: 44px; min-width: 44px; padding: 0; font-size: 1.1rem; }
+.sq-err { color: var(--hot); font-size: .85rem; line-height: 1.4; }
+
+.sq-actions { display: flex; flex-wrap: wrap; gap: .6rem; }
+.sq-actions .btn { min-height: var(--tap); }
+.sq-actions .btn-primary { flex: 1 1 14rem; }
+
+.sq-clean {
+  margin: 1rem 0 0;
+  padding: .7rem .9rem;
+  border-left: 3px solid var(--green);
+  background: var(--bg-2);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  font-size: .88rem;
+  color: var(--text-dim);
+}
+.sq-clean strong { color: var(--text); }
+
+/* ============================================================
+   4. PREVIEW
+   ============================================================ */
+.sq-pre-name {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: .8rem;
+  font-weight: 400;
+  color: var(--text-faint);
+  letter-spacing: 0;
+  margin-top: .25rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.sq-pair { display: grid; grid-template-columns: 1fr 1fr; gap: .7rem; }
+.sq-pair figure { margin: 0; min-width: 0; }
+.sq-frame {
+  aspect-ratio: 4 / 3;
+  display: grid;
+  place-items: center;
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+.sq-frame img { max-width: 100%; max-height: 100%; object-fit: contain; }
+.sq-pair figcaption {
+  margin-top: .4rem;
+  font-family: var(--font-mono);
+  font-size: .75rem;
+  color: var(--text-dim);
+  line-height: 1.4;
+}
+.sq-pair figcaption span { display: block; color: var(--text-faint); }
+
+/* ---- phones: each file is two lines, name on top ---- */
+@media (max-width: 560px) {
+  .sq-table,
+  .sq-table tbody { display: block; }
+  .sq-table thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  .sq-table tr {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr auto;
+    align-items: end;
+    gap: 0 .5rem;
+    padding: .35rem 0 .6rem;
+    border-bottom: 1px solid var(--line);
+  }
+  .sq-table td { border: 0; padding: 0 .3rem; }
+  .sq-table td.c-name,
+  .sq-table td.sq-err { grid-column: 1 / -1; }
+  .sq-table td.sq-err { padding-bottom: .2rem; }
+  .sq-table td[data-label]::before {
+    content: attr(data-label);
+    display: block;
+    font-size: .62rem;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+  }
+  .sq-table tr.is-selected { background: var(--surface-2); border-radius: var(--radius-sm); }
+  .sq-table tr.is-selected td { background: none; }
+  .sq-name { padding-left: 0; min-height: 40px; }
+}
