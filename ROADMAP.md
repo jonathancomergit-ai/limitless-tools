@@ -29,7 +29,7 @@ Tonight's three for 🧰 Workshop, in this order.
   - acceptance: Unit test (tests/unit): the zip writer makes a valid zip (check headers and CRC32)
   - acceptance: smoke.js: set a generated test PNG with setInputFiles, check a result row appears with a smaller or converted file
 
-- [ ] `sfx-maker` - SFX Maker: Make retro sound effects for games: coins, jumps, lasers, explosions. Tweak them and save as WAV.
+- [x] `sfx-maker` - SFX Maker: Make retro sound effects for games: coins, jumps, lasers, explosions. Tweak them and save as WAV.
   - acceptance: Preset buttons: coin, jump, laser, explosion, power-up, hit, blip; plus Randomize and Mutate
   - acceptance: Sliders: wave (square, saw, sine, noise), attack/sustain/decay, start pitch, pitch slide, vibrato, duty, volume
   - acceptance: A small synth in plain JS (items/sfx-maker/synth.js) that renders samples from the settings; plays them with Web Audio after a tap
