@@ -1,0 +1,35 @@
+[
+  {
+    "slug": "image-squisher",
+    "title": "Image Squisher",
+    "blurb": "Shrink, resize and convert a pile of images at once. Everything happens on your device, nothing is uploaded.",
+    "tags": [
+      "images",
+      "files"
+    ],
+    "added": "2026-10-09",
+    "soon": true
+  },
+  {
+    "slug": "sfx-maker",
+    "title": "SFX Maker",
+    "blurb": "Make retro sound effects for games: coins, jumps, lasers, explosions. Tweak them and save as WAV.",
+    "tags": [
+      "audio",
+      "game dev"
+    ],
+    "added": "2026-10-09",
+    "soon": true
+  },
+  {
+    "slug": "palette-lab",
+    "title": "Palette Lab",
+    "blurb": "Build colour palettes, check text contrast, preview colour blindness and export for CSS, Godot or Aseprite.",
+    "tags": [
+      "colour",
+      "design"
+    ],
+    "added": "2026-10-09",
+    "soon": true
+  }
+]

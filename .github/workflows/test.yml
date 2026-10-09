@@ -1,0 +1,50 @@
+# ============================================================
+#  Tests on every push and pull request.
+#  Unit tests (node --test) then the Playwright phone + desktop
+#  suite. Screenshots are uploaded so a PR reviewer can see
+#  every page without running anything.
+# ============================================================
+name: test
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      # CI has no preinstalled browsers (cloud sessions do), so it
+      # fetches the Chromium that matches @playwright/test here.
+      - run: npx playwright install --with-deps chromium
+
+      - run: npm test
+
+      - name: Upload screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: screenshots
+          path: test-results/screens/
+          if-no-files-found: warn
+
+      - name: Upload Playwright traces (failures only)
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-traces
+          path: test-results/artifacts/
+          if-no-files-found: ignore

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <!-- Privacy lock. Only this site's own files may load, plus GoatCounter.
+       Same line on every page - tests/unit/pages.test.js checks it. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://gc.zgo.at; connect-src 'self' https://jonjoe1001.goatcounter.com; img-src 'self' data: blob: https://jonjoe1001.goatcounter.com; style-src 'self'; font-src 'self'; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+
+  <title>Limitless Lab</title>
+  <meta name="description" content="Small free things that run in your browser. No accounts, no cookies.">
+  <meta name="theme-color" content="#07070C">
+
+  <link rel="icon" href="kit/icon.svg" type="image/svg+xml">
+  <link rel="preload" href="kit/fonts/space-grotesk-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="kit/kit.css">
+  <script type="module" src="kit/hub.js"></script>
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <!-- ===================== HEADER ===================== -->
+  <header class="site-header">
+    <div class="wrap nav">
+      <a class="brand" href="./">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <span data-slot="brand">Limitless Lab</span>
+      </a>
+      <nav class="nav-links" aria-label="Site">
+        <a href="#grid">Items</a>
+        <a href="#your-data">Your data</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- ===================== HERO ===================== -->
+    <section class="hero">
+      <div class="wrap">
+        <p class="kicker"><span data-slot="wing-label">Limitless Lab</span></p>
+        <h1>Limitless <span class="glow" data-slot="wing-name">Lab</span></h1>
+        <p class="hero-lead" data-slot="tagline"></p>
+      </div>
+    </section>
+
+    <!-- ===================== ITEMS =====================
+         Filled in by kit/hub.js from items.json. -->
+    <section aria-labelledby="items-title">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="kicker" id="item-count">Loading</p>
+          <h2 id="items-title">Pick one and play</h2>
+        </div>
+        <div class="filters" id="filters" role="group" aria-label="Filter by tag" hidden></div>
+        <div class="grid" id="grid" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <!-- ===================== YOUR DATA ===================== -->
+    <section id="your-data">
+      <div class="wrap">
+        <div id="data-panel"></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===================== FOOTER ===================== -->
+  <footer class="site-footer">
+    <div class="wrap footer-inner">
+      <p class="privacy-note">
+        <strong>No accounts, no cookies.</strong> Saves stay on your device.
+        Cookie-free visit counts via GoatCounter.
+      </p>
+      <nav class="footer-links" id="wing-links" aria-label="Other places"></nav>
+    </div>
+  </footer>
+
+  <script src="kit/stats.js" defer></script>
+</body>
+</html>
