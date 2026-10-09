@@ -1,0 +1,273 @@
+/* ============================================================
+   QR Maker - item styles
+   Phone first: one column, in this order:
+     what goes in, the code, look, recent.
+   From 900px: the inputs on the left; the code (sticky) and
+   recent on the right.
+   ============================================================ */
+
+.qm {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+  padding-block: 1.1rem 0;
+}
+/* On phones the columns melt away, so `order` can mix them. */
+.qm-col { display: contents; }
+.qm-input  { order: 1; }
+.qm-out    { order: 2; }
+.qm-style  { order: 3; }
+.qm-recent { order: 4; }
+
+@media (min-width: 900px) {
+  .qm {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 400px;
+    align-items: start;
+    gap: 1.4rem;
+    padding-top: 1.6rem;
+  }
+  .qm-col { display: flex; flex-direction: column; gap: 1.4rem; min-width: 0; }
+  .qm-col-side { position: sticky; top: calc(var(--bar-h) + 1rem); }
+}
+
+.qm section { padding-block: 0; }
+.qm h2 { font-size: 1.2rem; margin: 0 0 .8rem; }
+
+.qm-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  min-width: 0;
+}
+.qm .qm-card { padding: 1.1rem 1.1rem 1.2rem; }
+
+.qm-head { display: flex; justify-content: space-between; align-items: center; gap: .6rem; margin-bottom: .4rem; }
+.qm-head h2 { margin: 0; }
+.qm-head .btn { min-height: 44px; }
+
+.qm-hint {
+  font-size: .85rem;
+  color: var(--text-faint);
+  margin: -.3rem 0 1rem;
+  line-height: 1.45;
+}
+.qm-hint:empty { display: none; }
+.qm-warn { color: var(--amber); margin: .2rem 0 0; }
+.qm-warn.is-bad { color: var(--hot); }
+
+/* ---- segmented radios ---- */
+.qm-fs { border: 0; margin: 0 0 .9rem; padding: 0; min-width: 0; }
+.qm-fs legend {
+  font-family: var(--font-mono);
+  font-size: .72rem;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: .45rem;
+  padding: 0;
+}
+.qm-seg {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border: 1px solid var(--line-field);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+.qm-seg-4 { grid-template-columns: repeat(4, 1fr); }
+.qm-seg input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.qm-seg label {
+  display: grid;
+  place-items: center;
+  align-content: center;
+  min-height: var(--tap);
+  padding: .2rem;
+  font-family: var(--font-display);
+  font-weight: 600;
+  line-height: 1.1;
+  cursor: pointer;
+  color: var(--text-dim);
+  border-left: 1px solid var(--line-field);
+  -webkit-user-select: none;
+          user-select: none;
+}
+.qm-seg label small { font-family: var(--font-mono); font-size: .66rem; font-weight: 400; opacity: .85; }
+.qm-seg label:first-of-type { border-left: 0; }
+.qm-seg label:hover { color: var(--text); background: var(--surface-2); }
+.qm-seg input:checked + label { background: var(--accent); color: var(--bg); }
+.qm-seg input:focus-visible + label { outline: 2px solid var(--cyan); outline-offset: -4px; border-radius: 6px; }
+
+/* ============================================================
+   1. INPUT
+   ============================================================ */
+.qm-pane[hidden] { display: none; }
+.qm-input textarea { min-height: 7rem; resize: vertical; }
+.qm-pass { display: flex; gap: .5rem; }
+.qm-pass input { flex: 1 1 auto; min-width: 0; }
+.qm-pass .btn { min-height: var(--tap); min-width: 4.4rem; }
+.qm-pair { display: grid; grid-template-columns: 1fr 1fr; gap: .8rem; align-items: end; }
+.qm-pair .field { min-width: 0; margin-bottom: 1rem; }
+.qm-hidden-net { margin-bottom: 1rem; }
+
+.qm-check {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  min-height: var(--tap);
+  cursor: pointer;
+  color: var(--text);
+  font-size: .95rem;
+}
+.qm-check input { width: 22px; height: 22px; flex: 0 0 auto; accent-color: var(--accent); margin: 0; cursor: pointer; }
+
+/* ============================================================
+   2. THE CODE
+   ============================================================ */
+.qm-stage {
+  width: min(100%, 340px);
+  aspect-ratio: 1;
+  margin: 0 auto .7rem;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+.qm-stage canvas { display: block; width: 100%; height: 100%; image-rendering: pixelated; }
+.qm-stage canvas.is-empty { image-rendering: auto; }
+
+.qm-info {
+  margin: 0 0 .9rem;
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: .75rem;
+  color: var(--text-faint);
+  min-height: 1.2em;
+}
+
+.qm-holds {
+  padding: .7rem .9rem .8rem;
+  border-left: 3px solid var(--green);
+  background: var(--bg-2);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  margin-bottom: 1rem;
+}
+.qm-holds-title { margin: 0 0 .3rem; font-size: .9rem; color: var(--text); }
+.qm-payload {
+  margin: 0 0 .4rem;
+  font-family: var(--font-mono);
+  font-size: .82rem;
+  color: var(--accent);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  max-height: 8rem;
+  overflow-y: auto;
+}
+.qm-payload.is-empty { color: var(--text-faint); }
+.qm-payload:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
+.qm-no-redirect { margin: 0; font-size: .82rem; color: var(--text-dim); line-height: 1.45; }
+
+.qm-actions { display: grid; grid-template-columns: 1fr 1fr; gap: .6rem; }
+.qm-actions .btn { min-height: var(--tap); }
+.qm-actions .btn-primary { grid-column: 1 / -1; min-height: 52px; font-size: 1.05rem; }
+.qm-actions .btn[hidden] { display: none; }
+.qm-status { margin: .6rem 0 0; font-size: .9rem; color: var(--text-dim); }
+.qm-status:empty { display: none; }
+.qm-private { margin: .7rem 0 0; color: var(--text-dim); font-size: .88rem; }
+.qm-private strong { color: var(--green); font-weight: 600; }
+
+/* ============================================================
+   3. LOOK
+   ============================================================ */
+.qm-colour-row { display: flex; gap: .5rem; }
+.qm-colour-row input[type="color"] {
+  flex: 0 0 var(--tap);
+  width: var(--tap);
+  min-height: var(--tap);
+  padding: 4px;
+  cursor: pointer;
+}
+.qm-colour-row input[type="text"] { flex: 1 1 auto; min-width: 0; font-family: var(--font-mono); }
+.qm-colour-row input.is-bad { border-color: var(--hot); }
+
+.qm-scan { margin: -.3rem 0 .5rem; font-size: .85rem; line-height: 1.45; }
+.qm-scan.is-ok { color: var(--green); }
+.qm-scan.is-warn { color: var(--amber); }
+.qm-scan.is-bad { color: var(--hot); font-weight: 600; }
+.qm-reset { min-height: 44px; margin-bottom: .8rem; }
+
+.qm-range { margin-bottom: .4rem; }
+.qm-range label { display: flex; justify-content: space-between; align-items: baseline; }
+.qm-range output {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: 0;
+  text-transform: none;
+}
+.field input[type="range"] {
+  -webkit-appearance: none;
+          appearance: none;
+  height: var(--tap);
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+.field input[type="range"]:focus { background: transparent; }
+.field input[type="range"]::-webkit-slider-runnable-track { height: 6px; border-radius: 3px; background: var(--line-bright); }
+.field input[type="range"]::-moz-range-track { height: 6px; border-radius: 3px; background: var(--line-bright); }
+.field input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 28px; height: 28px; margin-top: -11px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 3px solid var(--bg);
+}
+.field input[type="range"]::-moz-range-thumb {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 3px solid var(--bg);
+}
+.field input[type="range"]:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
+.field select { min-height: var(--tap); }
+
+/* ============================================================
+   4. RECENT
+   ============================================================ */
+.qm-empty { color: var(--text-faint); margin: .3rem 0 .8rem; font-size: .9rem; }
+.qm-empty[hidden] { display: none; }
+.qm-list { list-style: none; margin: .3rem 0 .8rem; padding: 0; }
+.qm-list li { display: flex; gap: .4rem; align-items: center; margin: 0 0 .4rem; }
+.qm-recent-use {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: var(--tap);
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  padding: .3rem .6rem;
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+}
+.qm-recent-use:hover { border-color: var(--cyan); }
+.qm-recent-use:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
+.qm-recent-label { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: .9rem; }
+.qm-tag {
+  flex: 0 0 auto;
+  font-family: var(--font-mono);
+  font-size: .66rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  padding: .1rem .35rem;
+  border-radius: 4px;
+  background: var(--surface-2);
+  color: var(--text-dim);
+}
+.qm-tag.is-link { color: var(--cyan); }
+.qm-tag.is-wifi { color: var(--green); }
+.qm-tag.is-text { color: var(--amber); }
+.qm-recent-del { flex: 0 0 auto; min-width: 44px; min-height: 44px; padding: 0; }

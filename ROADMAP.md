@@ -70,7 +70,7 @@ Tonight's three for 🧰 Workshop, in this order.
   - acceptance: Unit test (tests/unit): the ICO writer makes a valid header and directory for 3 sizes
   - acceptance: smoke.js: load a generated image, check the previews appear and Download all gives a download
 
-- [ ] `qr-maker` - QR Maker: Make QR codes for links, Wi-Fi or plain text, right on your device. No tracking redirects, ever.
+- [x] `qr-maker` - QR Maker: Make QR codes for links, Wi-Fi or plain text, right on your device. No tracking redirects, ever.
   - acceptance: Types: link, text, Wi-Fi (network, password, security), with a live preview
   - acceptance: QR encoder written in plain JS in items/qr-maker/qr.js: byte mode, versions 1-40, error correction L/M/Q/H, mask choice
   - acceptance: Colours with a contrast warning when it may not scan; quiet-zone border; size
