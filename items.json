@@ -28,5 +28,38 @@
       "design"
     ],
     "added": "2026-10-09"
+  },
+  {
+    "slug": "sprite-slicer",
+    "title": "Sprite Sheet Slicer",
+    "blurb": "Drop in a sprite sheet, cut it into frames and preview the animation. Export the frames or a JSON map.",
+    "tags": [
+      "images",
+      "game dev"
+    ],
+    "added": "2026-10-09",
+    "soon": true
+  },
+  {
+    "slug": "icon-maker",
+    "title": "Icon Maker",
+    "blurb": "One picture in, every icon out: favicon.ico, Apple and Android icons, and the HTML to paste in.",
+    "tags": [
+      "images",
+      "web"
+    ],
+    "added": "2026-10-09",
+    "soon": true
+  },
+  {
+    "slug": "qr-maker",
+    "title": "QR Maker",
+    "blurb": "Make QR codes for links, Wi-Fi or plain text, right on your device. No tracking redirects, ever.",
+    "tags": [
+      "qr",
+      "privacy"
+    ],
+    "added": "2026-10-09",
+    "soon": true
   }
 ]

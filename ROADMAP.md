@@ -49,6 +49,36 @@ Tonight's three for 🧰 Workshop, in this order.
   - acceptance: Unit test (tests/unit): contrast ratio of black on white is 21, plus a few known pairs
   - acceptance: smoke.js: regenerate, check the colours changed but a locked one stayed
 
+### Batch 2
+
+- [ ] `sprite-slicer` - Sprite Sheet Slicer: Drop in a sprite sheet, cut it into frames and preview the animation. Export the frames or a JSON map.
+  - acceptance: Load a PNG (pick or drop); pixel-perfect zoom
+  - acceptance: Slice by cell size or by rows x columns, with margin and spacing; optional auto-detect by transparent gaps
+  - acceptance: Grid overlay; tap frames to pick them (or pick all); reorder
+  - acceptance: Animation preview with an FPS slider and ping-pong option
+  - acceptance: Export: frames as a .zip of PNGs (copy the store-only zip writer from items/image-squisher/zip.js into this item), plus a JSON frame map for Phaser / Godot
+  - acceptance: Settings save; images never do; Export/Import works
+  - acceptance: Unit test (tests/unit): grid maths with margin and spacing, and auto-detect on a small made-up image
+  - acceptance: smoke.js: load a generated sheet with setInputFiles, check the frame count and that the preview plays
+
+- [ ] `icon-maker` - Icon Maker: One picture in, every icon out: favicon.ico, Apple and Android icons, and the HTML to paste in.
+  - acceptance: Load one image; square crop with padding, background colour and rounded corners
+  - acceptance: Outputs: favicon.ico (16, 32, 48 inside one file), 180 Apple touch icon, 192 and 512 Android, a maskable icon with a safe-zone preview
+  - acceptance: Copy-paste snippets: the <link> tags and a site.webmanifest
+  - acceptance: Download all as a .zip (copy the zip writer from items/image-squisher/zip.js)
+  - acceptance: Settings save; images never do; Export/Import works
+  - acceptance: Unit test (tests/unit): the ICO writer makes a valid header and directory for 3 sizes
+  - acceptance: smoke.js: load a generated image, check the previews appear and Download all gives a download
+
+- [ ] `qr-maker` - QR Maker: Make QR codes for links, Wi-Fi or plain text, right on your device. No tracking redirects, ever.
+  - acceptance: Types: link, text, Wi-Fi (network, password, security), with a live preview
+  - acceptance: QR encoder written in plain JS in items/qr-maker/qr.js: byte mode, versions 1-40, error correction L/M/Q/H, mask choice
+  - acceptance: Colours with a contrast warning when it may not scan; quiet-zone border; size
+  - acceptance: Download PNG and SVG; copy to clipboard where supported
+  - acceptance: Say clearly: the code holds exactly what you typed, with no redirect link in between
+  - acceptance: Recent codes save on the device (can be turned off); Export/Import works
+  - acceptance: Unit test (tests/unit): Reed-Solomon codewords match a known example, format bits are right, and a known input gives the expected version and size
+  - acceptance: smoke.js: type a link, check the QR canvas is drawn and the download works
 ## Ideas (not ready yet)
 
 - (add more here)
