@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <!-- Do not edit this line. It's the privacy lock, and the tests check it. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://gc.zgo.at; connect-src 'self' https://jonjoe1001.goatcounter.com; img-src 'self' data: blob: https://jonjoe1001.goatcounter.com; style-src 'self'; font-src 'self'; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+
+  <title>QR Maker - Limitless Lab</title>
+  <meta name="description" content="Make QR codes for links, Wi-Fi or plain text, right on your device. No tracking redirects, ever.">
+  <meta name="theme-color" content="#07070C">
+
+  <link rel="icon" href="../../kit/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../../kit/kit.css">
+  <link rel="stylesheet" href="item.css">
+  <script type="module" src="main.js"></script>
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="item-bar">
+    <a class="back-link" href="../../"><span aria-hidden="true">&larr;</span> <span data-slot="wing-name">Hub</span></a>
+    <h1>QR Maker</h1>
+  </header>
+
+  <main id="main">
+    <div class="wrap qm">
+      <div class="qm-col qm-col-main">
+
+        <!-- ===================== 1. WHAT GOES IN ===================== -->
+        <section class="qm-card qm-input" aria-labelledby="in-title">
+          <h2 id="in-title">What goes in the code</h2>
+          <fieldset class="qm-fs">
+            <legend class="sr-only">Type</legend>
+            <div class="qm-seg">
+              <input type="radio" name="type" id="type-link" value="link"><label for="type-link">Link</label>
+              <input type="radio" name="type" id="type-text" value="text"><label for="type-text">Text</label>
+              <input type="radio" name="type" id="type-wifi" value="wifi"><label for="type-wifi">Wi-Fi</label>
+            </div>
+          </fieldset>
+
+          <div class="qm-pane" id="pane-link">
+            <div class="field">
+              <label for="link">Web address</label>
+              <input id="link" type="url" inputmode="url" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="example.com/menu">
+            </div>
+          </div>
+
+          <div class="qm-pane" id="pane-text" hidden>
+            <div class="field">
+              <label for="text">Text</label>
+              <textarea id="text" rows="4" placeholder="Anything you like: a note, a phone number, a code…"></textarea>
+            </div>
+          </div>
+
+          <div class="qm-pane" id="pane-wifi" hidden>
+            <div class="field">
+              <label for="ssid">Network name</label>
+              <input id="ssid" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" maxlength="64" placeholder="My Home Wi-Fi">
+            </div>
+            <div class="field">
+              <label for="pass">Password</label>
+              <div class="qm-pass">
+                <input id="pass" type="password" autocomplete="off" autocapitalize="off" spellcheck="false" maxlength="128">
+                <button class="btn btn-sm btn-ghost" id="show-pass" type="button" aria-pressed="false" aria-controls="pass">Show</button>
+              </div>
+            </div>
+            <div class="qm-pair">
+              <div class="field">
+                <label for="security">Security</label>
+                <select id="security">
+                  <option value="WPA">WPA / WPA2 / WPA3</option>
+                  <option value="WEP">WEP (old)</option>
+                  <option value="nopass">None (open)</option>
+                </select>
+              </div>
+              <label class="qm-check qm-hidden-net"><input type="checkbox" id="hidden-net"> Hidden network</label>
+            </div>
+            <p class="qm-hint">The Wi-Fi password goes into the code, so anyone who scans it can join. It's never saved here.</p>
+          </div>
+          <p class="qm-hint qm-warn" id="input-warn" role="status"></p>
+        </section>
+
+        <!-- ===================== 3. LOOK ===================== -->
+        <section class="qm-card qm-style" aria-labelledby="style-title">
+          <h2 id="style-title">Look</h2>
+          <div class="qm-pair">
+            <div class="field">
+              <label for="fg-hex">Squares</label>
+              <div class="qm-colour-row">
+                <input id="fg" type="color" value="#000000" aria-label="Pick the square colour">
+                <input id="fg-hex" type="text" maxlength="7" autocomplete="off" spellcheck="false">
+              </div>
+            </div>
+            <div class="field">
+              <label for="bg-hex">Background</label>
+              <div class="qm-colour-row">
+                <input id="bg" type="color" value="#ffffff" aria-label="Pick the background colour">
+                <input id="bg-hex" type="text" maxlength="7" autocomplete="off" spellcheck="false">
+              </div>
+            </div>
+          </div>
+          <p class="qm-scan" id="scan" role="status"></p>
+          <button class="btn btn-sm btn-ghost qm-reset" id="reset-colours" type="button">Black on white</button>
+
+          <div class="field qm-range">
+            <label for="border">Quiet zone <output id="border-out" for="border">4 squares</output></label>
+            <input id="border" type="range" min="0" max="16" step="1" value="4">
+          </div>
+          <div class="field qm-range">
+            <label for="size">PNG size <output id="size-out" for="size">512 px</output></label>
+            <input id="size" type="range" min="128" max="2048" step="32" value="512">
+          </div>
+
+          <fieldset class="qm-fs">
+            <legend>Error correction</legend>
+            <div class="qm-seg qm-seg-4">
+              <input type="radio" name="ecl" id="ecl-l" value="L"><label for="ecl-l">L<small>7%</small></label>
+              <input type="radio" name="ecl" id="ecl-m" value="M"><label for="ecl-m">M<small>15%</small></label>
+              <input type="radio" name="ecl" id="ecl-q" value="Q"><label for="ecl-q">Q<small>25%</small></label>
+              <input type="radio" name="ecl" id="ecl-h" value="H"><label for="ecl-h">H<small>30%</small></label>
+            </div>
+          </fieldset>
+          <p class="qm-hint">How much of the code can be dirty or covered and still scan. Higher = more squares.</p>
+
+          <div class="field">
+            <label for="mask">Mask pattern</label>
+            <select id="mask">
+              <option value="-1">Best (picked for you)</option>
+              <option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option>
+              <option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option>
+            </select>
+          </div>
+        </section>
+      </div>
+
+      <div class="qm-col qm-col-side">
+
+        <!-- ===================== 2. THE CODE (the hero) ===================== -->
+        <section class="qm-card qm-out" id="out" aria-labelledby="out-title">
+          <h2 id="out-title" class="sr-only">Your QR code</h2>
+          <div class="qm-stage">
+            <canvas id="qr" role="img" aria-label="Your QR code"></canvas>
+          </div>
+          <p class="qm-info" id="info"></p>
+
+          <div class="qm-holds">
+            <p class="qm-holds-title"><strong>This code holds exactly:</strong></p>
+            <pre class="qm-payload" id="payload" tabindex="0" aria-label="The exact text in the code"></pre>
+            <p class="qm-no-redirect">No redirect link in between, no tracking, no expiry. It opens straight to what you typed.</p>
+          </div>
+
+          <div class="qm-actions">
+            <button class="btn btn-primary" id="dl-png" type="button">Download PNG</button>
+            <button class="btn" id="dl-svg" type="button">Download SVG</button>
+            <button class="btn btn-ghost" id="copy" type="button" hidden>Copy image</button>
+          </div>
+          <p class="qm-status" id="status" role="status" aria-live="polite"></p>
+          <p class="qm-private"><strong>Made on this device.</strong> Nothing you type is sent anywhere.</p>
+        </section>
+
+        <!-- ===================== 4. RECENT ===================== -->
+        <section class="qm-card qm-recent" aria-labelledby="recent-title">
+          <div class="qm-head">
+            <h2 id="recent-title">Recent</h2>
+            <button class="btn btn-sm btn-ghost" id="clear-recent" type="button">Clear</button>
+          </div>
+          <label class="qm-check"><input type="checkbox" id="keep-recent"> Keep my recent codes on this device</label>
+          <p class="qm-empty" id="recent-empty">Codes you download or copy show up here.</p>
+          <ul class="qm-list" id="recent"></ul>
+          <p class="qm-hint">Wi-Fi passwords are never kept.</p>
+        </section>
+      </div>
+    </div>
+
+    <!-- ===================== HOW TO ===================== -->
+    <div class="wrap item-info">
+      <section id="how" aria-labelledby="how-title">
+        <h2 id="how-title">How to use it</h2>
+        <ol>
+          <li>Pick Link, Text or Wi-Fi, and type.</li>
+          <li>The code updates as you type. Check what it holds.</li>
+          <li>Pick colours, quiet zone, size and error correction.</li>
+          <li>Download a PNG or SVG, or copy the image.</li>
+        </ol>
+        <table class="controls">
+          <thead><tr><th scope="col">Do this</th><th scope="col">Phone</th><th scope="col">Keyboard</th></tr></thead>
+          <tbody>
+            <tr><td>Pick a type</td><td>Tap Link, Text or Wi-Fi</td><td><kbd>Tab</kbd>, then <kbd>&larr;</kbd> <kbd>&rarr;</kbd></td></tr>
+            <tr><td>Type the content</td><td>Tap the box</td><td>Just type</td></tr>
+            <tr><td>Change size</td><td>Drag the slider</td><td><kbd>&larr;</kbd> <kbd>&rarr;</kbd></td></tr>
+            <tr><td>Download</td><td>Tap Download PNG or SVG</td><td><kbd>Tab</kbd> to it, <kbd>Enter</kbd></td></tr>
+            <tr><td>Use a recent code</td><td>Tap it</td><td><kbd>Tab</kbd> to it, <kbd>Enter</kbd></td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <div id="save-panel"></div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap footer-inner">
+      <p class="privacy-note">
+        <strong>No accounts, no cookies.</strong> Saves stay on your device.
+        Cookie-free visit counts via GoatCounter.
+      </p>
+    </div>
+  </footer>
+
+  <script src="../../kit/stats.js" defer></script>
+</body>
+</html>
