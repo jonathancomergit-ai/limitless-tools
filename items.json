@@ -7,7 +7,8 @@
       "images",
       "files"
     ],
-    "added": "2026-10-09"
+    "added": "2026-10-09",
+    "thumb": "thumb.webp"
   },
   {
     "slug": "sfx-maker",
@@ -17,7 +18,8 @@
       "audio",
       "game dev"
     ],
-    "added": "2026-10-09"
+    "added": "2026-10-09",
+    "thumb": "thumb.webp"
   },
   {
     "slug": "palette-lab",
@@ -27,7 +29,8 @@
       "colour",
       "design"
     ],
-    "added": "2026-10-09"
+    "added": "2026-10-09",
+    "thumb": "thumb.webp"
   },
   {
     "slug": "sprite-slicer",
@@ -37,7 +40,8 @@
       "images",
       "game dev"
     ],
-    "added": "2026-10-09"
+    "added": "2026-10-09",
+    "thumb": "thumb.webp"
   },
   {
     "slug": "icon-maker",
@@ -47,7 +51,8 @@
       "images",
       "web"
     ],
-    "added": "2026-10-09"
+    "added": "2026-10-09",
+    "thumb": "thumb.webp"
   },
   {
     "slug": "qr-maker",
@@ -57,6 +62,7 @@
       "qr",
       "privacy"
     ],
-    "added": "2026-10-09"
+    "added": "2026-10-09",
+    "thumb": "thumb.webp"
   }
 ]
