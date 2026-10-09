@@ -340,6 +340,41 @@ section { padding-block: var(--gap-lg); }
 }
 .nav-links a:hover { color: var(--text); background: var(--surface-2); text-decoration: none; }
 
+/* Wing switcher: a row of three pills under the header bar, so
+   moving between Arcade, Lab and Workshop is one tap from anywhere
+   on a hub. Each pill wears its own wing's colour. */
+.wing-switch {
+  display: flex;
+  gap: .4rem;
+  padding-bottom: .6rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.wing-switch::-webkit-scrollbar { display: none; }
+@media (min-width: 761px) { .wing-switch { max-width: 480px; } }
+.wing-switch a {
+  --pill: var(--hot);
+  flex: 1 1 0;
+  min-width: max-content;
+  text-align: center;
+  font-size: .88rem;
+  font-weight: 600;
+  padding: .5rem .8rem;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  color: var(--text-dim);
+  white-space: nowrap;
+}
+.wing-switch a[data-accent="cyan"]  { --pill: var(--cyan); }
+.wing-switch a[data-accent="amber"] { --pill: var(--amber); }
+.wing-switch a:hover { color: var(--text); border-color: var(--pill); text-decoration: none; }
+.wing-switch a:focus-visible { outline: 2px solid var(--pill); outline-offset: 2px; }
+.wing-switch a[aria-current="page"] {
+  color: var(--bg);
+  background: var(--pill);
+  border-color: var(--pill);
+}
+
 /* ============================================================
    BUTTONS
    ============================================================ */
