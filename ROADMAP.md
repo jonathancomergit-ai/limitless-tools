@@ -18,7 +18,7 @@ What to build next, in order. **Take the top unticked line.**
 
 Tonight's three for 🧰 Workshop, in this order.
 
-- [ ] `image-squisher` - Image Squisher: Shrink, resize and convert a pile of images at once. Everything happens on your device, nothing is uploaded.
+- [x] `image-squisher` - Image Squisher: Shrink, resize and convert a pile of images at once. Everything happens on your device, nothing is uploaded.
   - acceptance: Pick or drop many images (PNG, JPG, WebP, GIF first frame); a file input works on phones
   - acceptance: Settings: max width / max height (keep aspect), format WebP / JPEG / PNG, quality slider
   - acceptance: Converted with canvas in the browser; a table shows each file with before size, after size and % saved

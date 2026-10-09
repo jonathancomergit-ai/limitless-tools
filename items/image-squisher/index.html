@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <!-- Do not edit this line. It's the privacy lock, and the tests check it. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://gc.zgo.at; connect-src 'self' https://jonjoe1001.goatcounter.com; img-src 'self' data: blob: https://jonjoe1001.goatcounter.com; style-src 'self'; font-src 'self'; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+
+  <title>Image Squisher - Limitless Lab</title>
+  <meta name="description" content="Shrink, resize and convert a pile of images at once. Everything happens on your device, nothing is uploaded.">
+  <meta name="theme-color" content="#07070C">
+
+  <link rel="icon" href="../../kit/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../../kit/kit.css">
+  <link rel="stylesheet" href="item.css">
+  <script type="module" src="main.js"></script>
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="item-bar">
+    <a class="back-link" href="../../"><span aria-hidden="true">&larr;</span> <span data-slot="wing-name">Hub</span></a>
+    <h1>Image Squisher</h1>
+  </header>
+
+  <main id="main">
+    <div class="wrap sq">
+
+      <!-- ===================== 1. DROP (the hero) ===================== -->
+      <section class="sq-drop" id="drop" aria-labelledby="drop-title">
+        <h2 id="drop-title">Drop images here</h2>
+        <p class="sq-drop-sub">PNG, JPG, WebP or GIF. As many as you like.</p>
+        <label class="btn btn-primary sq-pick" for="files">Choose images</label>
+        <input class="sr-only" id="files" type="file" multiple
+               accept="image/png,image/jpeg,image/webp,image/gif,image/*">
+        <p class="sq-private"><strong>Your files never leave this device.</strong> Nothing is uploaded.</p>
+      </section>
+
+      <!-- ===================== 2. SETTINGS ===================== -->
+      <section class="sq-card sq-settings" aria-labelledby="set-title">
+        <h2 id="set-title">Settings</h2>
+
+        <div class="sq-sizes">
+          <div class="field">
+            <label for="max-w">Max width</label>
+            <input id="max-w" type="number" inputmode="numeric" min="1" max="8192" step="1" placeholder="Any">
+          </div>
+          <div class="field">
+            <label for="max-h">Max height</label>
+            <input id="max-h" type="number" inputmode="numeric" min="1" max="8192" step="1" placeholder="Any">
+          </div>
+        </div>
+        <p class="sq-hint">Pixels. Keeps the shape. Never makes a picture bigger. Blank = any size.</p>
+
+        <fieldset class="sq-formats">
+          <legend>Format</legend>
+          <div class="sq-seg">
+            <input type="radio" name="format" id="fmt-webp" value="webp"><label for="fmt-webp">WebP</label>
+            <input type="radio" name="format" id="fmt-jpeg" value="jpeg"><label for="fmt-jpeg">JPEG</label>
+            <input type="radio" name="format" id="fmt-png" value="png"><label for="fmt-png">PNG</label>
+          </div>
+        </fieldset>
+        <p class="sq-hint sq-warn" id="fmt-note" role="status"></p>
+
+        <div class="field sq-quality">
+          <label for="quality">Quality <output id="quality-out" for="quality">80</output></label>
+          <input id="quality" type="range" min="1" max="100" step="1" value="80">
+          <p class="sq-hint" id="quality-hint">Lower = smaller file. 70 to 85 looks great for photos.</p>
+        </div>
+      </section>
+
+      <!-- ===================== 3. RESULTS ===================== -->
+      <section class="sq-card sq-results" aria-labelledby="res-title">
+        <div class="sq-res-head">
+          <h2 id="res-title">Results</h2>
+          <p class="sq-total" id="total"></p>
+        </div>
+
+        <div class="sq-progress" id="progress-box" hidden>
+          <progress id="progress" max="1" value="0"></progress>
+        </div>
+        <p class="sq-status" id="status" role="status" aria-live="polite"></p>
+
+        <p class="sq-empty" id="empty">No images yet. Add some above.</p>
+
+        <table class="sq-table" id="table" hidden>
+          <caption class="sr-only">Each image, before and after</caption>
+          <colgroup><col class="c-name"><col class="c-size"><col class="c-size"><col class="c-pct"><col class="c-dl"></colgroup>
+          <thead>
+            <tr><th scope="col">File</th><th scope="col">Before</th><th scope="col">After</th><th scope="col">Saved</th><th scope="col"><span class="sr-only">Download</span></th></tr>
+          </thead>
+          <tbody id="rows"></tbody>
+        </table>
+
+        <div class="sq-actions">
+          <button class="btn btn-primary" id="zip" type="button" disabled>Download all (.zip)</button>
+          <button class="btn btn-ghost" id="clear" type="button" disabled>Clear</button>
+        </div>
+
+        <p class="sq-clean"><strong>No hidden photo data.</strong> Each picture is redrawn from scratch, so location, camera and date info (EXIF) is left behind.</p>
+      </section>
+
+      <!-- ===================== 4. PREVIEW ===================== -->
+      <section class="sq-card sq-preview" id="preview" aria-labelledby="pre-title" hidden>
+        <h2 id="pre-title">Preview <span class="sq-pre-name" id="pre-name"></span></h2>
+        <div class="sq-pair">
+          <figure>
+            <div class="sq-frame"><img id="pre-before" alt="Before"></div>
+            <figcaption>Before <span id="pre-before-cap"></span></figcaption>
+          </figure>
+          <figure>
+            <div class="sq-frame"><img id="pre-after" alt="After"></div>
+            <figcaption>After <span id="pre-after-cap"></span></figcaption>
+          </figure>
+        </div>
+      </section>
+    </div>
+
+    <!-- ===================== HOW TO ===================== -->
+    <div class="wrap item-info">
+      <section id="how" aria-labelledby="how-title">
+        <h2 id="how-title">How to use it</h2>
+        <ol>
+          <li>Add images: drop them, choose them or paste one.</li>
+          <li>Pick a size, a format and a quality.</li>
+          <li>Tap a file name to compare before and after.</li>
+          <li>Download one, or all of them as a .zip.</li>
+        </ol>
+        <table class="controls">
+          <thead><tr><th scope="col">Do this</th><th scope="col">Phone</th><th scope="col">Keyboard</th></tr></thead>
+          <tbody>
+            <tr><td>Add images</td><td>Tap Choose images</td><td><kbd>Tab</kbd> to it, <kbd>Enter</kbd></td></tr>
+            <tr><td>Paste an image</td><td>-</td><td><kbd>Ctrl</kbd> + <kbd>V</kbd></td></tr>
+            <tr><td>Compare</td><td>Tap a file name</td><td><kbd>Tab</kbd> to it, <kbd>Enter</kbd></td></tr>
+            <tr><td>Quality</td><td>Drag the slider</td><td><kbd>&larr;</kbd> <kbd>&rarr;</kbd></td></tr>
+            <tr><td>Download</td><td>Tap &darr; or Download all</td><td><kbd>Tab</kbd> to it, <kbd>Enter</kbd></td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <div id="save-panel"></div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap footer-inner">
+      <p class="privacy-note">
+        <strong>No accounts, no cookies.</strong> Saves stay on your device.
+        Cookie-free visit counts via GoatCounter.
+      </p>
+    </div>
+  </footer>
+
+  <script src="../../kit/stats.js" defer></script>
+</body>
+</html>
