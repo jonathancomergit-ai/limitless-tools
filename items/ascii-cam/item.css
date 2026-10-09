@@ -1,0 +1,287 @@
+/* ============================================================
+   ASCII Cam - item styles
+   Phone first: one column: start, picture, look.
+   From 900px: the picture on the left, the look on the right.
+   ============================================================ */
+
+.ac {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+  padding-block: 1.1rem 0;
+}
+.ac-col { display: contents; }
+
+@media (min-width: 900px) {
+  .ac {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 360px;
+    align-items: start;
+    gap: 1.4rem;
+    padding-top: 1.6rem;
+  }
+  .ac-col { display: flex; flex-direction: column; gap: 1.4rem; min-width: 0; }
+}
+
+.ac section { padding-block: 0; }
+.ac h2 { font-size: 1.2rem; margin: 0 0 .8rem; }
+
+/* ---- cards ---- */
+.ac .ac-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 1.1rem 1.1rem 1.2rem;
+  min-width: 0;
+}
+.ac-head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: .2rem 1rem;
+  margin-bottom: .7rem;
+}
+.ac-head h2 { margin: 0; }
+.ac-count { margin: 0; font-family: var(--font-mono); font-size: .85rem; color: var(--accent); }
+
+.ac-hint {
+  font-size: .85rem;
+  color: var(--text-faint);
+  margin: .2rem 0 .9rem;
+  line-height: 1.45;
+}
+.ac-hint:empty { display: none; }
+
+/* ============================================================
+   1. START - the hero
+   ============================================================ */
+.ac .ac-hero {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: .3rem;
+  padding: 1.6rem 1.1rem 1.2rem;
+  border: 2px dashed var(--accent-line);
+  border-radius: var(--radius);
+  background: var(--accent-dim);
+}
+.ac-hero h2 { font-size: clamp(1.5rem, 6vw, 2.1rem); margin: 0; }
+.ac-hero-sub { color: var(--text-dim); margin: 0 0 .7rem; }
+.ac-hero.is-live { border-style: solid; }
+
+.ac-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: .6rem;
+  width: 100%;
+}
+.ac-start {
+  min-height: 56px;
+  min-width: min(100%, 220px);
+  font-size: 1.1rem;
+  padding-inline: 1.6rem;
+}
+.ac-sample, .ac-flip { min-height: 56px; }
+.ac-flip[hidden] { display: none; }
+
+.ac-private { margin: .9rem 0 0; color: var(--text-dim); font-size: .92rem; }
+.ac-private strong { color: var(--green); font-weight: 600; }
+.ac-status { margin: .3rem 0 0; font-size: .9rem; color: var(--amber); max-width: 34rem; }
+.ac-status:empty { display: none; }
+
+/* The camera feed is only read, never shown. It stays in the
+   page (some phones stop a video that isn't), just invisible. */
+.ac-video {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 2px;
+  height: 2px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ============================================================
+   2. THE SCREEN
+   ============================================================ */
+.ac-view {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  margin-bottom: .9rem;
+}
+.ac-view canvas { display: block; max-width: 100%; }
+
+/* The big 3-2-1. A button, so tapping it cancels. */
+.ac-countdown {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: .4rem;
+  border: 0;
+  padding: 0;
+  background: rgba(7, 7, 12, .55);
+  color: var(--text);
+  cursor: pointer;
+  font: inherit;
+}
+.ac-countdown[hidden] { display: none; }
+.ac-countdown-n {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(4rem, 22vw, 9rem);
+  line-height: 1;
+  color: var(--accent);
+}
+.ac-countdown-hint { font-size: .9rem; color: var(--text-dim); }
+.ac-countdown:focus-visible { outline: 3px solid var(--cyan); outline-offset: -6px; }
+/* A gentle pulse on each number, only for people who don't mind motion. */
+.ac-countdown.is-pulsing .ac-countdown-n { animation: ac-pulse 1s ease-out; }
+@keyframes ac-pulse {
+  from { transform: scale(1.35); opacity: .4; }
+  to   { transform: scale(1);    opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ac-countdown.is-pulsing .ac-countdown-n { animation: none; }
+}
+
+.ac-snap { display: flex; flex-wrap: wrap; gap: .6rem; margin-bottom: .2rem; }
+.ac-snap .btn { min-height: var(--tap); flex: 1 1 10rem; }
+
+.ac-fallback { margin-top: .4rem; }
+.ac-fallback[hidden] { display: none; }
+.ac-fallback label { display: block; font-size: .9rem; color: var(--amber); margin-bottom: .4rem; }
+.ac-fallback textarea {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  font-family: var(--font-mono);
+  font-size: .6rem;
+  line-height: 1.2;
+  white-space: pre;
+  overflow: auto;
+  background: var(--bg-2);
+  color: var(--text);
+  border: 1px solid var(--line-field);
+  border-radius: var(--radius-sm);
+  padding: .5rem;
+  margin-bottom: .6rem;
+  resize: vertical;
+}
+.ac-fallback .btn { min-height: var(--tap); }
+
+/* ============================================================
+   3. SETTINGS
+   ============================================================ */
+.ac-fs { border: 0; margin: .4rem 0 .9rem; padding: 0; min-width: 0; }
+.ac-fs legend {
+  font-family: var(--font-mono);
+  font-size: .72rem;
+  font-weight: 500;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin: 0 0 .45rem;
+  padding: 0;
+}
+
+/* Big radio "pills". */
+.ac-seg {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border: 1px solid var(--line-field);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+.ac-seg-2x2 { grid-template-columns: repeat(2, 1fr); }
+.ac-seg input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.ac-seg label {
+  display: grid;
+  place-items: center;
+  min-height: var(--tap);
+  padding: .2rem .3rem;
+  text-align: center;
+  line-height: 1.15;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: .92rem;
+  cursor: pointer;
+  color: var(--text-dim);
+  border-left: 1px solid var(--line-field);
+  -webkit-user-select: none;
+          user-select: none;
+}
+.ac-seg label:first-of-type { border-left: 0; }
+.ac-seg-2x2 label:nth-of-type(3) { border-left: 0; }
+.ac-seg-2x2 label:nth-of-type(n + 3) { border-top: 1px solid var(--line-field); }
+.ac-seg label:hover { color: var(--text); background: var(--surface-2); }
+.ac-seg input:checked + label { background: var(--accent); color: var(--bg); }
+.ac-seg input:focus-visible + label { outline: 2px solid var(--cyan); outline-offset: -4px; border-radius: 6px; }
+
+.ac-custom { margin: -.3rem 0 .6rem; }
+.ac-custom[hidden] { display: none; }
+.ac-custom input { font-family: var(--font-mono); }
+
+/* A checkbox row with a big tap area. */
+.ac-check {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  min-height: var(--tap);
+  cursor: pointer;
+  color: var(--text);
+  font-size: .95rem;
+}
+.ac-check input { width: 22px; height: 22px; accent-color: var(--accent); margin: 0; cursor: pointer; }
+
+.ac-reset { min-height: var(--tap); margin-top: .3rem; }
+
+/* ---- sliders with a fat, easy-to-grab thumb ---- */
+.ac-range { margin: 0 0 .3rem; }
+.ac-range label { display: flex; justify-content: space-between; align-items: baseline; }
+.ac-range output {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: 0;
+  text-transform: none;
+}
+.ac .field input[type="range"] {
+  -webkit-appearance: none;
+          appearance: none;
+  width: 100%;
+  height: var(--tap);
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+.ac .field input[type="range"]:focus { background: transparent; }
+.ac .field input[type="range"]::-webkit-slider-runnable-track { height: 6px; border-radius: 3px; background: var(--line-bright); }
+.ac .field input[type="range"]::-moz-range-track { height: 6px; border-radius: 3px; background: var(--line-bright); }
+.ac .field input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 28px; height: 28px; margin-top: -11px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 3px solid var(--bg);
+}
+.ac .field input[type="range"]::-moz-range-thumb {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 3px solid var(--bg);
+}
+.ac .field input[type="range"]:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }

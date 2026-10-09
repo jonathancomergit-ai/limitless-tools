@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <!-- Do not edit this line. It's the privacy lock, and the tests check it. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://gc.zgo.at; connect-src 'self' https://jonjoe1001.goatcounter.com; img-src 'self' data: blob: https://jonjoe1001.goatcounter.com; style-src 'self'; font-src 'self'; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+
+  <title>ASCII Cam - Limitless Lab</title>
+  <meta name="description" content="Your camera, live, redrawn as text characters. Snap a picture as a PNG or copy it as text. Nothing leaves your device.">
+  <meta name="theme-color" content="#07070C">
+
+  <link rel="icon" href="../../kit/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../../kit/kit.css">
+  <link rel="stylesheet" href="item.css">
+  <script type="module" src="main.js"></script>
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="item-bar">
+    <a class="back-link" href="../../"><span aria-hidden="true">&larr;</span> <span data-slot="wing-name">Hub</span></a>
+    <h1>ASCII Cam</h1>
+  </header>
+
+  <main id="main">
+    <div class="wrap ac">
+      <div class="ac-col ac-col-main">
+
+        <!-- ===================== 1. START (the hero) ===================== -->
+        <section class="ac-hero" id="hero" aria-labelledby="hero-title">
+          <h2 id="hero-title">Your camera, as text</h2>
+          <p class="ac-hero-sub" id="hero-sub">Every frame redrawn with letters and symbols, live.</p>
+          <div class="ac-hero-actions">
+            <button class="btn btn-primary ac-start" id="start" type="button">Start camera</button>
+            <button class="btn btn-ghost ac-sample" id="sample" type="button">Try a sample</button>
+            <button class="btn ac-flip" id="flip" type="button" hidden>Switch camera</button>
+          </div>
+          <p class="ac-private"><strong>Nothing leaves this device.</strong> No upload, no recording.</p>
+          <p class="ac-status" id="status" role="status" aria-live="polite"></p>
+          <video class="ac-video" id="video" muted playsinline aria-hidden="true" tabindex="-1"></video>
+        </section>
+
+        <!-- ===================== 2. THE SCREEN ===================== -->
+        <section class="ac-card ac-screen" aria-labelledby="screen-title">
+          <div class="ac-head">
+            <h2 id="screen-title">Picture</h2>
+            <p class="ac-count" id="size-label"></p>
+          </div>
+          <div class="ac-view" id="view">
+            <canvas id="ascii" role="img" aria-label="The picture, drawn with text characters"></canvas>
+            <button class="ac-countdown" id="countdown" type="button" hidden aria-live="assertive">
+              <span class="ac-countdown-n" id="countdown-n">3</span>
+              <span class="ac-countdown-hint">Tap to cancel</span>
+            </button>
+          </div>
+
+          <div class="ac-snap" role="group" aria-label="Snap">
+            <button class="btn btn-primary" id="png" type="button" disabled>Download PNG</button>
+            <button class="btn" id="copy" type="button" disabled>Copy as text</button>
+          </div>
+          <label class="ac-check"><input type="checkbox" id="timer"> 3-2-1 timer first</label>
+          <p class="ac-hint" id="snap-note" role="status" aria-live="polite"></p>
+
+          <div class="ac-fallback" id="fallback" hidden>
+            <label for="fallback-text">Couldn't reach the clipboard. Select this and copy it, or download it.</label>
+            <textarea id="fallback-text" readonly spellcheck="false" rows="8"></textarea>
+            <button class="btn btn-sm" id="txt" type="button">Download .txt</button>
+          </div>
+        </section>
+      </div>
+
+      <div class="ac-col ac-col-side">
+
+        <!-- ===================== 3. SETTINGS ===================== -->
+        <section class="ac-card ac-settings" aria-labelledby="set-title">
+          <h2 id="set-title">Look</h2>
+
+          <div class="field ac-range">
+            <label for="cols">Detail <output id="cols-out" for="cols">64 columns</output></label>
+            <input id="cols" type="range" min="24" max="160" step="4" value="64">
+          </div>
+          <div class="field ac-range">
+            <label for="contrast">Contrast <output id="contrast-out" for="contrast">0</output></label>
+            <input id="contrast" type="range" min="-100" max="100" step="5" value="0">
+          </div>
+          <div class="field ac-range">
+            <label for="brightness">Brightness <output id="brightness-out" for="brightness">0</output></label>
+            <input id="brightness" type="range" min="-100" max="100" step="5" value="0">
+          </div>
+
+          <fieldset class="ac-fs">
+            <legend>Characters</legend>
+            <div class="ac-seg ac-seg-4">
+              <input type="radio" name="charset" id="cs-classic" value="classic"><label for="cs-classic">Classic</label>
+              <input type="radio" name="charset" id="cs-blocks" value="blocks"><label for="cs-blocks">Blocks</label>
+              <input type="radio" name="charset" id="cs-binary" value="binary"><label for="cs-binary">Binary</label>
+              <input type="radio" name="charset" id="cs-custom" value="custom"><label for="cs-custom">Custom</label>
+            </div>
+          </fieldset>
+          <div class="field ac-custom" id="custom-row" hidden>
+            <label for="custom">Your characters, light ink first</label>
+            <input id="custom" type="text" maxlength="64" autocomplete="off" spellcheck="false" placeholder=" .oO@">
+          </div>
+          <p class="ac-hint" id="charset-hint"></p>
+
+          <fieldset class="ac-fs">
+            <legend>Colours</legend>
+            <div class="ac-seg ac-seg-2x2">
+              <input type="radio" name="colour" id="co-green" value="green"><label for="co-green">Green terminal</label>
+              <input type="radio" name="colour" id="co-white" value="white"><label for="co-white">White on black</label>
+              <input type="radio" name="colour" id="co-paper" value="paper"><label for="co-paper">Black on white</label>
+              <input type="radio" name="colour" id="co-colour" value="colour"><label for="co-colour">Full colour</label>
+            </div>
+          </fieldset>
+          <label class="ac-check"><input type="checkbox" id="invert"> Invert (a negative)</label>
+          <button class="btn btn-sm btn-ghost ac-reset" id="reset" type="button">Reset the look</button>
+        </section>
+      </div>
+    </div>
+
+    <!-- ===================== HOW TO ===================== -->
+    <div class="wrap item-info">
+      <section id="how" aria-labelledby="how-title">
+        <h2 id="how-title">How to use it</h2>
+        <ol>
+          <li>Press Start camera (and allow it), or Try a sample.</li>
+          <li>Pick the detail, characters and colours. It redraws as you go.</li>
+          <li>Snap: Download PNG, or Copy as text. Tick the timer for a 3-2-1 first.</li>
+        </ol>
+        <table class="controls">
+          <thead><tr><th scope="col">Do this</th><th scope="col">Phone</th><th scope="col">Keyboard</th></tr></thead>
+          <tbody>
+            <tr><td>Start / stop the camera</td><td>Tap Start camera / Stop camera</td><td><kbd>Tab</kbd> to it, <kbd>Enter</kbd></td></tr>
+            <tr><td>Front / back camera</td><td>Tap Switch camera</td><td><kbd>Tab</kbd> to it, <kbd>Enter</kbd></td></tr>
+            <tr><td>No camera?</td><td>Tap Try a sample</td><td><kbd>Tab</kbd> to it, <kbd>Enter</kbd></td></tr>
+            <tr><td>Detail, contrast, brightness</td><td>Drag the sliders</td><td><kbd>&larr;</kbd> <kbd>&rarr;</kbd> on a slider</td></tr>
+            <tr><td>Characters, colours</td><td>Tap a pill</td><td>Arrows in the group</td></tr>
+            <tr><td>Snap</td><td>Download PNG or Copy as text</td><td><kbd>Tab</kbd> to it, <kbd>Enter</kbd></td></tr>
+            <tr><td>Cancel the 3-2-1</td><td>Tap the countdown</td><td><kbd>Esc</kbd></td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <div id="save-panel"></div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap footer-inner">
+      <p class="privacy-note">
+        <strong>No accounts, no cookies.</strong> Saves stay on your device.
+        Cookie-free visit counts via GoatCounter.
+      </p>
+    </div>
+  </footer>
+
+  <script src="../../kit/stats.js" defer></script>
+</body>
+</html>

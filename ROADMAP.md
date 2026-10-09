@@ -83,7 +83,7 @@ Tonight's three for 🧰 Workshop, in this order.
 
 Five more tools, in this order. **The CSP stays exactly as it is**: no new origins, no `media-src` change. Camera tools use `getUserMedia` + `video.srcObject` (a stream, not a URL), and nothing is uploaded or saved without the user pressing a button.
 
-- [ ] `ascii-cam` - ASCII Cam: Your camera, live, redrawn as text characters. Snap a picture and save it.
+- [x] `ascii-cam` - ASCII Cam: Your camera, live, redrawn as text characters. Snap a picture and save it.
   - acceptance: "Start camera" button (no camera until pressed), front/back switch on phones; a clear message if permission is denied
   - acceptance: A "Try a sample" picture so it works with no camera (and for the smoke test)
   - acceptance: Live ASCII render on a canvas; sliders: detail (columns), contrast, brightness; character sets: classic, blocks, binary, custom
