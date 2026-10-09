@@ -54,7 +54,7 @@ const list = JSON.parse(fs.readFileSync(listPath, "utf8"));
 const planned = list.findIndex((i) => i.slug === slug && i.soon);
 if (planned === -1 && list.some((i) => i.slug === slug)) { fail(`${slug} is already in items.json.`); }
 if (planned !== -1) {
-  const plan = list.splice(planned, 1)[0];
+  const plan = list[planned];
   if (!flags.blurb) { entry.blurb = plan.blurb; }
   if (!flags.tags) { entry.tags = plan.tags; }
 }
@@ -71,8 +71,10 @@ for (const name of fs.readdirSync(to)) {
   fs.writeFileSync(file, text);
 }
 
-/* ---- 3. list it on the hub ---- */
-list.push(entry);
+/* ---- 3. list it on the hub ----
+   A planned entry is replaced where it stands, so PRs that build
+   different planned items never clash in items.json. */
+if (planned !== -1) { list[planned] = entry; } else { list.push(entry); }
 fs.writeFileSync(listPath, JSON.stringify(list, null, 2) + "\n");
 
 console.log(`
