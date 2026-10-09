@@ -1,0 +1,328 @@
+/* ============================================================
+   Sprite Sheet Slicer - item styles
+   Phone first: one column, in this order:
+     drop, sheet, slice settings, preview, export.
+   From 900px: sheet + export on the left; preview and
+   settings in a column on the right.
+   ============================================================ */
+
+.ss {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+  padding-block: 1.1rem 0;
+}
+/* On phones the two columns melt away, so `order` can mix them. */
+.ss-col { display: contents; }
+.ss-drop     { order: 1; }
+.ss-sheet    { order: 2; }
+.ss-settings { order: 3; }
+.ss-preview  { order: 4; }
+.ss-export   { order: 5; }
+
+@media (min-width: 900px) {
+  .ss {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 360px;
+    align-items: start;
+    gap: 1.4rem;
+    padding-top: 1.6rem;
+  }
+  .ss-col { display: flex; flex-direction: column; gap: 1.4rem; min-width: 0; }
+}
+
+.ss section { padding-block: 0; }
+.ss h2 { font-size: 1.2rem; margin: 0 0 .8rem; }
+
+/* ---- cards ---- */
+.ss-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 1.1rem 1.1rem 1.2rem;
+  min-width: 0;
+}
+.ss .ss-card { padding: 1.1rem 1.1rem 1.2rem; }
+
+.ss-head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: .2rem 1rem;
+  margin-bottom: .7rem;
+}
+.ss-head h2 { margin: 0; }
+.ss-count { margin: 0; font-family: var(--font-mono); font-size: .85rem; color: var(--accent); }
+
+.ss-hint {
+  font-size: .85rem;
+  color: var(--text-faint);
+  margin: -.3rem 0 1rem;
+  line-height: 1.45;
+}
+.ss-hint:empty { display: none; }
+.ss-hint kbd { font-size: .78rem; }
+.ss-warn { color: var(--amber); margin: .6rem 0 0; }
+
+/* ============================================================
+   1. DROP - the hero
+   ============================================================ */
+.ss .ss-drop {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: .3rem;
+  padding: 1.8rem 1.1rem 1.3rem;
+  border: 2px dashed var(--accent-line);
+  border-radius: var(--radius);
+  background: var(--accent-dim);
+}
+.ss-drop h2 { font-size: clamp(1.5rem, 6vw, 2.1rem); margin: 0; }
+.ss-drop-sub { color: var(--text-dim); margin: 0 0 .7rem; overflow-wrap: anywhere; }
+.ss-drop.is-over { border-color: var(--accent); border-style: solid; background: var(--surface-2); }
+
+/* Once a sheet is in, the hero gets out of the way. */
+.ss .ss-drop.is-loaded { padding: 1rem 1.1rem .9rem; }
+.ss-drop.is-loaded h2 { font-size: 1.25rem; }
+.ss-drop.is-loaded .ss-drop-sub { font-family: var(--font-mono); font-size: .85rem; margin-bottom: .5rem; }
+
+.ss-drop-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: .6rem;
+  width: 100%;
+}
+.ss-pick {
+  min-height: 56px;
+  min-width: min(100%, 220px);
+  font-size: 1.1rem;
+  padding-inline: 1.6rem;
+}
+.ss-sample { min-height: 56px; }
+.ss-drop.is-loaded .ss-pick,
+.ss-drop.is-loaded .ss-sample { min-height: var(--tap); font-size: 1rem; }
+/* The real file input is invisible; show its focus on the button. */
+.ss-drop:has(#file:focus-visible) .ss-pick { outline: 2px solid var(--cyan); outline-offset: 3px; }
+
+.ss-private { margin: .9rem 0 0; color: var(--text-dim); font-size: .92rem; }
+.ss-private strong { color: var(--green); font-weight: 600; }
+.ss-status { margin: .3rem 0 0; font-size: .9rem; color: var(--amber); min-height: 0; }
+.ss-status:empty { display: none; }
+
+/* ============================================================
+   2. SHEET
+   ============================================================ */
+.ss-tools {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: .6rem;
+  margin-bottom: .7rem;
+}
+.ss-zoom, .ss-picks { display: flex; align-items: center; gap: .4rem; }
+.ss-zoom .btn, .ss-picks .btn { min-height: var(--tap); min-width: var(--tap); }
+.ss-zoom-out {
+  min-width: 4.2rem;
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: .85rem;
+  color: var(--text);
+}
+
+.ss-view {
+  overflow: auto;
+  max-height: min(70vh, 640px);
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  margin-bottom: .9rem;
+  overscroll-behavior: contain;
+}
+.ss-view canvas {
+  display: block;
+  margin: 0 auto;
+  image-rendering: pixelated;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.ss-view canvas.is-shrunk { image-rendering: auto; }
+.ss-view canvas:focus { outline: none; }
+.ss-view:has(canvas:focus-visible) { outline: 2px solid var(--cyan); outline-offset: 2px; }
+
+/* ============================================================
+   SETTINGS + EXPORT: fields
+   ============================================================ */
+.ss-fs { border: 0; margin: 0 0 .9rem; padding: 0; min-width: 0; }
+.ss-fs legend, .ss-sub {
+  font-family: var(--font-mono);
+  font-size: .72rem;
+  font-weight: 500;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin: 0 0 .45rem;
+  padding: 0;
+}
+.ss-sub { margin-top: 1.2rem; }
+
+.ss-pair { display: grid; grid-template-columns: 1fr 1fr; gap: .8rem; }
+.ss-pair .field { margin-bottom: .8rem; min-width: 0; }
+.ss-pair[hidden] { display: none; }
+
+/* Big radio "pills" in one row. */
+.ss-seg {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border: 1px solid var(--line-field);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+.ss-seg-2 { grid-template-columns: repeat(2, 1fr); }
+.ss-seg input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.ss-seg label {
+  display: grid;
+  place-items: center;
+  min-height: var(--tap);
+  padding: 0 .3rem;
+  text-align: center;
+  line-height: 1.15;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: .95rem;
+  cursor: pointer;
+  color: var(--text-dim);
+  border-left: 1px solid var(--line-field);
+  -webkit-user-select: none;
+          user-select: none;
+}
+.ss-seg label:first-of-type { border-left: 0; }
+.ss-seg label:hover { color: var(--text); background: var(--surface-2); }
+.ss-seg input:checked + label { background: var(--accent); color: var(--bg); }
+.ss-seg input:focus-visible + label { outline: 2px solid var(--cyan); outline-offset: -4px; border-radius: 6px; }
+
+/* A checkbox row with a big tap area. */
+.ss-check {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  min-height: var(--tap);
+  cursor: pointer;
+  color: var(--text);
+  font-size: .95rem;
+}
+.ss-check[hidden] { display: none; }
+.ss-check input { width: 22px; height: 22px; accent-color: var(--accent); margin: 0; cursor: pointer; }
+
+/* ============================================================
+   4. PREVIEW
+   ============================================================ */
+.ss-stage {
+  width: 100%;
+  max-width: 320px;
+  margin: 0 auto .8rem;
+  aspect-ratio: 1;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+.ss-stage canvas { display: block; width: 100%; height: 100%; image-rendering: pixelated; }
+
+.ss-play-row { display: flex; align-items: center; justify-content: space-between; gap: .8rem; flex-wrap: wrap; }
+.ss-play { min-height: var(--tap); min-width: 7rem; }
+
+.ss-range { margin: .6rem 0 0; }
+.ss-range label { display: flex; justify-content: space-between; align-items: baseline; }
+.ss-range output {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+/* A slider with a fat, easy-to-grab thumb. */
+.field input[type="range"] {
+  -webkit-appearance: none;
+          appearance: none;
+  height: var(--tap);
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+.field input[type="range"]:focus { background: transparent; }
+.field input[type="range"]::-webkit-slider-runnable-track { height: 6px; border-radius: 3px; background: var(--line-bright); }
+.field input[type="range"]::-moz-range-track { height: 6px; border-radius: 3px; background: var(--line-bright); }
+.field input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 28px; height: 28px; margin-top: -11px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 3px solid var(--bg);
+}
+.field input[type="range"]::-moz-range-thumb {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 3px solid var(--bg);
+}
+.field input[type="range"]:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
+
+/* ---- frame order strip ---- */
+.ss-empty { color: var(--text-faint); margin: 0 0 .8rem; font-size: .9rem; }
+.ss-empty[hidden] { display: none; }
+.ss-order {
+  list-style: none;
+  margin: 0 0 .8rem;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: .4rem;
+  max-height: 15.5rem;
+  overflow-y: auto;
+}
+.ss-order li { margin: 0; }
+.ss-chip {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  padding: 0;
+  border: 2px solid var(--line-bright);
+  border-radius: var(--radius-sm);
+  background: var(--bg-2);
+  cursor: pointer;
+}
+.ss-chip canvas { width: 40px; height: 40px; image-rendering: pixelated; border-radius: 4px; }
+.ss-chip span {
+  position: absolute;
+  left: 2px;
+  top: 2px;
+  min-width: 1.1rem;
+  padding: 0 .2rem;
+  border-radius: 4px;
+  background: var(--bg);
+  color: var(--text-dim);
+  font-family: var(--font-mono);
+  font-size: .62rem;
+  line-height: 1.3;
+}
+.ss-chip:hover { border-color: var(--cyan); }
+.ss-chip[aria-pressed="true"] { border-color: var(--accent); }
+.ss-chip[aria-pressed="true"] span { background: var(--accent); color: var(--bg); font-weight: 700; }
+.ss-chip:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
+
+.ss-order-tools { display: grid; grid-template-columns: 1fr 1fr; gap: .4rem; }
+.ss-order-tools .btn { min-height: var(--tap); }
+
+/* ============================================================
+   5. EXPORT
+   ============================================================ */
+.ss-actions { display: flex; flex-wrap: wrap; gap: .6rem; }
+.ss-actions .btn { min-height: var(--tap); flex: 1 1 13rem; }
+.ss-zip-note { margin: .8rem 0 0; }
