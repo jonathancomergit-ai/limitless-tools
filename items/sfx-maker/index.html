@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <!-- Do not edit this line. It's the privacy lock, and the tests check it. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://gc.zgo.at; connect-src 'self' https://jonjoe1001.goatcounter.com; img-src 'self' data: blob: https://jonjoe1001.goatcounter.com; style-src 'self'; font-src 'self'; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+
+    <title>SFX Maker - Limitless Lab</title>
+  <meta name="description" content="Make retro sound effects for games: coins, jumps, lasers, explosions. Tweak them and save as WAV.">
+  <meta name="theme-color" content="#07070C">
+
+  <link rel="icon" href="../../kit/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../../kit/kit.css">
+  <link rel="stylesheet" href="item.css">
+  <script type="module" src="main.js"></script>
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="item-bar">
+    <a class="back-link" href="../../"><span aria-hidden="true">&larr;</span> <span data-slot="wing-name">Hub</span></a>
+    <h1>SFX Maker</h1>
+  </header>
+
+  <main id="main">
+    <div class="wrap sfx">
+
+      <!-- ===================== 1. THE SOUND (hero) ===================== -->
+      <section class="sfx-hero" aria-labelledby="sound-title">
+        <h2 class="sr-only" id="sound-title">Your sound</h2>
+        <div class="sfx-wave" id="wave">
+          <canvas role="img" aria-label="The current sound: its volume over time, and its pitch as a line"></canvas>
+        </div>
+        <div class="sfx-bar">
+          <p class="sfx-meta" id="meta" aria-live="polite"></p>
+          <div class="sfx-main-actions">
+            <button class="btn btn-primary sfx-play" id="play" type="button"><span aria-hidden="true">&#9654;</span> Play</button>
+            <button class="btn" id="export" type="button">Export WAV</button>
+          </div>
+        </div>
+        <p class="sfx-note" id="audio-note">Sound only starts after you tap or press a key. Made on this device, nothing is uploaded.</p>
+      </section>
+
+      <!-- ===================== 2. PRESETS ===================== -->
+      <section class="sfx-card sfx-presets" aria-labelledby="pre-title">
+        <h2 id="pre-title">Presets</h2>
+        <div class="sfx-grid" id="presets"></div>
+        <div class="sfx-grid sfx-grid-2">
+          <button class="btn sfx-btn" id="randomize" type="button">Randomize <kbd>R</kbd></button>
+          <button class="btn sfx-btn" id="mutate" type="button">Mutate <kbd>M</kbd></button>
+        </div>
+      </section>
+
+      <!-- ===================== 3. TWEAK ===================== -->
+      <section class="sfx-card sfx-tweak" aria-labelledby="tweak-title">
+        <h2 id="tweak-title">Tweak</h2>
+        <fieldset class="sfx-waves">
+          <legend>Wave</legend>
+          <div class="sfx-seg" id="waves"></div>
+        </fieldset>
+        <div class="sfx-sliders" id="sliders"></div>
+      </section>
+
+      <!-- ===================== 4. FAVOURITES ===================== -->
+      <section class="sfx-card sfx-favs" aria-labelledby="fav-title">
+        <h2 id="fav-title">Favourites</h2>
+        <form class="sfx-fav-form" id="fav-form">
+          <label class="sr-only" for="fav-name">Name for this sound</label>
+          <input id="fav-name" type="text" maxlength="40" placeholder="Name it, e.g. big coin" autocomplete="off">
+          <button class="btn btn-primary" type="submit">Save</button>
+        </form>
+        <p class="sfx-fav-status" id="fav-status" role="status"></p>
+        <ul class="sfx-fav-list" id="favs"></ul>
+        <p class="sfx-empty" id="favs-empty">Nothing saved yet. Make a sound you like, name it, tap Save.</p>
+      </section>
+    </div>
+
+    <!-- ===================== HOW TO ===================== -->
+    <div class="wrap item-info">
+      <section id="how" aria-labelledby="how-title">
+        <h2 id="how-title">How to use it</h2>
+        <ol>
+          <li>Tap a preset. Each tap makes a new version.</li>
+          <li>Drag the sliders until it sounds right.</li>
+          <li>Save it as a favourite, or Export WAV for your game.</li>
+        </ol>
+        <table class="controls">
+          <thead><tr><th scope="col">Do this</th><th scope="col">Phone</th><th scope="col">Keyboard</th></tr></thead>
+          <tbody>
+            <tr><td>Play</td><td>Play button or the waveform</td><td><kbd>Space</kbd></td></tr>
+            <tr><td>Preset</td><td>Tap a preset</td><td><kbd>1</kbd> to <kbd>7</kbd></td></tr>
+            <tr><td>Randomize</td><td>Randomize button</td><td><kbd>R</kbd></td></tr>
+            <tr><td>Mutate</td><td>Mutate button</td><td><kbd>M</kbd></td></tr>
+            <tr><td>Change a slider</td><td>Drag it</td><td><kbd>Tab</kbd> to it, <kbd>&larr;</kbd> <kbd>&rarr;</kbd></td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <div id="save-panel"></div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap footer-inner">
+      <p class="privacy-note">
+        <strong>No accounts, no cookies.</strong> Saves stay on your device.
+        Cookie-free visit counts via GoatCounter.
+      </p>
+    </div>
+  </footer>
+
+  <script src="../../kit/stats.js" defer></script>
+</body>
+</html>

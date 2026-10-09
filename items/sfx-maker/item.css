@@ -1,0 +1,221 @@
+/* ============================================================
+   SFX Maker - item styles
+   Phone: one column. From 900px: sound, presets and
+   favourites on the left, the sliders on the right.
+   ============================================================ */
+
+.sfx {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas: "hero" "presets" "tweak" "favs";
+  gap: 1.1rem;
+  padding-block: 1.1rem 0;
+}
+.sfx-hero    { grid-area: hero; }
+.sfx-presets { grid-area: presets; }
+.sfx-tweak   { grid-area: tweak; }
+.sfx-favs    { grid-area: favs; }
+
+@media (min-width: 900px) {
+  .sfx {
+    grid-template-columns: minmax(0, 1fr) 360px;
+    grid-template-areas: "hero tweak" "presets tweak" "favs tweak";
+    align-items: start;
+    gap: 1.4rem;
+    padding-top: 1.6rem;
+  }
+}
+
+.sfx > section { padding-block: 0; min-width: 0; }
+.sfx h2 { font-size: 1.2rem; margin: 0 0 .8rem; }
+
+.sfx-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+.sfx > .sfx-card { padding: 1.1rem 1.1rem 1.2rem; }
+
+/* ============================================================
+   1. THE SOUND - waveform + Play (the hero)
+   ============================================================ */
+.sfx-wave {
+  position: relative;
+  height: clamp(170px, 30svh, 280px);
+  background: var(--bg-2);
+  border: 1px solid var(--accent-line);
+  border-radius: var(--radius);
+  overflow: hidden;
+  cursor: pointer;
+}
+.sfx-wave > canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+
+.sfx-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: .7rem 1rem;
+  margin-top: .8rem;
+}
+.sfx-meta {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: .85rem;
+  color: var(--accent);
+  min-width: 0;
+}
+.sfx-main-actions { display: flex; gap: .6rem; flex: 1 1 18rem; justify-content: flex-end; }
+.sfx-main-actions .btn { min-height: 56px; }
+.sfx-play { flex: 1 1 auto; font-size: 1.15rem; max-width: 16rem; }
+
+.sfx-note { margin: .6rem 0 0; font-size: .85rem; color: var(--text-faint); }
+
+/* ============================================================
+   2. PRESETS
+   ============================================================ */
+.sfx-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 7.2rem), 1fr));
+  gap: .5rem;
+}
+.sfx-grid-2 { grid-template-columns: 1fr 1fr; margin-top: .5rem; }
+.sfx-btn { min-height: var(--tap); justify-content: space-between; padding-inline: .9rem; }
+.sfx-btn kbd { font-size: .72rem; color: var(--text-faint); background: var(--bg-2); }
+.sfx-grid-2 .sfx-btn { border-color: var(--accent-line); }
+
+/* ============================================================
+   3. TWEAK - wave buttons + sliders
+   ============================================================ */
+.sfx-waves { border: 0; margin: 0 0 .9rem; padding: 0; min-width: 0; }
+.sfx-waves legend,
+.sfx-slider label {
+  font-family: var(--font-mono);
+  font-size: .72rem;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  padding: 0;
+}
+.sfx-waves legend { margin-bottom: .45rem; }
+
+.sfx-seg {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border: 1px solid var(--line-field);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+.sfx-seg input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.sfx-seg label {
+  display: grid;
+  place-items: center;
+  min-height: var(--tap);
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: .9rem;
+  cursor: pointer;
+  color: var(--text-dim);
+  border-left: 1px solid var(--line-field);
+  -webkit-user-select: none;
+          user-select: none;
+}
+.sfx-seg label:first-of-type { border-left: 0; }
+.sfx-seg label:hover { color: var(--text); background: var(--surface-2); }
+.sfx-seg input:checked + label { background: var(--accent); color: var(--bg); }
+.sfx-seg input:focus-visible + label { outline: 2px solid var(--cyan); outline-offset: -4px; border-radius: 6px; }
+
+.sfx-slider { margin-bottom: .35rem; }
+.sfx-slider label { display: flex; justify-content: space-between; align-items: baseline; gap: .5rem; margin-bottom: 0; }
+.sfx-slider output {
+  font-family: var(--font-mono);
+  font-size: .85rem;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--text);
+  white-space: nowrap;
+}
+.sfx-slider.is-off { opacity: .45; }
+
+/* A slider with a fat, easy-to-grab thumb. */
+.sfx-slider input[type="range"] {
+  -webkit-appearance: none;
+          appearance: none;
+  width: 100%;
+  height: 40px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+.sfx-slider input[type="range"]:focus { background: transparent; }
+.sfx-slider input[type="range"]::-webkit-slider-runnable-track { height: 6px; border-radius: 3px; background: var(--line-bright); }
+.sfx-slider input[type="range"]::-moz-range-track { height: 6px; border-radius: 3px; background: var(--line-bright); }
+.sfx-slider input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 26px; height: 26px; margin-top: -10px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 3px solid var(--bg);
+}
+.sfx-slider input[type="range"]::-moz-range-thumb {
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 3px solid var(--bg);
+}
+.sfx-slider input[type="range"]:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
+.sfx-slider input[type="range"]:disabled { cursor: not-allowed; }
+
+/* ============================================================
+   4. FAVOURITES
+   ============================================================ */
+.sfx-fav-form { display: flex; gap: .5rem; }
+.sfx-fav-form input {
+  flex: 1;
+  min-width: 0;
+  min-height: var(--tap);
+  font-size: 1rem;
+  color: var(--text);
+  background: var(--bg-2);
+  border: 1px solid var(--line-field);
+  border-radius: var(--radius-sm);
+  padding: .6rem .8rem;
+}
+.sfx-fav-form input:focus { outline: none; border-color: var(--accent); }
+.sfx-fav-form .btn { min-height: var(--tap); }
+
+.sfx-fav-status { margin: .5rem 0 0; font-size: .85rem; color: var(--green); min-height: 1.3em; }
+.sfx-fav-status:empty { min-height: 0; margin: 0; }
+.sfx-empty { color: var(--text-faint); font-size: .9rem; margin: .8rem 0 0; }
+
+.sfx-fav-list { list-style: none; margin: .7rem 0 0; padding: 0; display: grid; gap: .4rem; }
+.sfx-fav-list li {
+  display: flex;
+  align-items: stretch;
+  gap: .4rem;
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+}
+.sfx-fav-load {
+  flex: 1;
+  min-width: 0;
+  min-height: var(--tap);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: .6rem;
+  padding: .4rem .8rem;
+  background: none;
+  border: 0;
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+}
+.sfx-fav-load span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600; }
+.sfx-fav-load small { font-family: var(--font-mono); font-size: .72rem; color: var(--text-faint); white-space: nowrap; }
+.sfx-fav-load:hover span { color: var(--accent); }
+.sfx-fav-del { min-width: var(--tap); min-height: var(--tap); padding: 0; border: 0; color: var(--text-faint); }
+.sfx-fav-del:hover { color: var(--hot); }
