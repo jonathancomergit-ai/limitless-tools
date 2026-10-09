@@ -102,12 +102,12 @@
     "slug": "thumbnail-maker",
     "title": "Thumbnail Maker",
     "blurb": "Make bold YouTube and TikTok thumbnails: big outlined text, glow, stickers and your own picture.",
+    "thumb": "thumb.webp",
     "tags": [
       "design",
       "images"
     ],
-    "added": "2026-10-09",
-    "soon": true
+    "added": "2026-10-09"
   },
   {
     "slug": "file-converter",

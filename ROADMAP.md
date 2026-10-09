@@ -115,7 +115,7 @@ Five more tools, in this order. **The CSP stays exactly as it is**: no new origi
   - acceptance: Unit test (tests/unit): flood fill stops at borders, line drawing hits the right pixels, undo/redo returns the exact pixels
   - acceptance: smoke.js: draw a pixel, check it changed colour, then undo and check it's back
 
-- [ ] `thumbnail-maker` - Thumbnail Maker: Make bold YouTube and TikTok thumbnails with big outlined text, glow and stickers.
+- [x] `thumbnail-maker` - Thumbnail Maker: Make bold YouTube and TikTok thumbnails with big outlined text, glow and stickers.
   - acceptance: Sizes: YouTube 1280x720, TikTok/Shorts 1080x1920, square 1080x1080
   - acceptance: Add your picture (file/drop/paste, never uploaded); move, scale and rotate it; background colour or gradient
   - acceptance: Text layers: the kit fonts only (Space Grotesk, Inter, JetBrains Mono), size, colour, thick outline, drop shadow, glow, tilt
