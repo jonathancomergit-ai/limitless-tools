@@ -61,7 +61,7 @@ Tonight's three for 🧰 Workshop, in this order.
   - acceptance: Unit test (tests/unit): grid maths with margin and spacing, and auto-detect on a small made-up image
   - acceptance: smoke.js: load a generated sheet with setInputFiles, check the frame count and that the preview plays
 
-- [ ] `icon-maker` - Icon Maker: One picture in, every icon out: favicon.ico, Apple and Android icons, and the HTML to paste in.
+- [x] `icon-maker` - Icon Maker: One picture in, every icon out: favicon.ico, Apple and Android icons, and the HTML to paste in.
   - acceptance: Load one image; square crop with padding, background colour and rounded corners
   - acceptance: Outputs: favicon.ico (16, 32, 48 inside one file), 180 Apple touch icon, 192 and 512 Android, a maskable icon with a safe-zone preview
   - acceptance: Copy-paste snippets: the <link> tags and a site.webmanifest
