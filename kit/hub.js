@@ -7,6 +7,7 @@
      3. adds tag filter chips when there's more than one tag
      4. mounts the "Your data" panel for every save in this wing
      5. links to the other wings in the footer
+     6. fills the wing switcher in the header (Arcade / Lab / Workshop)
 
    To add an item you never touch this file: make the folder in
    items/ and add one entry to items.json.
@@ -164,6 +165,25 @@ if (wingLinks) {
   if (config.home.url) {
     wingLinks.append(h("a", { href: config.home.url }, config.home.label || "Home"));
   }
+}
+
+/* ============================================================
+   6. WING SWITCHER
+   One tap to hop between wings from the (sticky) header. The
+   current wing is marked with aria-current and its own colour.
+   ============================================================ */
+const WING_ACCENT = { arcade: "hot", lab: "cyan", workshop: "amber" };
+const wingSwitch = document.getElementById("wing-switch");
+if (wingSwitch) {
+  for (const w of config.wings) {
+    if (!w.url) { continue; }
+    const here = w.wing === config.wing;
+    const attrs = { href: here ? "./" : w.url, "data-accent": WING_ACCENT[w.wing] || "hot" };
+    if (here) { attrs["aria-current"] = "page"; }
+    wingSwitch.append(h("a", attrs,
+      h("span", { "aria-hidden": "true" }, w.emoji || ""), ` ${w.name}`));
+  }
+  if (!wingSwitch.children.length) { wingSwitch.hidden = true; }
 }
 
 loadItems();
