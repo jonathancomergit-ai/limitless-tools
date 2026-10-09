@@ -126,7 +126,7 @@ Five more tools, in this order. **The CSP stays exactly as it is**: no new origi
   - acceptance: Unit test (tests/unit): layout maths (fit/cover scaling, hit-testing a rotated layer)
   - acceptance: smoke.js: pick a template, change the text, check the canvas changed
 
-- [ ] `file-converter` - File Converter: Convert images, data and audio files between formats, all on your device.
+- [x] `file-converter` - File Converter: Convert images, data and audio files between formats, all on your device.
   - acceptance: Drop/choose/paste one or many files; it detects the type and offers only the formats that make sense
   - acceptance: Images: PNG, JPG, WebP, BMP, ICO in and out; several images into one PDF (a small PDF writer in plain JS)
   - acceptance: Data: CSV, JSON, XML, YAML (simple subset) in and out, with a table preview and clear errors for bad input
