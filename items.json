@@ -64,5 +64,60 @@
     ],
     "added": "2026-10-09",
     "thumb": "thumb.webp"
+  },
+  {
+    "slug": "ascii-cam",
+    "title": "ASCII Cam",
+    "blurb": "Your camera, live, redrawn as text characters. Snap a picture and save it. Nothing leaves your device.",
+    "tags": [
+      "camera",
+      "images"
+    ],
+    "added": "2026-10-09",
+    "soon": true
+  },
+  {
+    "slug": "gif-maker",
+    "title": "GIF Maker",
+    "blurb": "Turn a few photos or a quick camera clip into a looping GIF, right in your browser.",
+    "tags": [
+      "images",
+      "files"
+    ],
+    "added": "2026-10-09",
+    "soon": true
+  },
+  {
+    "slug": "pixel-studio",
+    "title": "Pixel Studio",
+    "blurb": "Draw pixel art with layers and animate it frame by frame. Export PNG, sprite sheet or GIF.",
+    "tags": [
+      "game dev",
+      "design"
+    ],
+    "added": "2026-10-09",
+    "soon": true
+  },
+  {
+    "slug": "thumbnail-maker",
+    "title": "Thumbnail Maker",
+    "blurb": "Make bold YouTube and TikTok thumbnails: big outlined text, glow, stickers and your own picture.",
+    "tags": [
+      "design",
+      "images"
+    ],
+    "added": "2026-10-09",
+    "soon": true
+  },
+  {
+    "slug": "file-converter",
+    "title": "File Converter",
+    "blurb": "Convert images, data and audio files between formats. Everything happens on your device, nothing is uploaded.",
+    "tags": [
+      "files",
+      "privacy"
+    ],
+    "added": "2026-10-09",
+    "soon": true
   }
 ]

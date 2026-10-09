@@ -79,6 +79,65 @@ Tonight's three for 🧰 Workshop, in this order.
   - acceptance: Recent codes save on the device (can be turned off); Export/Import works
   - acceptance: Unit test (tests/unit): Reed-Solomon codewords match a known example, format bits are right, and a known input gives the expected version and size
   - acceptance: smoke.js: type a link, check the QR canvas is drawn and the download works
+### Batch 3
+
+Five more tools, in this order. **The CSP stays exactly as it is**: no new origins, no `media-src` change. Camera tools use `getUserMedia` + `video.srcObject` (a stream, not a URL), and nothing is uploaded or saved without the user pressing a button.
+
+- [ ] `ascii-cam` - ASCII Cam: Your camera, live, redrawn as text characters. Snap a picture and save it.
+  - acceptance: "Start camera" button (no camera until pressed), front/back switch on phones; a clear message if permission is denied
+  - acceptance: A "Try a sample" picture so it works with no camera (and for the smoke test)
+  - acceptance: Live ASCII render on a canvas; sliders: detail (columns), contrast, brightness; character sets: classic, blocks, binary, custom
+  - acceptance: Colour modes: green terminal, white on black, black on white, full colour
+  - acceptance: Snap: download PNG, or copy as text; a 3-2-1 timer option
+  - acceptance: Pure mapping in items/ascii-cam/ascii.js (brightness to character)
+  - acceptance: Saves settings only (never pictures); Export/Import works
+  - acceptance: Unit test (tests/unit): black maps to the darkest character and white to the lightest, custom sets work, output has the right rows x columns
+  - acceptance: smoke.js: press Try a sample, check the ASCII output is not empty
+
+- [ ] `gif-maker` - GIF Maker: Turn a few photos or a quick camera clip into a looping GIF.
+  - acceptance: Add photos (choose files, drop, or paste); reorder by drag; remove; "Try a sample" set
+  - acceptance: Or record a 1-5 second camera clip (button-started, as in ascii-cam), captured as frames
+  - acceptance: Settings: size, frame delay, loop, colours (64-256), dithering on/off, crop to square/16:9/original
+  - acceptance: Live preview before export; shows the estimated file size
+  - acceptance: A GIF89a encoder written in plain JS (items/gif-maker/gif.js: palette quantising + LZW), run in a Web Worker so the page never freezes
+  - acceptance: Saves settings only; Export/Import works
+  - acceptance: Unit test (tests/unit): output starts with GIF89a and ends with the trailer byte, LZW round-trips on test data, frame count is right
+  - acceptance: smoke.js: Try a sample, press Make GIF, check a download link appears
+
+- [ ] `pixel-studio` - Pixel Studio: Draw pixel art with layers and animate it frame by frame.
+  - acceptance: Canvas sizes 8-128 px; tools: pencil, eraser, fill, line, rectangle, eyedropper, mirror drawing; undo/redo
+  - acceptance: Pinch / scroll zoom and two-finger / space-drag pan; a pixel grid that fades out when zoomed out
+  - acceptance: Palette with presets (PICO-8, Game Boy, NES-ish) and custom colours
+  - acceptance: Up to 4 layers (show/hide, reorder) and up to 24 frames with onion skin and an FPS slider for the preview
+  - acceptance: Export: PNG (any scale), sprite sheet + JSON, and GIF (copy the encoder from gif-maker into this folder; say so in the PR)
+  - acceptance: Pure drawing logic (fill, line, undo stack) in items/pixel-studio/canvas-ops.js
+  - acceptance: Saves the current project through kit/save.js; Export/Import works
+  - acceptance: Unit test (tests/unit): flood fill stops at borders, line drawing hits the right pixels, undo/redo returns the exact pixels
+  - acceptance: smoke.js: draw a pixel, check it changed colour, then undo and check it's back
+
+- [ ] `thumbnail-maker` - Thumbnail Maker: Make bold YouTube and TikTok thumbnails with big outlined text, glow and stickers.
+  - acceptance: Sizes: YouTube 1280x720, TikTok/Shorts 1080x1920, square 1080x1080
+  - acceptance: Add your picture (file/drop/paste, never uploaded); move, scale and rotate it; background colour or gradient
+  - acceptance: Text layers: the kit fonts only (Space Grotesk, Inter, JetBrains Mono), size, colour, thick outline, drop shadow, glow, tilt
+  - acceptance: Built-in stickers drawn in code (arrow, circle, "NEW!", emoji-style shapes); 4-6 starter templates
+  - acceptance: Drag to move any layer (touch + mouse), layer list to reorder or delete; a "safe area" guide for where YouTube puts the timestamp
+  - acceptance: Export PNG/JPG at full size
+  - acceptance: Saves the layout (not your picture) through kit/save.js; Export/Import works
+  - acceptance: Unit test (tests/unit): layout maths (fit/cover scaling, hit-testing a rotated layer)
+  - acceptance: smoke.js: pick a template, change the text, check the canvas changed
+
+- [ ] `file-converter` - File Converter: Convert images, data and audio files between formats, all on your device.
+  - acceptance: Drop/choose/paste one or many files; it detects the type and offers only the formats that make sense
+  - acceptance: Images: PNG, JPG, WebP, BMP, ICO in and out; several images into one PDF (a small PDF writer in plain JS)
+  - acceptance: Data: CSV, JSON, XML, YAML (simple subset) in and out, with a table preview and clear errors for bad input
+  - acceptance: Audio: anything the browser can decode (MP3, OGG, M4A, WAV) to WAV
+  - acceptance: Batch download as one .zip (a small zip writer, store-only, in plain JS)
+  - acceptance: A clear "can't do that here" note for video and for MP3 output
+  - acceptance: Pure converters in their own modules (items/file-converter/csv.js, yaml.js, pdf.js, wav.js, zip.js)
+  - acceptance: Saves settings only; Export/Import works
+  - acceptance: Unit test (tests/unit): CSV with quotes and commas round-trips through JSON, the WAV header is right, the PDF and ZIP start with the right magic bytes
+  - acceptance: smoke.js: paste a small CSV, convert to JSON, check the output
+
 ## Ideas (not ready yet)
 
 - (add more here)
