@@ -39,7 +39,7 @@ Tonight's three for 🧰 Workshop, in this order.
   - acceptance: Unit test (tests/unit): the same settings give the same samples, and the WAV header is correct
   - acceptance: smoke.js: press a preset, check the samples are not silent and the waveform is drawn
 
-- [ ] `palette-lab` - Palette Lab: Build colour palettes, check text contrast, preview colour blindness and export for CSS, Godot or Aseprite.
+- [x] `palette-lab` - Palette Lab: Build colour palettes, check text contrast, preview colour blindness and export for CSS, Godot or Aseprite.
   - acceptance: Generate 5-colour palettes (analogous, complementary, triadic, from a base colour); Space or a button regenerates; lock colours you like
   - acceptance: Edit a colour by hex or a colour picker
   - acceptance: Contrast grid: every pair's ratio with AA / AAA badges

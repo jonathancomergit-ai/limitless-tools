@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <!-- Do not edit this line. It's the privacy lock, and the tests check it. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://gc.zgo.at; connect-src 'self' https://jonjoe1001.goatcounter.com; img-src 'self' data: blob: https://jonjoe1001.goatcounter.com; style-src 'self'; font-src 'self'; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+
+    <title>Palette Lab - Limitless Lab</title>
+  <meta name="description" content="Build colour palettes, check text contrast, preview colour blindness and export for CSS, Godot or Aseprite.">
+  <meta name="theme-color" content="#07070C">
+
+  <link rel="icon" href="../../kit/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../../kit/kit.css">
+  <link rel="stylesheet" href="item.css">
+  <script type="module" src="main.js"></script>
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="item-bar">
+    <a class="back-link" href="../../"><span aria-hidden="true">&larr;</span> <span data-slot="wing-name">Hub</span></a>
+    <h1>Palette Lab</h1>
+  </header>
+
+  <main id="main">
+    <div class="wrap pl">
+
+      <!-- ===================== 1. THE PALETTE (hero) ===================== -->
+      <section class="pl-hero" aria-labelledby="pal-title">
+        <h2 class="sr-only" id="pal-title">Your palette</h2>
+        <ol class="pl-swatches" id="swatches"></ol>
+
+        <div class="pl-gen">
+          <fieldset class="pl-modes">
+            <legend>Harmony</legend>
+            <div class="pl-seg" id="modes"></div>
+          </fieldset>
+          <div class="pl-base" id="base-box" hidden>
+            <label for="base">Base colour</label>
+            <input id="base" type="color" value="#3d8bfd">
+          </div>
+          <button class="btn btn-primary pl-go" id="generate" type="button">Generate <kbd>Space</kbd></button>
+        </div>
+        <p class="pl-note" id="status" role="status" aria-live="polite"></p>
+      </section>
+
+      <!-- ===================== 2. CONTRAST ===================== -->
+      <section class="pl-card pl-contrast" aria-labelledby="con-title">
+        <h2 id="con-title">Text contrast</h2>
+        <p class="pl-hint">Each square: <strong>row</strong> colour as text on the <strong>column</strong> colour.
+          <span class="pl-key"><b class="pl-badge is-aaa">AAA</b> 7+</span>
+          <span class="pl-key"><b class="pl-badge is-aa">AA</b> 4.5+</span>
+          <span class="pl-key"><b class="pl-badge is-big">Big</b> 3+, large text only</span></p>
+        <div class="pl-grid-wrap">
+          <table class="pl-grid" id="grid">
+            <caption class="sr-only">Contrast ratio of every colour pair</caption>
+          </table>
+        </div>
+      </section>
+
+      <!-- ===================== 3. COLOUR BLINDNESS ===================== -->
+      <section class="pl-card pl-cvd" aria-labelledby="cvd-title">
+        <h2 id="cvd-title">Colour blindness</h2>
+        <p class="pl-hint">How your palette looks to people with each type. Colours that merge here need another clue, like a label or a pattern.</p>
+        <div class="pl-cvd-rows" id="cvd"></div>
+      </section>
+
+      <!-- ===================== 4. EXPORT ===================== -->
+      <section class="pl-card pl-export" aria-labelledby="exp-title">
+        <h2 id="exp-title">Export</h2>
+        <div class="pl-seg pl-seg-4" id="formats" role="radiogroup" aria-label="Format"></div>
+        <pre class="pl-code" id="code" tabindex="0" aria-label="Export text"></pre>
+        <div class="pl-actions">
+          <button class="btn btn-primary" id="copy" type="button">Copy</button>
+          <button class="btn" id="download" type="button">Download file</button>
+        </div>
+        <p class="pl-hint pl-for" id="format-hint"></p>
+      </section>
+
+      <!-- ===================== 5. LIBRARY ===================== -->
+      <section class="pl-card pl-library" aria-labelledby="lib-title">
+        <h2 id="lib-title">Saved palettes</h2>
+        <form class="pl-save-form" id="lib-form">
+          <label class="sr-only" for="lib-name">Name for this palette</label>
+          <input id="lib-name" type="text" maxlength="40" placeholder="Name it, e.g. lava level" autocomplete="off">
+          <button class="btn btn-primary" type="submit">Save</button>
+        </form>
+        <p class="pl-lib-status" id="lib-status" role="status"></p>
+        <ul class="pl-lib" id="library"></ul>
+        <p class="pl-empty" id="lib-empty">Nothing saved yet. Name a palette you like and tap Save.</p>
+      </section>
+    </div>
+
+    <!-- ===================== HOW TO ===================== -->
+    <div class="wrap item-info">
+      <section id="how" aria-labelledby="how-title">
+        <h2 id="how-title">How to use it</h2>
+        <ol>
+          <li>Pick a harmony. Tap Generate until you like one.</li>
+          <li>Lock the colours you want to keep. Generate again.</li>
+          <li>Tweak a colour: type a hex code or use the picker.</li>
+          <li>Check the contrast grid and colour-blind rows.</li>
+          <li>Copy or download it for CSS, Godot or Aseprite.</li>
+        </ol>
+        <table class="controls">
+          <thead><tr><th scope="col">Do this</th><th scope="col">Phone</th><th scope="col">Keyboard</th></tr></thead>
+          <tbody>
+            <tr><td>New palette</td><td>Generate button</td><td><kbd>Space</kbd></td></tr>
+            <tr><td>Lock a colour</td><td>Tap its lock</td><td><kbd>1</kbd> to <kbd>5</kbd></td></tr>
+            <tr><td>Edit a colour</td><td>Tap the hex or the picker</td><td><kbd>Tab</kbd> to it, type, <kbd>Enter</kbd></td></tr>
+            <tr><td>Export</td><td>Copy or Download</td><td><kbd>Tab</kbd> to it, <kbd>Enter</kbd></td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <div id="save-panel"></div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap footer-inner">
+      <p class="privacy-note">
+        <strong>No accounts, no cookies.</strong> Saves stay on your device.
+        Cookie-free visit counts via GoatCounter.
+      </p>
+    </div>
+  </footer>
+
+  <script src="../../kit/stats.js" defer></script>
+</body>
+</html>

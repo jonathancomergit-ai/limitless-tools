@@ -1,0 +1,358 @@
+/* ============================================================
+   Palette Lab - item styles
+   Colours come in as CSS custom properties set by main.js:
+     --c    the colour      --ink  black or white text on it
+     --bg / --fg            a contrast grid cell
+   Phone: swatches are rows. From 760px: tall columns.
+   ============================================================ */
+
+.pl {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas: "hero" "contrast" "cvd" "export" "library";
+  gap: 1.1rem;
+  padding-block: 1.1rem 0;
+}
+.pl-hero     { grid-area: hero; }
+.pl-contrast { grid-area: contrast; }
+.pl-cvd      { grid-area: cvd; }
+.pl-export   { grid-area: export; }
+.pl-library  { grid-area: library; }
+
+@media (min-width: 900px) {
+  .pl {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-areas: "hero hero" "contrast export" "cvd library";
+    align-items: start;
+    gap: 1.4rem;
+    padding-top: 1.6rem;
+  }
+}
+
+.pl > section { padding-block: 0; min-width: 0; }
+.pl h2 { font-size: 1.2rem; margin: 0 0 .6rem; }
+
+.pl-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+.pl > .pl-card { padding: 1.1rem 1.1rem 1.2rem; }
+
+.pl-hint { font-size: .87rem; color: var(--text-dim); margin: 0 0 .9rem; line-height: 1.5; }
+.pl-hint strong { color: var(--text); }
+.pl-note { font-size: .88rem; color: var(--text-dim); margin: .6rem 0 0; min-height: 1.4em; }
+
+/* ============================================================
+   1. SWATCHES (the hero)
+   ============================================================ */
+.pl-swatches {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: .45rem;
+}
+.pl-swatch {
+  display: flex;
+  min-height: 72px;
+  border-radius: var(--radius);
+  background: var(--c, var(--surface-2));
+  color: var(--ink, var(--text));
+  border: 2px solid transparent;
+  overflow: hidden;
+}
+.pl-swatch.is-locked { border-color: var(--text); box-shadow: 0 0 0 2px var(--bg) inset; }
+
+.pl-face {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  padding: 0 .4rem 0 .9rem;
+}
+.pl-num {
+  font-family: var(--font-mono);
+  font-size: .75rem;
+  font-weight: 700;
+  opacity: .7;
+}
+.pl-hex {
+  width: 100%;
+  min-width: 0;
+  min-height: var(--tap);
+  font-family: var(--font-mono);
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: .02em;
+  text-transform: uppercase;
+  color: inherit;
+  background: transparent;
+  border: 1px dashed transparent;
+  border-radius: var(--radius-sm);
+  padding: 0 .4rem;
+}
+.pl-hex:hover { border-color: currentColor; }
+.pl-hex:focus { outline: 2px solid currentColor; outline-offset: -2px; background: rgba(127, 127, 127, .18); }
+.pl-hex.is-bad { border: 2px solid var(--hot); }
+
+.pl-tools { display: flex; align-items: center; gap: .3rem; padding: 0 .5rem; }
+
+/* The colour picker, shown as a round button. */
+.pl-pick {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: var(--tap);
+  height: var(--tap);
+  border-radius: 50%;
+  border: 2px solid currentColor;
+  cursor: pointer;
+  background: conic-gradient(#ff2d78, #ffc93c, #3df5a0, #35d6f5, #8b5cf6, #ff2d78);
+}
+.pl-pick input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+.pl-pick:focus-within { outline: 2px solid var(--cyan); outline-offset: 2px; }
+
+.pl-lock {
+  display: inline-flex;
+  align-items: center;
+  gap: .35rem;
+  min-height: var(--tap);
+  min-width: 5.6rem;
+  justify-content: center;
+  padding: 0 .7rem;
+  border-radius: 999px;
+  border: 2px solid currentColor;
+  background: transparent;
+  color: inherit;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: .88rem;
+  cursor: pointer;
+}
+.pl-lock[aria-pressed="true"] { background: var(--ink); color: var(--c); border-color: var(--ink); }
+.pl-lock-icon { font-size: .8rem; }
+
+/* Wide screens: five tall columns. */
+@media (min-width: 760px) {
+  .pl-swatches { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: .6rem; }
+  .pl-swatch { flex-direction: column; min-height: 240px; }
+  .pl-face { flex-direction: column; align-items: flex-start; justify-content: space-between; padding: .9rem .7rem .4rem; }
+  .pl-hex { font-size: 1.05rem; padding: 0 .3rem; }
+  .pl-tools { justify-content: space-between; padding: .5rem .6rem .7rem; }
+  .pl-lock { min-width: 0; flex: 1; margin-left: .4rem; }
+}
+
+/* ---- generator row ---- */
+.pl-gen {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: .8rem;
+  margin-top: .9rem;
+}
+.pl-modes { border: 0; margin: 0; padding: 0; min-width: 0; flex: 1 1 22rem; }
+.pl-modes legend,
+.pl-base label {
+  font-family: var(--font-mono);
+  font-size: .72rem;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: .45rem;
+  padding: 0;
+  display: block;
+}
+.pl-seg {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border: 1px solid var(--line-field);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+.pl-seg input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.pl-seg label,
+.pl-fmt {
+  display: grid;
+  place-items: center;
+  min-height: var(--tap);
+  padding: 0 .2rem;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: .86rem;
+  text-align: center;
+  line-height: 1.15;
+  cursor: pointer;
+  color: var(--text-dim);
+  background: transparent;
+  border: 0;
+  border-left: 1px solid var(--line-field);
+  -webkit-user-select: none;
+          user-select: none;
+}
+.pl-seg label:first-of-type,
+.pl-fmt:first-child { border-left: 0; }
+.pl-seg label:hover,
+.pl-fmt:hover { color: var(--text); background: var(--surface-2); }
+.pl-seg input:checked + label,
+.pl-fmt[aria-checked="true"] { background: var(--accent); color: var(--bg); }
+.pl-seg input:focus-visible + label { outline: 2px solid var(--cyan); outline-offset: -4px; border-radius: 6px; }
+.pl-fmt:focus-visible { outline-offset: -4px; }
+
+.pl-base input[type="color"] {
+  width: 5.5rem;
+  height: var(--tap);
+  padding: 3px;
+  border: 1px solid var(--line-field);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  cursor: pointer;
+}
+.pl-go { min-height: 56px; flex: 1 1 12rem; font-size: 1.1rem; }
+.pl-go kbd { background: rgba(0, 0, 0, .15); color: inherit; border-color: rgba(0, 0, 0, .25); }
+
+/* ============================================================
+   2. CONTRAST GRID
+   ============================================================ */
+.pl-key { white-space: nowrap; margin-right: .5rem; }
+.pl-key:first-of-type { display: inline-block; margin-top: .35rem; }
+
+.pl-grid { width: 100%; table-layout: fixed; border-collapse: separate; border-spacing: 3px; }
+.pl-grid th,
+.pl-grid td { padding: 0; }
+.pl-corner { width: 1.9rem; }
+.pl-chip {
+  height: 1.9rem;
+  border-radius: 6px;
+  background: var(--c);
+  color: var(--ink);
+  font-family: var(--font-mono);
+  font-size: .72rem;
+  font-weight: 700;
+  text-align: center;
+}
+.pl-cell {
+  height: 4.1rem;
+  border-radius: 6px;
+  background: var(--bg);
+  color: var(--fg);
+  text-align: center;
+  vertical-align: middle;
+  line-height: 1.1;
+}
+.pl-cell.is-same { background: repeating-linear-gradient(45deg, var(--surface-2) 0 6px, var(--surface) 6px 12px); }
+.pl-aa { display: block; font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; }
+.pl-ratio { display: block; font-family: var(--font-mono); font-size: .7rem; font-weight: 700; margin: .1rem 0 .15rem; }
+
+.pl-badge {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: .6rem;
+  font-weight: 700;
+  letter-spacing: .04em;
+  padding: .05rem .3rem;
+  border-radius: 4px;
+  background: var(--bg-2);
+  border: 1px solid var(--line-bright);
+}
+.pl-badge.is-aaa  { color: var(--green); }
+.pl-badge.is-aa   { color: var(--cyan); }
+.pl-badge.is-big  { color: var(--amber); }
+.pl-badge.is-fail { color: var(--hot); }
+
+/* ============================================================
+   3. COLOUR BLINDNESS
+   ============================================================ */
+.pl-cvd-rows { display: grid; gap: .8rem; }
+.pl-cvd-label { margin: 0 0 .3rem; font-size: .88rem; color: var(--text-faint); }
+.pl-cvd-label strong { color: var(--text); font-weight: 600; }
+.pl-strip { display: grid; grid-template-columns: repeat(5, 1fr); height: 2.6rem; border-radius: var(--radius-sm); overflow: hidden; }
+.pl-strip span { background: var(--c); }
+
+/* ============================================================
+   4. EXPORT
+   ============================================================ */
+.pl-code {
+  margin: .8rem 0;
+  padding: .8rem .9rem;
+  max-height: 14rem;
+  overflow: auto;
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: .8rem;
+  line-height: 1.55;
+  color: var(--text);
+  white-space: pre;
+  tab-size: 4;
+}
+.pl-actions { display: flex; gap: .6rem; flex-wrap: wrap; }
+.pl-actions .btn { min-height: var(--tap); flex: 1 1 8rem; }
+.pl-for { margin: .7rem 0 0; }
+
+/* ============================================================
+   5. LIBRARY
+   ============================================================ */
+.pl-save-form { display: flex; gap: .5rem; }
+.pl-save-form input {
+  flex: 1;
+  min-width: 0;
+  min-height: var(--tap);
+  font-size: 1rem;
+  color: var(--text);
+  background: var(--bg-2);
+  border: 1px solid var(--line-field);
+  border-radius: var(--radius-sm);
+  padding: .6rem .8rem;
+}
+.pl-save-form input:focus { outline: none; border-color: var(--accent); }
+.pl-save-form .btn { min-height: var(--tap); }
+.pl-lib-status { margin: .5rem 0 0; font-size: .85rem; color: var(--green); }
+.pl-lib-status:empty { margin: 0; }
+.pl-empty { color: var(--text-faint); font-size: .9rem; margin: .8rem 0 0; }
+
+.pl-lib { list-style: none; margin: .7rem 0 0; padding: 0; display: grid; gap: .4rem; }
+.pl-lib li {
+  display: flex;
+  align-items: stretch;
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+}
+.pl-lib-load {
+  flex: 1;
+  min-width: 0;
+  min-height: 52px;
+  display: flex;
+  align-items: center;
+  gap: .8rem;
+  padding: .4rem .6rem;
+  background: none;
+  border: 0;
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+}
+.pl-lib-load:hover .pl-lib-name { color: var(--accent); }
+.pl-mini { display: flex; flex-shrink: 0; width: 6.5rem; height: 1.8rem; border-radius: 5px; overflow: hidden; }
+.pl-mini span { flex: 1; background: var(--c); }
+.pl-lib-name { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pl-lib-del { min-width: var(--tap); padding: 0; border: 0; color: var(--text-faint); }
+.pl-lib-del:hover { color: var(--hot); }
+
+/* Narrow phones: the four harmony buttons as a 2 x 2 grid. */
+@media (max-width: 520px) {
+  .pl-modes .pl-seg { grid-template-columns: 1fr 1fr; }
+  .pl-modes .pl-seg label:nth-of-type(odd) { border-left: 0; }
+  .pl-modes .pl-seg label:nth-of-type(n+3) { border-top: 1px solid var(--line-field); }
+}
