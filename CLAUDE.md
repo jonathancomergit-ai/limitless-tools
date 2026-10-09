@@ -3,11 +3,17 @@
 This repo is one wing of **Limitless Lab** (Arcade 🎮, Lab 🔬 or Workshop 🧰).
 The wing is set in `site.config.js`. You add **items**, one at a time.
 
-## About the owner
+## How to write (docs, PRs, comments)
 
-- The owner is dyslexic and a visual learner.
+- Write for a visual reader.
 - Write short steps. Use tables and lists. One idea per line.
 - No walls of text. Bold the one thing that matters.
+
+## This repo is public, and main is live
+
+- **Anything merged into `main` is live on jonjoe1001.dev about a minute later.**
+- So every change goes through a PR, and `npm test` must pass first.
+- Never commit keys, tokens, passwords, `.env` files or personal info. Everyone can read this repo and its history.
 
 ## Git
 

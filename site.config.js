@@ -33,11 +33,12 @@ export default {
   /* Where "Limitless Lab" in the header points. */
   home: { label: "jonjoe1001.dev", url: "https://jonjoe1001.dev/" },
 
-  /* Cross-links in the hub footer. Leave url as null until that
-     repo is live; a null url is simply not shown. */
+  /* Cross-links in the hub footer. Each wing is its own repo,
+     published by GitHub Pages under jonjoe1001.dev/<repo>/.
+     A null url is simply not shown. */
   wings: [
-    { wing: "arcade",   name: "Arcade",   emoji: "🎮", url: null },
-    { wing: "lab",      name: "Lab",      emoji: "🔬", url: null },
-    { wing: "workshop", name: "Workshop", emoji: "🧰", url: null }
+    { wing: "arcade",   name: "Arcade",   emoji: "🎮", url: "https://jonjoe1001.dev/limitless-arcade/" },
+    { wing: "lab",      name: "Lab",      emoji: "🔬", url: "https://jonjoe1001.dev/limitless-lab/" },
+    { wing: "workshop", name: "Workshop", emoji: "🧰", url: "https://jonjoe1001.dev/limitless-tools/" }
   ]
 };
