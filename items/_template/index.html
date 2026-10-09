@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <!-- Do not edit this line. It's the privacy lock, and the tests check it. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://gc.zgo.at; connect-src 'self' https://jonjoe1001.goatcounter.com; img-src 'self' data: blob: https://jonjoe1001.goatcounter.com; style-src 'self'; font-src 'self'; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+
+  <!-- TODO: title + description. -->
+  <title>ITEM TITLE - Limitless Lab</title>
+  <meta name="description" content="ONE LINE ABOUT THE ITEM.">
+  <meta name="theme-color" content="#07070C">
+
+  <link rel="icon" href="../../kit/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../../kit/kit.css">
+  <!-- Need extra styles? Add item.css next to this file and link it here.
+       Never use <style> or style="" - the privacy lock blocks them. -->
+  <script type="module" src="main.js"></script>
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <!-- ===================== TOP BAR ===================== -->
+  <header class="item-bar">
+    <a class="back-link" href="../../"><span aria-hidden="true">&larr;</span> <span data-slot="wing-name">Hub</span></a>
+    <h1>ITEM TITLE</h1>
+    <button class="btn btn-sm btn-ghost" id="pause" type="button" aria-pressed="false">Pause</button>
+  </header>
+
+  <main id="main">
+    <!-- ===================== STAGE =====================
+         The canvas area. No canvas needed (a Workshop tool)?
+         Delete this block, the pad-slot and the Pause button,
+         and put your form inside .item-info instead. -->
+    <div class="stage" id="stage">
+      <canvas role="img" aria-label="TODO: describe what is on screen."></canvas>
+      <div class="hud">
+        <div>Score <output id="score">0</output></div>
+        <div>Best <output id="best">0</output></div>
+      </div>
+      <p class="stage-msg" id="msg">Tap or press Space</p>
+    </div>
+
+    <!-- On-screen buttons appear here on touch screens. -->
+    <div id="pad-slot"></div>
+
+    <!-- ===================== HOW TO ===================== -->
+    <div class="wrap item-info">
+      <section id="how" aria-labelledby="how-title">
+        <h2 id="how-title">How to play</h2>
+        <ol>
+          <li>TODO: step one.</li>
+          <li>TODO: step two.</li>
+        </ol>
+        <table class="controls">
+          <thead><tr><th scope="col">Do this</th><th scope="col">Phone</th><th scope="col">Keyboard</th></tr></thead>
+          <tbody>
+            <tr><td>Score</td><td>Tap the stage</td><td><kbd>Space</kbd></td></tr>
+            <tr><td>Pause</td><td>Pause button</td><td><kbd>P</kbd></td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <div id="save-panel"></div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap footer-inner">
+      <p class="privacy-note">
+        <strong>No accounts, no cookies.</strong> Saves stay on your device.
+        Cookie-free visit counts via GoatCounter.
+      </p>
+    </div>
+  </footer>
+
+  <script src="../../kit/stats.js" defer></script>
+</body>
+</html>
