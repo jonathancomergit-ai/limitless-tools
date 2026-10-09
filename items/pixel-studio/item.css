@@ -1,0 +1,500 @@
+/* ============================================================
+   Pixel Studio - item styles
+   Phone first: one column, in this order:
+     tools + canvas, palette, frames, layers, size, export.
+   From 960px: the canvas on the left, everything else in a
+   column on the right.
+   ============================================================ */
+
+.ps {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+  padding-block: 1rem 0;
+}
+/* On phones the two columns melt away, so `order` can mix them. */
+.ps-col { display: contents; }
+.ps-draw    { order: 1; }
+.ps-palette { order: 2; }
+.ps-frames  { order: 3; }
+.ps-layers  { order: 4; }
+.ps-size    { order: 5; }
+.ps-export  { order: 6; }
+
+@media (min-width: 960px) {
+  .ps {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 360px;
+    align-items: start;
+    gap: 1.4rem;
+    padding-top: 1.4rem;
+  }
+  .ps-col { display: flex; flex-direction: column; gap: 1.1rem; min-width: 0; }
+  .ps-col-main { position: sticky; top: 1rem; }
+}
+
+.ps section { padding-block: 0; }
+.ps h2 { font-size: 1.2rem; margin: 0 0 .8rem; }
+
+/* ---- cards ---- */
+.ps .ps-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 1.1rem 1.1rem 1.2rem;
+  min-width: 0;
+}
+@media (min-width: 960px) {
+  .ps .ps-draw {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 1rem;
+  }
+}
+
+.ps-head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: .2rem 1rem;
+  margin-bottom: .7rem;
+}
+.ps-head h2 { margin: 0; }
+.ps-count { margin: 0; font-family: var(--font-mono); font-size: .85rem; color: var(--accent); }
+
+.ps-hint {
+  font-size: .85rem;
+  color: var(--text-faint);
+  margin: .5rem 0 0;
+  line-height: 1.45;
+}
+.ps-hint:empty { display: none; }
+.ps-hint kbd { font-size: .78rem; }
+.ps-status { margin: .5rem 0 0; font-size: .9rem; color: var(--amber); }
+.ps-status:empty { display: none; }
+
+.ps svg {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  flex: none;
+}
+
+/* ============================================================
+   1. TOOLS + CANVAS
+   ============================================================ */
+.ps-tools {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: .35rem;
+  margin-bottom: .5rem;
+}
+.ps-tool {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: .15rem;
+  min-height: 56px;
+  min-width: 0;
+  padding: .3rem 0;
+  border: 1px solid var(--line-bright);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  color: var(--text-dim);
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: .74rem;
+  cursor: pointer;
+}
+.ps-tool:hover { color: var(--text); border-color: var(--text-faint); }
+.ps-tool[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--bg); }
+.ps-tool:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
+
+.ps-opts {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .45rem;
+  margin-bottom: .5rem;
+}
+.ps-current {
+  display: flex;
+  align-items: center;
+  gap: .55rem;
+  min-height: var(--tap);
+  padding: 0 .8rem 0 .4rem;
+  border: 1px solid var(--line-bright);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: .85rem;
+  cursor: pointer;
+}
+.ps-current:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
+.ps-current-chip {
+  width: 34px;
+  height: 34px;
+  border-radius: 6px;
+  border: 2px solid var(--text);
+  box-shadow: 0 0 0 2px var(--bg) inset;
+}
+.ps-opt { min-height: var(--tap); padding: .4rem .8rem; gap: .4rem; }
+.ps-opt[aria-pressed="true"] { border-color: var(--cyan); color: var(--cyan); background: rgba(53, 214, 245, .1); }
+
+.ps-check {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  min-height: var(--tap);
+  cursor: pointer;
+  color: var(--text);
+  font-size: .95rem;
+}
+.ps-check[hidden] { display: none; }
+.ps-check input { width: 22px; height: 22px; accent-color: var(--accent); margin: 0; cursor: pointer; }
+.ps-fill-shape { padding: 0 .3rem; }
+
+/* The drawing stage: the only place touch is ours (no scroll,
+   no browser zoom), so pinch and drag can draw and zoom. */
+.ps-stage {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+  max-height: 72vh;
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  touch-action: none;
+  -webkit-user-select: none;
+          user-select: none;
+  -webkit-touch-callout: none;
+  cursor: crosshair;
+}
+.ps-stage canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.ps-stage:focus { outline: none; }
+.ps-stage:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
+.ps-stage.is-panning { cursor: grabbing; }
+@media (min-width: 960px) {
+  .ps-stage {
+    aspect-ratio: auto;
+    height: clamp(420px, calc(100vh - 290px), 760px);
+    max-height: none;
+  }
+}
+
+.ps-viewbar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: .45rem;
+  margin-top: .5rem;
+}
+.ps-group { display: flex; align-items: center; gap: .35rem; }
+.ps-icon {
+  min-width: var(--tap);
+  min-height: var(--tap);
+  padding: 0;
+  font-size: 1.3rem;
+}
+.ps-fit { font-size: .9rem; padding: 0 .7rem; }
+.ps-zoom {
+  min-width: 3.3rem;
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: .85rem;
+}
+
+/* ============================================================
+   2. PALETTE
+   ============================================================ */
+.ps-fs { border: 0; margin: 0 0 .9rem; padding: 0; min-width: 0; }
+.ps-fs legend, .ps-sub {
+  font-family: var(--font-mono);
+  font-size: .72rem;
+  font-weight: 500;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin: 0 0 .45rem;
+  padding: 0;
+}
+.ps-sub { margin-top: 1.1rem; }
+
+/* Big radio "pills" in one row. */
+.ps-seg {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border: 1px solid var(--line-field);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+.ps-seg-2 { grid-template-columns: repeat(2, 1fr); }
+.ps-seg-4 { grid-template-columns: repeat(4, 1fr); }
+.ps-seg input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.ps-seg label {
+  display: grid;
+  place-items: center;
+  min-height: var(--tap);
+  padding: 0 .3rem;
+  text-align: center;
+  line-height: 1.15;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: .95rem;
+  cursor: pointer;
+  color: var(--text-dim);
+  border-left: 1px solid var(--line-field);
+  -webkit-user-select: none;
+          user-select: none;
+}
+.ps-seg label:first-of-type { border-left: 0; }
+.ps-seg-4 label:nth-of-type(4n + 1) { border-left: 0; }
+.ps-seg-4 label:nth-of-type(n + 5) { border-top: 1px solid var(--line-field); }
+.ps-seg label:hover { color: var(--text); background: var(--surface-2); }
+.ps-seg input:checked + label { background: var(--accent); color: var(--bg); }
+.ps-seg input:focus-visible + label { outline: 2px solid var(--cyan); outline-offset: -4px; border-radius: 6px; }
+
+.ps-swatches {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(48px, 1fr));
+  gap: .35rem;
+}
+.ps-swatches.is-long {
+  max-height: 13.6rem;
+  overflow-y: auto;
+  padding: 3px;
+  margin: -3px;
+  overscroll-behavior: contain;
+}
+.ps-swatch {
+  min-height: 48px;
+  aspect-ratio: 1;
+  padding: 0;
+  border: 2px solid var(--line-bright);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+.ps-swatch:hover { border-color: var(--text-faint); }
+.ps-swatch[aria-pressed="true"] {
+  border-color: var(--text);
+  box-shadow: 0 0 0 3px var(--bg) inset, 0 0 0 2px var(--accent);
+}
+.ps-swatch:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
+
+.ps-empty { color: var(--text-faint); margin: 0; font-size: .9rem; }
+.ps-empty[hidden] { display: none; }
+.ps-addrow { display: flex; flex-wrap: wrap; gap: .45rem; margin-top: .8rem; }
+.ps-addrow .btn { min-height: var(--tap); flex: 1 1 6rem; }
+.ps-color-input {
+  width: 64px;
+  height: var(--tap);
+  padding: 3px;
+  border: 1px solid var(--line-field);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  cursor: pointer;
+}
+.ps-color-input:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
+
+/* ============================================================
+   3. FRAMES + PREVIEW
+   ============================================================ */
+.ps-strip {
+  list-style: none;
+  margin: 0 0 .7rem;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: .4rem;
+  max-height: 12rem;
+  overflow-y: auto;
+}
+.ps-strip li { margin: 0; }
+.ps-frame {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 54px;
+  height: 54px;
+  padding: 0;
+  border: 2px solid var(--line-bright);
+  border-radius: var(--radius-sm);
+  background: var(--bg-2);
+  cursor: pointer;
+}
+.ps-frame canvas { width: 44px; height: 44px; image-rendering: pixelated; border-radius: 4px; }
+.ps-frame span {
+  position: absolute;
+  left: 2px;
+  top: 2px;
+  min-width: 1.1rem;
+  padding: 0 .2rem;
+  border-radius: 4px;
+  background: var(--bg);
+  color: var(--text-dim);
+  font-family: var(--font-mono);
+  font-size: .62rem;
+  line-height: 1.3;
+}
+.ps-frame:hover { border-color: var(--cyan); }
+.ps-frame[aria-pressed="true"] { border-color: var(--accent); }
+.ps-frame[aria-pressed="true"] span { background: var(--accent); color: var(--bg); font-weight: 700; }
+.ps-frame:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
+
+.ps-btns { display: grid; gap: .4rem; margin-bottom: .4rem; }
+.ps-btns-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.ps-btns .btn { min-height: var(--tap); padding-inline: .3rem; }
+.ps-btns .ps-wide { grid-column: 1 / -1; }
+
+.ps-preview {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: .6rem;
+  padding-top: .9rem;
+  border-top: 1px solid var(--line);
+}
+.ps-anim {
+  flex: none;
+  width: 128px;
+  aspect-ratio: 1;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+.ps-anim canvas { display: block; width: 100%; height: 100%; image-rendering: pixelated; }
+.ps-preview-side { flex: 1 1 auto; min-width: 0; }
+.ps-play { min-height: var(--tap); width: 100%; }
+
+.ps-range { margin: .6rem 0 0; }
+.ps-range label { display: flex; justify-content: space-between; align-items: baseline; }
+.ps-range output {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+/* A slider with a fat, easy-to-grab thumb. */
+.ps .field input[type="range"] {
+  -webkit-appearance: none;
+          appearance: none;
+  height: var(--tap);
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+.ps .field input[type="range"]:focus { background: transparent; }
+.ps .field input[type="range"]::-webkit-slider-runnable-track { height: 6px; border-radius: 3px; background: var(--line-bright); }
+.ps .field input[type="range"]::-moz-range-track { height: 6px; border-radius: 3px; background: var(--line-bright); }
+.ps .field input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 28px; height: 28px; margin-top: -11px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 3px solid var(--bg);
+}
+.ps .field input[type="range"]::-moz-range-thumb {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 3px solid var(--bg);
+}
+.ps .field input[type="range"]:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
+
+/* ============================================================
+   4. LAYERS
+   ============================================================ */
+.ps-layer-list { list-style: none; margin: 0 0 .7rem; padding: 0; display: grid; gap: .35rem; }
+.ps-layer {
+  display: flex;
+  gap: .35rem;
+  margin: 0;
+}
+.ps-layer-name {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: var(--tap);
+  padding: 0 .9rem;
+  text-align: left;
+  border: 2px solid var(--line-bright);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  color: var(--text);
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: .95rem;
+  cursor: pointer;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.ps-layer.is-active .ps-layer-name { border-color: var(--accent); background: var(--accent-dim); }
+.ps-layer.is-hidden .ps-layer-name { color: var(--text-faint); }
+.ps-layer-name:focus-visible, .ps-eye:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
+.ps-eye {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: var(--tap);
+  min-height: var(--tap);
+  padding: 0;
+  border: 1px solid var(--line-bright);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+}
+.ps-eye[aria-pressed="false"] { color: var(--text-faint); }
+
+/* ============================================================
+   5. SIZE + 6. EXPORT
+   ============================================================ */
+.ps-full { width: 100%; min-height: var(--tap); }
+
+.ps-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .45rem; margin-top: .8rem; }
+.ps-actions .btn { min-height: var(--tap); padding-inline: .5rem; }
+.ps-export .ps-hint { margin-top: 0; }
+.ps-export-note { margin-top: .7rem; color: var(--text-dim); overflow-wrap: anywhere; }
+.ps .ps-export .ps-export-note { margin-top: .7rem; }
+
+/* ============================================================
+   DIALOG
+   ============================================================ */
+.ps-dialog {
+  width: min(440px, calc(100vw - 2rem));
+  max-height: calc(100vh - 2rem);
+  overflow-y: auto;
+  padding: 1.2rem;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--line-bright);
+  border-radius: var(--radius);
+}
+.ps-dialog::backdrop { background: rgba(7, 7, 12, .72); }
+.ps-dialog h2 { font-size: 1.25rem; margin: 0 0 .9rem; }
+.ps-pair { display: grid; grid-template-columns: 1fr 1fr; gap: .8rem; }
+.ps-pair .field { margin-bottom: 0; min-width: 0; }
+.ps-dialog .ps-hint { margin: .4rem 0 .9rem; }
+.ps-dlg-actions { display: grid; gap: .45rem; }
+.ps-dlg-actions .btn { min-height: var(--tap); }
+.ps-dialog .ps-dlg-note { margin: .6rem 0 0; }

@@ -104,7 +104,7 @@ Five more tools, in this order. **The CSP stays exactly as it is**: no new origi
   - acceptance: Unit test (tests/unit): output starts with GIF89a and ends with the trailer byte, LZW round-trips on test data, frame count is right
   - acceptance: smoke.js: Try a sample, press Make GIF, check a download link appears
 
-- [ ] `pixel-studio` - Pixel Studio: Draw pixel art with layers and animate it frame by frame.
+- [x] `pixel-studio` - Pixel Studio: Draw pixel art with layers and animate it frame by frame.
   - acceptance: Canvas sizes 8-128 px; tools: pencil, eraser, fill, line, rectangle, eyedropper, mirror drawing; undo/redo
   - acceptance: Pinch / scroll zoom and two-finger / space-drag pan; a pixel grid that fades out when zoomed out
   - acceptance: Palette with presets (PICO-8, Game Boy, NES-ish) and custom colours
