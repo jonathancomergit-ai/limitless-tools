@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <!-- Do not edit this line. It's the privacy lock, and the tests check it. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://gc.zgo.at; connect-src 'self' https://jonjoe1001.goatcounter.com; img-src 'self' data: blob: https://jonjoe1001.goatcounter.com; style-src 'self'; font-src 'self'; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+
+  <title>File Converter - Limitless Lab</title>
+  <meta name="description" content="Convert pictures (PNG, JPG, WebP, BMP, ICO, PDF), data (CSV, JSON, XML, YAML) and sound (to WAV). Everything happens on your device, nothing is uploaded.">
+  <meta name="theme-color" content="#07070C">
+
+  <link rel="icon" href="../../kit/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../../kit/kit.css">
+  <link rel="stylesheet" href="item.css">
+  <script type="module" src="main.js"></script>
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="item-bar">
+    <a class="back-link" href="../../"><span aria-hidden="true">&larr;</span> <span data-slot="wing-name">Hub</span></a>
+    <h1>File Converter</h1>
+  </header>
+
+  <main id="main">
+    <div class="wrap fc">
+      <div class="fc-col fc-col-main">
+
+        <!-- ===================== 1. DROP (the hero) ===================== -->
+        <section class="fc-drop" id="drop" aria-labelledby="drop-title">
+          <h2 id="drop-title">Drop files here</h2>
+          <p class="fc-drop-sub">Pictures, data and sound. One file or lots.</p>
+          <div class="fc-drop-actions">
+            <label class="btn btn-primary fc-pick" for="files">Choose files</label>
+            <button class="btn btn-ghost fc-sample" id="sample" type="button">Try a sample</button>
+          </div>
+          <input class="sr-only" id="files" type="file" multiple>
+          <p class="fc-kinds">
+            <span>PNG</span> <span>JPG</span> <span>WebP</span> <span>BMP</span> <span>ICO</span> <span>PDF</span>
+            <span>CSV</span> <span>JSON</span> <span>XML</span> <span>YAML</span> <span>WAV</span>
+          </p>
+          <p class="fc-private"><strong>Your files never leave this device.</strong> Nothing is uploaded.</p>
+        </section>
+
+        <!-- ===================== 2. PASTE ===================== -->
+        <section class="fc-card fc-paste" aria-labelledby="paste-title">
+          <h2 id="paste-title">Or paste some text</h2>
+          <div class="field">
+            <label class="sr-only" for="paste-text">Text to convert</label>
+            <textarea id="paste-text" rows="5" spellcheck="false" autocomplete="off" placeholder="Paste CSV, JSON, XML or YAML here"></textarea>
+          </div>
+          <div class="fc-paste-row">
+            <p class="fc-paste-kind" id="paste-kind" aria-live="polite">Nothing pasted yet.</p>
+            <button class="btn" id="paste-add" type="button">Add to the list</button>
+          </div>
+        </section>
+
+        <!-- ===================== 3. FILES ===================== -->
+        <section class="fc-card fc-files" aria-labelledby="list-title">
+          <div class="fc-head">
+            <h2 id="list-title">Files</h2>
+            <p class="fc-count" id="count"></p>
+          </div>
+          <p class="fc-empty" id="empty">No files yet. Drop, choose or paste some above.</p>
+          <ul class="fc-list" id="list" aria-label="Files to convert"></ul>
+          <p class="fc-status" id="progress" role="status" aria-live="polite"></p>
+          <div class="fc-actions">
+            <button class="btn btn-primary" id="convert-all" type="button" disabled>Convert all</button>
+            <button class="btn" id="zip" type="button" disabled>Download all (.zip)</button>
+            <button class="btn" id="pdf" type="button" hidden>Pictures &rarr; one PDF</button>
+            <button class="btn btn-ghost" id="clear" type="button" disabled>Clear</button>
+          </div>
+        </section>
+
+        <!-- ===================== 4. PREVIEW ===================== -->
+        <section class="fc-card fc-preview" id="preview-card" aria-labelledby="pre-title" hidden>
+          <div class="fc-head">
+            <h2 id="pre-title">Preview</h2>
+            <p class="fc-count" id="pre-name"></p>
+          </div>
+          <p class="fc-error" id="pre-error" role="alert"></p>
+
+          <div id="pre-table" hidden>
+            <h3 class="fc-sub" id="table-caption">Table</h3>
+            <div class="fc-table-wrap" tabindex="0" role="region" aria-labelledby="table-caption">
+              <table class="fc-table" id="table"></table>
+            </div>
+          </div>
+
+          <div id="pre-image" hidden>
+            <h3 class="fc-sub" id="image-caption">Picture</h3>
+            <div class="fc-image"><img id="pre-img" alt=""></div>
+          </div>
+
+          <p class="fc-info" id="pre-info"></p>
+
+          <div id="pre-out" hidden>
+            <h3 class="fc-sub" id="out-caption">Output</h3>
+            <pre class="fc-out" id="out-text" tabindex="0" aria-labelledby="out-caption"></pre>
+          </div>
+        </section>
+      </div>
+
+      <div class="fc-col fc-col-side">
+
+        <!-- ===================== 5. SETTINGS ===================== -->
+        <section class="fc-card fc-settings" aria-labelledby="set-title">
+          <h2 id="set-title">Settings</h2>
+
+          <h3 class="fc-sub">Pictures</h3>
+          <div class="field fc-range">
+            <label for="quality">JPG / WebP quality <output id="quality-out" for="quality">85</output></label>
+            <input id="quality" type="range" min="1" max="100" step="1" value="85">
+          </div>
+          <div class="fc-colour">
+            <input id="bg" type="color" value="#ffffff">
+            <label for="bg">Background for JPG, BMP and PDF <span>(they can't be see-through)</span></label>
+          </div>
+          <fieldset class="fc-fs">
+            <legend>Sizes inside an .ico</legend>
+            <div class="fc-checks" id="ico-sizes">
+              <label><input type="checkbox" value="16"> 16</label>
+              <label><input type="checkbox" value="24"> 24</label>
+              <label><input type="checkbox" value="32"> 32</label>
+              <label><input type="checkbox" value="48"> 48</label>
+              <label><input type="checkbox" value="64"> 64</label>
+              <label><input type="checkbox" value="128"> 128</label>
+              <label><input type="checkbox" value="256"> 256</label>
+            </div>
+            <label class="fc-check"><input type="checkbox" id="ico-source"> Also the picture's own size (up to 256)</label>
+          </fieldset>
+
+          <h3 class="fc-sub">Data</h3>
+          <fieldset class="fc-fs">
+            <legend>CSV delimiter</legend>
+            <div class="fc-seg fc-seg-4">
+              <input type="radio" name="delim" id="delim-auto" value="auto"><label for="delim-auto">Auto</label>
+              <input type="radio" name="delim" id="delim-comma" value="comma"><label for="delim-comma">,</label>
+              <input type="radio" name="delim" id="delim-semicolon" value="semicolon"><label for="delim-semicolon">;</label>
+              <input type="radio" name="delim" id="delim-tab" value="tab"><label for="delim-tab">Tab</label>
+            </div>
+          </fieldset>
+          <p class="fc-hint">Auto guesses when reading, and writes commas.</p>
+          <fieldset class="fc-fs">
+            <legend>JSON layout</legend>
+            <div class="fc-seg">
+              <input type="radio" name="indent" id="indent-2" value="2"><label for="indent-2">2 spaces</label>
+              <input type="radio" name="indent" id="indent-4" value="4"><label for="indent-4">4 spaces</label>
+              <input type="radio" name="indent" id="indent-0" value="0"><label for="indent-0">One line</label>
+            </div>
+          </fieldset>
+
+          <h3 class="fc-sub">Sound</h3>
+          <div class="fc-pair">
+            <div class="field">
+              <label for="rate">WAV sample rate</label>
+              <select id="rate">
+                <option value="8000">8 kHz</option>
+                <option value="16000">16 kHz</option>
+                <option value="22050">22.05 kHz</option>
+                <option value="32000">32 kHz</option>
+                <option value="44100">44.1 kHz (CD)</option>
+                <option value="48000">48 kHz</option>
+                <option value="96000">96 kHz</option>
+              </select>
+            </div>
+            <label class="fc-check fc-mono"><input type="checkbox" id="mono"> Mono</label>
+          </div>
+        </section>
+
+        <!-- ===================== 6. CAN'T DO ===================== -->
+        <section class="fc-card fc-cant" aria-labelledby="cant-title">
+          <h2 id="cant-title">Can't do that here</h2>
+          <ul class="fc-cant-list">
+            <li><strong>Video to video.</strong> That needs video encoders a web page can't use. You can still save a video's <em>sound</em> as WAV.</li>
+            <li><strong>Making MP3s.</strong> That needs an MP3 encoder, and browsers don't ship one. You get <strong>WAV</strong> instead: bigger, but it plays everywhere.</li>
+            <li><strong>Reading PDFs, HEIC photos, Word or Excel files.</strong> Browsers can't open those by themselves.</li>
+          </ul>
+        </section>
+      </div>
+    </div>
+
+    <!-- ===================== HOW TO ===================== -->
+    <div class="wrap item-info">
+      <section id="how" aria-labelledby="how-title">
+        <h2 id="how-title">How to use it</h2>
+        <ol>
+          <li>Drop or choose files, or paste some text (or try the sample).</li>
+          <li>Each file shows what it is. Pick what it should become.</li>
+          <li>Press <strong>Convert all</strong>.</li>
+          <li>Download each file, or all of them as one .zip.</li>
+        </ol>
+        <table class="controls">
+          <thead><tr><th scope="col">Do this</th><th scope="col">Phone</th><th scope="col">Keyboard</th></tr></thead>
+          <tbody>
+            <tr><td>Add files</td><td>Tap Choose files</td><td><kbd>Tab</kbd> to it, <kbd>Enter</kbd>, or <kbd>Ctrl</kbd> + <kbd>V</kbd></td></tr>
+            <tr><td>Paste text</td><td>Paste in the box, tap Add to the list</td><td><kbd>Ctrl</kbd> + <kbd>V</kbd> in the box, <kbd>Tab</kbd>, <kbd>Enter</kbd></td></tr>
+            <tr><td>Pick a format</td><td>Tap the "to" menu</td><td><kbd>Tab</kbd> to it, arrows</td></tr>
+            <tr><td>See a preview</td><td>Tap the file name</td><td><kbd>Tab</kbd> to the name, <kbd>Enter</kbd></td></tr>
+            <tr><td>Convert</td><td>Convert all</td><td><kbd>Tab</kbd> to it, <kbd>Enter</kbd></td></tr>
+            <tr><td>Download</td><td>Download, or Download all (.zip)</td><td><kbd>Tab</kbd> to it, <kbd>Enter</kbd></td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <div id="save-panel"></div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap footer-inner">
+      <p class="privacy-note">
+        <strong>No accounts, no cookies.</strong> Saves stay on your device.
+        Cookie-free visit counts via GoatCounter.
+      </p>
+    </div>
+  </footer>
+
+  <script src="../../kit/stats.js" defer></script>
+</body>
+</html>

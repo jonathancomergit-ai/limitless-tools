@@ -1,0 +1,444 @@
+/* ============================================================
+   File Converter - item styles
+   Phone first: one column, in this order:
+     drop, paste, files, preview, settings, can't-do.
+   From 900px: drop, paste, files and preview on the left;
+   settings and can't-do in a column on the right.
+   ============================================================ */
+
+.fc {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+  padding-block: 1.1rem 0;
+}
+/* On phones the two columns melt away, so `order` can mix them. */
+.fc-col { display: contents; }
+.fc-drop     { order: 1; }
+.fc-paste    { order: 2; }
+.fc-files    { order: 3; }
+.fc-preview  { order: 4; }
+.fc-settings { order: 5; }
+.fc-cant     { order: 6; }
+
+@media (min-width: 900px) {
+  .fc {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 360px;
+    align-items: start;
+    gap: 1.4rem;
+    padding-top: 1.6rem;
+  }
+  .fc-col { display: flex; flex-direction: column; gap: 1.4rem; min-width: 0; }
+}
+
+.fc section { padding-block: 0; }
+.fc h2 { font-size: 1.2rem; margin: 0 0 .8rem; }
+
+/* ---- cards ---- */
+.fc .fc-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 1.1rem 1.1rem 1.2rem;
+  min-width: 0;
+}
+
+.fc-head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: .2rem 1rem;
+  margin-bottom: .7rem;
+}
+.fc-head h2 { margin: 0; }
+.fc-count {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: .85rem;
+  color: var(--accent);
+  overflow-wrap: anywhere;
+  min-width: 0;
+}
+
+.fc-hint {
+  font-size: .85rem;
+  color: var(--text-faint);
+  margin: -.3rem 0 1rem;
+  line-height: 1.45;
+}
+
+.fc-sub, .fc-fs legend {
+  font-family: var(--font-mono);
+  font-size: .72rem;
+  font-weight: 500;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin: 0 0 .45rem;
+  padding: 0;
+}
+.fc-sub { margin-top: 1.1rem; }
+.fc-settings .fc-sub:first-of-type { margin-top: 0; }
+.fc-settings .fc-sub { color: var(--accent); }
+
+/* ============================================================
+   1. DROP - the hero
+   ============================================================ */
+.fc .fc-drop {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: .3rem;
+  padding: 1.8rem 1.1rem 1.3rem;
+  border: 2px dashed var(--accent-line);
+  border-radius: var(--radius);
+  background: var(--accent-dim);
+}
+.fc-drop h2 { font-size: clamp(1.5rem, 6vw, 2.1rem); margin: 0; }
+.fc-drop-sub { color: var(--text-dim); margin: 0 0 .7rem; }
+.fc-drop.is-over { border-color: var(--accent); border-style: solid; background: var(--surface-2); }
+
+.fc-drop-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: .6rem;
+  width: 100%;
+}
+.fc-pick {
+  min-height: 56px;
+  min-width: min(100%, 220px);
+  font-size: 1.1rem;
+  padding-inline: 1.6rem;
+}
+.fc-sample { min-height: 56px; }
+/* The real file input is invisible; show its focus on the button. */
+.fc-drop:has(#files:focus-visible) .fc-pick { outline: 2px solid var(--cyan); outline-offset: 3px; }
+
+.fc-kinds {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: .3rem;
+  margin: .9rem 0 0;
+  padding: 0;
+}
+.fc-kinds span {
+  font-family: var(--font-mono);
+  font-size: .72rem;
+  color: var(--text-dim);
+  border: 1px solid var(--line-bright);
+  border-radius: 999px;
+  padding: .1rem .5rem;
+}
+.fc-private { margin: .7rem 0 0; color: var(--text-dim); font-size: .92rem; }
+.fc-private strong { color: var(--green); font-weight: 600; }
+
+/* ============================================================
+   2. PASTE
+   ============================================================ */
+.fc-paste .field { margin-bottom: .6rem; }
+.fc-paste textarea {
+  width: 100%;
+  min-height: 7.5rem;
+  resize: vertical;
+  font-family: var(--font-mono);
+  font-size: .85rem;
+  line-height: 1.45;
+}
+.fc-paste-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: .6rem 1rem;
+}
+.fc-paste-kind { margin: 0; color: var(--text-dim); font-size: .9rem; flex: 1 1 10rem; }
+.fc-paste-row .btn { min-height: var(--tap); flex: 0 0 auto; }
+
+/* ============================================================
+   3. FILES
+   ============================================================ */
+.fc-empty { color: var(--text-faint); margin: 0 0 .8rem; font-size: .9rem; }
+.fc-empty[hidden] { display: none; }
+
+.fc-list { list-style: none; margin: 0 0 .8rem; padding: 0; display: flex; flex-direction: column; gap: .6rem; }
+.fc-row {
+  margin: 0;
+  border: 1px solid var(--line-bright);
+  border-left: 4px solid var(--line-bright);
+  border-radius: var(--radius-sm);
+  background: var(--bg-2);
+  padding: .5rem .6rem .55rem;
+  min-width: 0;
+}
+.fc-row[data-kind="image"] { border-left-color: var(--cyan); }
+.fc-row[data-kind="data"]  { border-left-color: var(--accent); }
+.fc-row[data-kind="audio"] { border-left-color: var(--green); }
+.fc-row[data-kind="video"],
+.fc-row[data-kind="other"] { border-left-color: var(--amber); }
+
+.fc-row-top { display: flex; align-items: center; gap: .4rem; min-width: 0; }
+.fc-name {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: var(--tap);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: .1rem;
+  padding: .2rem .4rem;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+  font: inherit;
+}
+.fc-name:hover { border-color: var(--line-bright); }
+.fc-name[aria-pressed="true"] { border-color: var(--accent); background: var(--surface); }
+.fc-name:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
+.fc-fname { font-weight: 600; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.fc-meta { font-family: var(--font-mono); font-size: .75rem; color: var(--text-dim); }
+.fc-remove { min-width: var(--tap); min-height: var(--tap); font-size: 1.3rem; line-height: 1; flex: 0 0 auto; }
+
+.fc-row-act {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .5rem;
+  margin-top: .4rem;
+}
+.fc-to { display: flex; align-items: center; gap: .5rem; flex: 1 1 12rem; min-width: 0; color: var(--text-dim); font-size: .9rem; }
+.fc-to select {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: var(--tap);
+  font: inherit;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--line-field);
+  border-radius: var(--radius-sm);
+  padding: 0 .6rem;
+}
+.fc-to select:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
+.fc-to select:disabled { opacity: .55; }
+.fc-dl { min-height: var(--tap); flex: 0 1 auto; }
+
+.fc-row-note { margin: .4rem .2rem 0; font-size: .85rem; color: var(--text-dim); overflow-wrap: anywhere; }
+.fc-row-note:empty { display: none; }
+.fc-row-note.is-error { color: var(--hot); }
+.fc-row-note.is-warn { color: var(--amber); }
+.fc-row-note.is-done { color: var(--green); }
+
+.fc-status { margin: 0 0 .7rem; font-size: .9rem; color: var(--text-dim); min-height: 1.3em; }
+.fc-actions { display: flex; flex-wrap: wrap; gap: .6rem; }
+.fc-actions .btn { min-height: var(--tap); flex: 1 1 11rem; }
+.fc-actions .btn[hidden] { display: none; }
+
+/* ============================================================
+   4. PREVIEW
+   ============================================================ */
+.fc-error { margin: 0 0 .8rem; color: var(--hot); font-family: var(--font-mono); font-size: .85rem; overflow-wrap: anywhere; }
+.fc-error:empty { display: none; }
+.fc-info { margin: .6rem 0 0; color: var(--text-dim); font-size: .88rem; overflow-wrap: anywhere; }
+.fc-info:empty { display: none; }
+.fc-preview .fc-sub:first-child { margin-top: 0; }
+
+/* The table scrolls inside its box, never the page. */
+.fc-table-wrap {
+  max-width: 100%;
+  max-height: 22rem;
+  overflow: auto;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--bg-2);
+  overscroll-behavior: contain;
+}
+.fc-table-wrap:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
+.fc-table { border-collapse: collapse; font-size: .82rem; width: max-content; min-width: 100%; margin: 0; }
+.fc-table th, .fc-table td {
+  border-bottom: 1px solid var(--line);
+  border-right: 1px solid var(--line);
+  padding: .35rem .55rem;
+  text-align: left;
+  vertical-align: top;
+  max-width: 18rem;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.fc-table th {
+  position: sticky;
+  top: 0;
+  background: var(--surface-2);
+  font-family: var(--font-mono);
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.fc-image {
+  display: grid;
+  place-items: center;
+  padding: .6rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--bg-2);
+  max-height: 22rem;
+  overflow: hidden;
+}
+.fc-image img { max-width: 100%; max-height: 20rem; height: auto; object-fit: contain; image-rendering: auto; }
+
+.fc-out {
+  margin: 0;
+  max-height: 22rem;
+  overflow: auto;
+  padding: .7rem .8rem;
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: .8rem;
+  line-height: 1.45;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.fc-out:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
+
+/* ============================================================
+   5. SETTINGS
+   ============================================================ */
+.fc-fs { border: 0; margin: 0 0 .9rem; padding: 0; min-width: 0; }
+
+.fc-range { margin: 0 0 .4rem; }
+.fc-range label { display: flex; justify-content: space-between; align-items: baseline; gap: .5rem; }
+.fc-range output {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: 0;
+  text-transform: none;
+}
+/* A slider with a fat, easy-to-grab thumb. */
+.field input[type="range"] {
+  -webkit-appearance: none;
+          appearance: none;
+  height: var(--tap);
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+.field input[type="range"]:focus { background: transparent; }
+.field input[type="range"]::-webkit-slider-runnable-track { height: 6px; border-radius: 3px; background: var(--line-bright); }
+.field input[type="range"]::-moz-range-track { height: 6px; border-radius: 3px; background: var(--line-bright); }
+.field input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 28px; height: 28px; margin-top: -11px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 3px solid var(--bg);
+}
+.field input[type="range"]::-moz-range-thumb {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 3px solid var(--bg);
+}
+.field input[type="range"]:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
+
+.fc-colour { display: flex; align-items: center; gap: .7rem; margin: 0 0 1rem; }
+.fc-colour input {
+  flex: 0 0 auto;
+  width: var(--tap);
+  height: var(--tap);
+  padding: 2px;
+  border: 1px solid var(--line-field);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  cursor: pointer;
+}
+.fc-colour input:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
+.fc-colour label { font-size: .92rem; color: var(--text); }
+.fc-colour label span { color: var(--text-faint); }
+
+/* Size chips: real checkboxes, big tap areas. */
+.fc-checks { display: grid; grid-template-columns: repeat(4, 1fr); gap: .4rem; margin-bottom: .3rem; }
+.fc-checks label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: .35rem;
+  min-height: var(--tap);
+  border: 1px solid var(--line-field);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: .85rem;
+  cursor: pointer;
+  color: var(--text-dim);
+}
+.fc-checks label:has(input:checked) { border-color: var(--accent); color: var(--text); background: var(--accent-dim); }
+.fc-checks input { width: 18px; height: 18px; margin: 0; accent-color: var(--accent); cursor: pointer; }
+
+.fc-check {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  min-height: var(--tap);
+  cursor: pointer;
+  color: var(--text);
+  font-size: .92rem;
+}
+.fc-check input { width: 22px; height: 22px; accent-color: var(--accent); margin: 0; cursor: pointer; flex: 0 0 auto; }
+
+.fc-pair { display: grid; grid-template-columns: 1fr auto; gap: .8rem; align-items: end; }
+.fc-pair .field { margin: 0; min-width: 0; }
+.fc-pair select { min-height: var(--tap); width: 100%; }
+.fc-mono { padding-bottom: 0; }
+
+/* Big radio "pills" in one row. */
+.fc-seg {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border: 1px solid var(--line-field);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+.fc-seg-4 { grid-template-columns: repeat(4, 1fr); }
+.fc-seg input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.fc-seg label {
+  display: grid;
+  place-items: center;
+  min-height: var(--tap);
+  padding: 0 .3rem;
+  text-align: center;
+  line-height: 1.15;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: .95rem;
+  cursor: pointer;
+  color: var(--text-dim);
+  border-left: 1px solid var(--line-field);
+  -webkit-user-select: none;
+          user-select: none;
+}
+.fc-seg label:first-of-type { border-left: 0; }
+.fc-seg label:hover { color: var(--text); background: var(--surface-2); }
+.fc-seg input:checked + label { background: var(--accent); color: var(--bg); }
+.fc-seg input:focus-visible + label { outline: 2px solid var(--cyan); outline-offset: -4px; border-radius: 6px; }
+
+/* ============================================================
+   6. CAN'T DO
+   ============================================================ */
+.fc .fc-cant { border-color: var(--amber); }
+.fc-cant h2 { color: var(--amber); }
+.fc-cant-list { margin: 0; padding-left: 1.1rem; display: flex; flex-direction: column; gap: .55rem; font-size: .92rem; color: var(--text-dim); }
+.fc-cant-list strong { color: var(--text); }
+
+#pre-out, #pre-table + #pre-image { margin-top: 1rem; }
+#pre-out:first-child { margin-top: 0; }
