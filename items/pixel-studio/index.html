@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <!-- Do not edit this line. It's the privacy lock, and the tests check it. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://gc.zgo.at; connect-src 'self' https://jonjoe1001.goatcounter.com; img-src 'self' data: blob: https://jonjoe1001.goatcounter.com; style-src 'self'; font-src 'self'; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+
+  <title>Pixel Studio - Limitless Lab</title>
+  <meta name="description" content="Draw pixel art with layers and animate it frame by frame. Export PNG, sprite sheet or GIF. Works on phones.">
+  <meta name="theme-color" content="#07070C">
+
+  <link rel="icon" href="../../kit/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../../kit/kit.css">
+  <link rel="stylesheet" href="item.css">
+  <script type="module" src="main.js"></script>
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="item-bar">
+    <a class="back-link" href="../../"><span aria-hidden="true">&larr;</span> <span data-slot="wing-name">Hub</span></a>
+    <h1>Pixel Studio</h1>
+  </header>
+
+  <main id="main">
+    <div class="wrap ps">
+      <div class="ps-col ps-col-main">
+
+        <!-- ===================== 1. DRAW ===================== -->
+        <section class="ps-draw" aria-labelledby="draw-title">
+          <h2 id="draw-title" class="sr-only">Drawing</h2>
+
+          <div class="ps-tools" role="toolbar" aria-label="Tools">
+            <button class="ps-tool" type="button" data-tool="pencil" aria-pressed="true" title="Pencil (B)">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l1-4L16 5l3 3L8 19z M13.5 7.5l3 3"/></svg>
+              <span>Pencil</span>
+            </button>
+            <button class="ps-tool" type="button" data-tool="eraser" aria-pressed="false" title="Eraser (E)">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 19h11 M4.5 14.5l9-9 5 5-8.5 8.5H8z M9 10l5 5"/></svg>
+              <span>Eraser</span>
+            </button>
+            <button class="ps-tool" type="button" data-tool="fill" aria-pressed="false" title="Fill (G)">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11l7-7 7 7-7 7z M4 11h14 M20 15c0 2 1 3 1 4.2a1 1 0 0 1-2 0c0-1.2 1-2.2 1-4.2z"/></svg>
+              <span>Fill</span>
+            </button>
+            <button class="ps-tool" type="button" data-tool="line" aria-pressed="false" title="Line (L)">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19L19 5"/></svg>
+              <span>Line</span>
+            </button>
+            <button class="ps-tool" type="button" data-tool="rect" aria-pressed="false" title="Rectangle (R)">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 6.5h15v11h-15z"/></svg>
+              <span>Box</span>
+            </button>
+            <button class="ps-tool" type="button" data-tool="picker" aria-pressed="false" title="Eyedropper (I)">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4.5l5.5 5.5 M16.5 7.5L7 17l-3 1 1-3 9.5-9.5 M13 6l5 5"/></svg>
+              <span>Pick</span>
+            </button>
+          </div>
+
+          <div class="ps-opts">
+            <button class="ps-current" id="current" type="button" aria-label="Current colour. Opens the palette.">
+              <span class="ps-current-chip" id="current-chip" aria-hidden="true"></span>
+              <span class="ps-current-hex" id="current-hex">#000000</span>
+            </button>
+            <button class="btn ps-opt" id="mirror" type="button" aria-pressed="false" title="Mirror (M)">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v18 M9 7l-5 5 5 5z M15 7l5 5-5 5z"/></svg>
+              <span id="mirror-label">Mirror off</span>
+            </button>
+            <label class="ps-check ps-fill-shape" id="fill-shape-row"><input type="checkbox" id="fill-shape"> Filled</label>
+          </div>
+
+          <div class="ps-stage" id="stage" tabindex="0" role="application"
+               aria-roledescription="drawing canvas"
+               aria-label="Drawing canvas. Arrows move the cursor, Space or Enter paints."
+               aria-describedby="cursor-out">
+            <canvas id="art" aria-hidden="true"></canvas>
+          </div>
+          <p class="sr-only" id="cursor-out" aria-live="polite"></p>
+
+          <div class="ps-viewbar">
+            <div class="ps-group" role="group" aria-label="History">
+              <button class="btn ps-icon" id="undo" type="button" aria-label="Undo" title="Undo (Ctrl+Z)">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 14L4 9l5-5 M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg>
+              </button>
+              <button class="btn ps-icon" id="redo" type="button" aria-label="Redo" title="Redo (Ctrl+Y)">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 14l5-5-5-5 M20 9H9.5a5.5 5.5 0 0 0 0 11H13"/></svg>
+              </button>
+            </div>
+            <div class="ps-group" role="group" aria-label="Zoom">
+              <button class="btn ps-icon" id="zoom-out" type="button" aria-label="Zoom out">&minus;</button>
+              <output class="ps-zoom" id="zoom-label" aria-live="polite">8&times;</output>
+              <button class="btn ps-icon" id="zoom-in" type="button" aria-label="Zoom in">+</button>
+              <button class="btn ps-icon ps-fit" id="zoom-fit" type="button">Fit</button>
+            </div>
+          </div>
+          <p class="ps-hint">Pinch or scroll to zoom. Two fingers, <kbd>Space</kbd> + drag or the middle button to move around.</p>
+          <p class="ps-status" id="status" role="status" aria-live="polite"></p>
+        </section>
+      </div>
+
+      <div class="ps-col ps-col-side">
+
+        <!-- ===================== 2. PALETTE ===================== -->
+        <section class="ps-card ps-palette" id="palette-card" aria-labelledby="pal-title">
+          <h2 id="pal-title">Palette</h2>
+          <fieldset class="ps-fs">
+            <legend class="sr-only">Preset</legend>
+            <div class="ps-seg">
+              <input type="radio" name="preset" id="pre-pico8" value="pico8"><label for="pre-pico8">PICO-8</label>
+              <input type="radio" name="preset" id="pre-gameboy" value="gameboy"><label for="pre-gameboy">Game Boy</label>
+              <input type="radio" name="preset" id="pre-nes" value="nes"><label for="pre-nes">NES-ish</label>
+            </div>
+          </fieldset>
+          <div class="ps-swatches" id="swatches" role="group" aria-label="Colours"></div>
+          <h3 class="ps-sub">Your colours</h3>
+          <div class="ps-swatches" id="custom-swatches" role="group" aria-label="Your colours"></div>
+          <p class="ps-empty" id="custom-empty">None yet. Pick one and tap Add.</p>
+          <div class="ps-addrow">
+            <label class="sr-only" for="custom-color">New colour</label>
+            <input class="ps-color-input" id="custom-color" type="color" value="#3df5a0">
+            <button class="btn" id="add-color" type="button">Add colour</button>
+            <button class="btn btn-ghost" id="remove-color" type="button">Remove</button>
+          </div>
+        </section>
+
+        <!-- ===================== 3. FRAMES ===================== -->
+        <section class="ps-card ps-frames" aria-labelledby="frames-title">
+          <div class="ps-head">
+            <h2 id="frames-title">Frames</h2>
+            <p class="ps-count" id="frame-count">1 / 1</p>
+          </div>
+          <ol class="ps-strip" id="strip" aria-label="Frames"></ol>
+          <div class="ps-btns ps-btns-4" role="group" aria-label="Frame actions">
+            <button class="btn btn-sm" id="frame-add" type="button">Add</button>
+            <button class="btn btn-sm" id="frame-dup" type="button">Copy</button>
+            <button class="btn btn-sm" id="frame-left" type="button" aria-label="Move frame earlier">&larr;</button>
+            <button class="btn btn-sm" id="frame-right" type="button" aria-label="Move frame later">&rarr;</button>
+            <button class="btn btn-sm btn-ghost ps-wide" id="frame-del" type="button">Delete frame</button>
+          </div>
+          <label class="ps-check"><input type="checkbox" id="onion"> Onion skin (last frame, faint)</label>
+
+          <div class="ps-preview">
+            <div class="ps-anim">
+              <canvas id="anim" role="img" aria-label="Animation preview"></canvas>
+            </div>
+            <div class="ps-preview-side">
+              <button class="btn ps-play" id="play" type="button" aria-pressed="true">Pause</button>
+              <div class="field ps-range">
+                <label for="fps">Speed <output id="fps-out" for="fps">6 fps</output></label>
+                <input id="fps" type="range" min="1" max="24" step="1" value="6">
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===================== 4. LAYERS ===================== -->
+        <section class="ps-card ps-layers" aria-labelledby="layers-title">
+          <div class="ps-head">
+            <h2 id="layers-title">Layers</h2>
+            <p class="ps-count" id="layer-count">1 / 4</p>
+          </div>
+          <ul class="ps-layer-list" id="layer-list" aria-label="Layers, top first"></ul>
+          <div class="ps-btns ps-btns-4" role="group" aria-label="Layer actions">
+            <button class="btn btn-sm" id="layer-add" type="button">Add</button>
+            <button class="btn btn-sm" id="layer-up" type="button" aria-label="Move layer up">&uarr; Up</button>
+            <button class="btn btn-sm" id="layer-down" type="button" aria-label="Move layer down">&darr; Down</button>
+            <button class="btn btn-sm btn-ghost" id="layer-del" type="button">Delete</button>
+          </div>
+        </section>
+
+        <!-- ===================== 5. CANVAS SIZE ===================== -->
+        <section class="ps-card ps-size" aria-labelledby="size-title">
+          <div class="ps-head">
+            <h2 id="size-title">Canvas</h2>
+            <p class="ps-count" id="size-label">16 &times; 16</p>
+          </div>
+          <button class="btn ps-full" id="open-size" type="button">New canvas or resize&hellip;</button>
+        </section>
+
+        <!-- ===================== 6. EXPORT ===================== -->
+        <section class="ps-card ps-export" aria-labelledby="export-title">
+          <h2 id="export-title">Export</h2>
+          <div class="field ps-range">
+            <label for="scale">Scale <output id="scale-out" for="scale">8&times;</output></label>
+            <input id="scale" type="range" min="1" max="32" step="1" value="8">
+          </div>
+          <p class="ps-hint" id="scale-hint"></p>
+          <div class="ps-actions">
+            <button class="btn btn-primary" id="export-png" type="button">PNG (this frame)</button>
+            <button class="btn" id="export-gif" type="button">GIF (all frames)</button>
+            <button class="btn" id="export-sheet" type="button">Sprite sheet PNG</button>
+            <button class="btn" id="export-json" type="button">Sheet JSON</button>
+          </div>
+          <p class="ps-hint ps-export-note" id="export-status" role="status" aria-live="polite"></p>
+        </section>
+      </div>
+    </div>
+
+    <!-- ===================== NEW / RESIZE DIALOG ===================== -->
+    <dialog class="ps-dialog" id="size-dialog" aria-labelledby="dlg-title">
+      <h2 id="dlg-title">Canvas size</h2>
+      <fieldset class="ps-fs">
+        <legend>Square sizes</legend>
+        <div class="ps-seg ps-seg-4" id="size-pills">
+          <input type="radio" name="size" id="sz-8" value="8"><label for="sz-8">8</label>
+          <input type="radio" name="size" id="sz-16" value="16"><label for="sz-16">16</label>
+          <input type="radio" name="size" id="sz-24" value="24"><label for="sz-24">24</label>
+          <input type="radio" name="size" id="sz-32" value="32"><label for="sz-32">32</label>
+          <input type="radio" name="size" id="sz-48" value="48"><label for="sz-48">48</label>
+          <input type="radio" name="size" id="sz-64" value="64"><label for="sz-64">64</label>
+          <input type="radio" name="size" id="sz-96" value="96"><label for="sz-96">96</label>
+          <input type="radio" name="size" id="sz-128" value="128"><label for="sz-128">128</label>
+        </div>
+      </fieldset>
+      <div class="ps-pair">
+        <div class="field">
+          <label for="new-w">Width</label>
+          <input id="new-w" type="number" inputmode="numeric" min="8" max="128" step="1" value="16">
+        </div>
+        <div class="field">
+          <label for="new-h">Height</label>
+          <input id="new-h" type="number" inputmode="numeric" min="8" max="128" step="1" value="16">
+        </div>
+      </div>
+      <p class="ps-hint">Any size from 8 to 128 pixels a side.</p>
+      <fieldset class="ps-fs">
+        <legend>When resizing, keep the art at the</legend>
+        <div class="ps-seg ps-seg-2">
+          <input type="radio" name="anchor" id="anc-c" value="c" checked><label for="anc-c">Centre</label>
+          <input type="radio" name="anchor" id="anc-tl" value="tl"><label for="anc-tl">Top-left</label>
+        </div>
+      </fieldset>
+      <div class="ps-dlg-actions">
+        <button class="btn btn-primary" id="do-new" type="button">New blank canvas</button>
+        <button class="btn" id="do-resize" type="button">Resize, keep the art</button>
+        <button class="btn btn-ghost" id="dlg-cancel" type="button">Cancel</button>
+      </div>
+      <p class="ps-hint ps-dlg-note">Both can be undone.</p>
+    </dialog>
+
+    <!-- ===================== HOW TO ===================== -->
+    <div class="wrap item-info">
+      <section id="how" aria-labelledby="how-title">
+        <h2 id="how-title">How to use it</h2>
+        <ol>
+          <li>Pick a colour and a tool, then draw on the canvas.</li>
+          <li>Add layers to keep parts apart, and frames to animate.</li>
+          <li>Turn on onion skin to see the last frame while you draw.</li>
+          <li>Export a PNG, a sprite sheet + JSON, or a GIF.</li>
+        </ol>
+        <table class="controls">
+          <thead><tr><th scope="col">Do this</th><th scope="col">Phone</th><th scope="col">Keyboard</th></tr></thead>
+          <tbody>
+            <tr><td>Draw</td><td>Tap or drag on the canvas</td><td>Arrows move the cursor, <kbd>Space</kbd> / <kbd>Enter</kbd> paints (hold <kbd>Space</kbd> + arrows to keep painting)</td></tr>
+            <tr><td>Tools</td><td>Tap Pencil, Eraser, Fill, Line, Box, Pick</td><td><kbd>B</kbd> <kbd>E</kbd> <kbd>G</kbd> <kbd>L</kbd> <kbd>R</kbd> <kbd>I</kbd></td></tr>
+            <tr><td>Line / box</td><td>Drag from corner to corner</td><td><kbd>Space</kbd> at the start, move, <kbd>Space</kbd> at the end (<kbd>Esc</kbd> cancels)</td></tr>
+            <tr><td>Mirror</td><td>Tap Mirror (off, &harr;, &varr;, both)</td><td><kbd>M</kbd></td></tr>
+            <tr><td>Undo / redo</td><td>The arrow buttons</td><td><kbd>Ctrl</kbd> + <kbd>Z</kbd> / <kbd>Ctrl</kbd> + <kbd>Y</kbd> (or <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>Z</kbd>)</td></tr>
+            <tr><td>Zoom</td><td>Pinch, or &minus; + Fit</td><td><kbd>+</kbd> <kbd>&minus;</kbd> <kbd>0</kbd>, or the mouse wheel</td></tr>
+            <tr><td>Move around</td><td>Drag with two fingers</td><td><kbd>Space</kbd> + drag, middle-button drag; the view follows the cursor</td></tr>
+            <tr><td>Colour</td><td>Tap a swatch</td><td><kbd>[</kbd> <kbd>]</kbd>, or <kbd>Tab</kbd> to a swatch</td></tr>
+            <tr><td>Frames</td><td>Tap a frame in the strip</td><td><kbd>,</kbd> <kbd>.</kbd></td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <div id="save-panel"></div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap footer-inner">
+      <p class="privacy-note">
+        <strong>No accounts, no cookies.</strong> Saves stay on your device.
+        Cookie-free visit counts via GoatCounter.
+      </p>
+    </div>
+  </footer>
+
+  <script src="../../kit/stats.js" defer></script>
+</body>
+</html>

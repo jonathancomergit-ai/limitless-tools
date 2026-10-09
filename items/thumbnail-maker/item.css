@@ -1,0 +1,390 @@
+/* ============================================================
+   Thumbnail Maker - item styles
+   Phone first: one column, in this order:
+     thumbnail, picture, templates, edit, add, layers,
+     background, download.
+   From 900px: thumbnail, edit, layers and download on the
+   left; picture, templates, add and background on the right.
+   ============================================================ */
+
+.tm {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+  padding-block: 1.1rem 0;
+}
+/* On phones the two columns melt away, so `order` can mix them. */
+.tm-col { display: contents; }
+.tm-editor      { order: 1; }
+.tm-drop        { order: 2; }
+.tm-templates   { order: 3; }
+.tm-edit        { order: 4; }
+.tm-add         { order: 5; }
+.tm-layers-card { order: 6; }
+.tm-bg          { order: 7; }
+.tm-export      { order: 8; }
+
+@media (min-width: 900px) {
+  .tm {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 380px;
+    align-items: start;
+    gap: 1.4rem;
+    padding-top: 1.6rem;
+  }
+  .tm-col { display: flex; flex-direction: column; gap: 1.4rem; min-width: 0; }
+}
+
+.tm section { padding-block: 0; }
+/* hidden means hidden, even on flex / grid things */
+.tm [hidden] { display: none !important; }
+.tm h2 { font-size: 1.2rem; margin: 0 0 .8rem; }
+
+/* ---- cards ---- */
+.tm .tm-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 1.1rem 1.1rem 1.2rem;
+  min-width: 0;
+}
+
+.tm-head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: .2rem 1rem;
+  margin-bottom: .7rem;
+}
+.tm-head h2 { margin: 0; }
+.tm-count { margin: 0; font-family: var(--font-mono); font-size: .85rem; color: var(--accent); overflow-wrap: anywhere; }
+
+.tm-hint {
+  font-size: .85rem;
+  color: var(--text-faint);
+  margin: 0 0 .9rem;
+  line-height: 1.45;
+}
+.tm-hint:empty { display: none; }
+.tm-hint kbd { font-size: .78rem; }
+.tm-empty { color: var(--text-faint); margin: 0; font-size: .92rem; }
+.tm-empty[hidden] { display: none; }
+.tm-sub {
+  font-family: var(--font-mono);
+  font-size: .72rem;
+  font-weight: 500;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin: 1.1rem 0 .5rem;
+}
+
+/* ============================================================
+   1. THE CANVAS - full size inside, shrunk by CSS to fit
+   ============================================================ */
+.tm-frame {
+  display: grid;
+  place-items: center;
+  padding: .6rem;
+  margin: .8rem 0 .4rem;
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+}
+.tm-frame.is-over { border: 2px dashed var(--accent); }
+.tm-frame canvas {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: min(70vh, 680px);
+  border-radius: 4px;
+  touch-action: none;
+  cursor: grab;
+  -webkit-user-select: none;
+          user-select: none;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, .45);
+}
+.tm-frame canvas:active { cursor: grabbing; }
+.tm-frame canvas:focus { outline: none; }
+.tm-frame:has(canvas:focus-visible) { outline: 2px solid var(--cyan); outline-offset: 2px; }
+
+.tm-under {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 1rem;
+}
+.tm-under .tm-hint { margin: 0; }
+
+/* ============================================================
+   FORM BITS
+   ============================================================ */
+.tm-fs { border: 0; margin: 0 0 .9rem; padding: 0; min-width: 0; }
+.tm-fs legend {
+  font-family: var(--font-mono);
+  font-size: .72rem;
+  font-weight: 500;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin: 0 0 .45rem;
+  padding: 0;
+}
+.tm-editor .tm-fs { margin-bottom: 0; }
+
+/* Big radio "pills" in one row. */
+.tm-seg {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border: 1px solid var(--line-field);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+.tm-seg-2 { grid-template-columns: repeat(2, 1fr); }
+.tm-seg input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.tm-seg label {
+  display: grid;
+  place-items: center;
+  min-height: var(--tap);
+  padding: .2rem .3rem;
+  text-align: center;
+  line-height: 1.15;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: .92rem;
+  cursor: pointer;
+  color: var(--text-dim);
+  border-left: 1px solid var(--line-field);
+  -webkit-user-select: none;
+          user-select: none;
+}
+.tm-seg label:first-of-type { border-left: 0; }
+.tm-seg label:hover { color: var(--text); background: var(--surface-2); }
+.tm-seg input:checked + label { background: var(--accent); color: var(--bg); }
+.tm-seg input:focus-visible + label { outline: 2px solid var(--cyan); outline-offset: -4px; border-radius: 6px; }
+.tm-f-grotesk { font-family: "Space Grotesk", sans-serif; }
+.tm-seg .tm-f-inter { font-family: "Inter", sans-serif; font-weight: 800; }
+.tm-seg .tm-f-mono { font-family: "JetBrains Mono", monospace; font-weight: 700; }
+
+/* A checkbox row with a big tap area. */
+.tm-check {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  min-height: var(--tap);
+  cursor: pointer;
+  color: var(--text);
+  font-size: .95rem;
+}
+.tm-check input { width: 22px; height: 22px; accent-color: var(--accent); margin: 0; cursor: pointer; }
+
+/* Colour swatches: a big square + its name. */
+.tm-colors { display: flex; flex-wrap: wrap; gap: .4rem 1.2rem; margin-bottom: .6rem; }
+.tm-colors [hidden] { display: none; }
+.tm-color {
+  display: inline-flex;
+  align-items: center;
+  gap: .6rem;
+  min-height: var(--tap);
+  cursor: pointer;
+  font-size: .95rem;
+  color: var(--text);
+}
+.tm-color input[type="color"] {
+  width: 48px;
+  height: 48px;
+  padding: 3px;
+  border: 1px solid var(--line-field);
+  border-radius: var(--radius-sm);
+  background: var(--bg-2);
+  cursor: pointer;
+}
+.tm-color input[type="color"]:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
+
+.tm-effects { display: flex; flex-wrap: wrap; align-items: center; gap: 0 1.2rem; }
+
+.field textarea {
+  resize: vertical;
+  min-height: 3.4rem;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.05rem;
+  line-height: 1.25;
+}
+
+.tm-range { margin: .2rem 0 .4rem; }
+.tm-range[hidden] { display: none; }
+.tm-range label { display: flex; justify-content: space-between; align-items: baseline; }
+.tm-range output {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+/* A slider with a fat, easy-to-grab thumb. */
+.field input[type="range"] {
+  -webkit-appearance: none;
+          appearance: none;
+  height: var(--tap);
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+.field input[type="range"]:focus { background: transparent; }
+.field input[type="range"]::-webkit-slider-runnable-track { height: 6px; border-radius: 3px; background: var(--line-bright); }
+.field input[type="range"]::-moz-range-track { height: 6px; border-radius: 3px; background: var(--line-bright); }
+.field input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 28px; height: 28px; margin-top: -11px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 3px solid var(--bg);
+}
+.field input[type="range"]::-moz-range-thumb {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 3px solid var(--bg);
+}
+.field input[type="range"]:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
+
+.tm-actions { display: flex; flex-wrap: wrap; gap: .6rem; }
+.tm-actions .btn { min-height: var(--tap); flex: 1 1 11rem; }
+.tm-actions-2 .btn { flex: 1 1 6rem; }
+#ed-photo { margin-bottom: .8rem; }
+
+/* ============================================================
+   2. YOUR PICTURE
+   ============================================================ */
+.tm .tm-drop {
+  border: 2px dashed var(--accent-line);
+  background: var(--accent-dim);
+  text-align: center;
+}
+.tm-drop.is-over { border-color: var(--accent); border-style: solid; background: var(--surface-2); }
+.tm-drop-sub { color: var(--text-dim); margin: 0 0 .8rem; overflow-wrap: anywhere; }
+.tm-pick { min-height: 52px; font-size: 1.05rem; }
+.tm-drop:has(#file:focus-visible) .tm-pick { outline: 2px solid var(--cyan); outline-offset: 3px; }
+.tm-private { margin: .8rem 0 0; color: var(--text-dim); font-size: .9rem; }
+.tm-private strong { color: var(--green); font-weight: 600; }
+.tm-status { margin: .6rem 0 0; font-size: .9rem; color: var(--amber); }
+.tm-status:empty { display: none; }
+
+/* ============================================================
+   3. TEMPLATES + ADD
+   ============================================================ */
+.tm-tpl-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: .6rem;
+}
+@media (min-width: 600px) and (max-width: 899px) {
+  .tm-tpl-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+.tm-tpl {
+  display: flex;
+  flex-direction: column;
+  gap: .35rem;
+  padding: .35rem .35rem .45rem;
+  border: 2px solid var(--line-bright);
+  border-radius: var(--radius-sm);
+  background: var(--bg-2);
+  color: var(--text);
+  cursor: pointer;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: .9rem;
+  text-align: center;
+  min-height: var(--tap);
+}
+.tm-tpl canvas { display: block; width: 100%; height: auto; border-radius: 4px; }
+.tm-tpl:hover { border-color: var(--cyan); }
+.tm-tpl:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
+
+.tm-add-text { width: 100%; min-height: var(--tap); font-size: 1.05rem; }
+.tm-stickers {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(76px, 1fr));
+  gap: .45rem;
+}
+.tm-sticker {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .15rem;
+  padding: .4rem .2rem .35rem;
+  border: 2px solid var(--line-bright);
+  border-radius: var(--radius-sm);
+  background: var(--bg-2);
+  color: var(--text-dim);
+  cursor: pointer;
+  font-size: .78rem;
+  min-height: var(--tap);
+}
+.tm-sticker canvas { width: 48px; height: 48px; }
+.tm-sticker:hover { border-color: var(--cyan); color: var(--text); }
+.tm-sticker:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
+
+/* ============================================================
+   LAYERS
+   ============================================================ */
+.tm-layers-card .tm-hint { margin: -.3rem 0 .7rem; }
+.tm-layers {
+  list-style: none;
+  margin: 0 0 .7rem;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: .35rem;
+  max-height: 22rem;
+  overflow-y: auto;
+}
+.tm-layers li { margin: 0; }
+.tm-layer {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  width: 100%;
+  min-height: var(--tap);
+  padding: .3rem .6rem;
+  border: 2px solid var(--line-bright);
+  border-radius: var(--radius-sm);
+  background: var(--bg-2);
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+  font-size: .92rem;
+}
+.tm-layer:hover { border-color: var(--cyan); }
+.tm-layer[aria-pressed="true"] { border-color: var(--accent); background: var(--surface-2); }
+.tm-layer:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
+.tm-layer-kind {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 2.2rem;
+  height: 1.7rem;
+  border-radius: 5px;
+  background: var(--surface-2);
+  font-family: var(--font-mono);
+  font-size: .72rem;
+  font-weight: 700;
+  color: var(--text-dim);
+}
+.tm-layer[aria-pressed="true"] .tm-layer-kind { background: var(--accent); color: var(--bg); }
+.tm-layer-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tm-layer-hidden { flex: none; font-family: var(--font-mono); font-size: .7rem; color: var(--amber); }
+
+.tm-layer-tools { display: grid; grid-template-columns: 1fr 1fr; gap: .4rem; }
+.tm-layer-tools .btn { min-height: var(--tap); }
+
+/* ============================================================
+   DOWNLOAD
+   ============================================================ */
+.tm-export-note { margin: .8rem 0 0; font-family: var(--font-mono); overflow-wrap: anywhere; }

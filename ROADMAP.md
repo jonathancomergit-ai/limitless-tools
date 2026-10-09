@@ -94,7 +94,7 @@ Five more tools, in this order. **The CSP stays exactly as it is**: no new origi
   - acceptance: Unit test (tests/unit): black maps to the darkest character and white to the lightest, custom sets work, output has the right rows x columns
   - acceptance: smoke.js: press Try a sample, check the ASCII output is not empty
 
-- [ ] `gif-maker` - GIF Maker: Turn a few photos or a quick camera clip into a looping GIF.
+- [x] `gif-maker` - GIF Maker: Turn a few photos or a quick camera clip into a looping GIF.
   - acceptance: Add photos (choose files, drop, or paste); reorder by drag; remove; "Try a sample" set
   - acceptance: Or record a 1-5 second camera clip (button-started, as in ascii-cam), captured as frames
   - acceptance: Settings: size, frame delay, loop, colours (64-256), dithering on/off, crop to square/16:9/original
@@ -104,7 +104,7 @@ Five more tools, in this order. **The CSP stays exactly as it is**: no new origi
   - acceptance: Unit test (tests/unit): output starts with GIF89a and ends with the trailer byte, LZW round-trips on test data, frame count is right
   - acceptance: smoke.js: Try a sample, press Make GIF, check a download link appears
 
-- [ ] `pixel-studio` - Pixel Studio: Draw pixel art with layers and animate it frame by frame.
+- [x] `pixel-studio` - Pixel Studio: Draw pixel art with layers and animate it frame by frame.
   - acceptance: Canvas sizes 8-128 px; tools: pencil, eraser, fill, line, rectangle, eyedropper, mirror drawing; undo/redo
   - acceptance: Pinch / scroll zoom and two-finger / space-drag pan; a pixel grid that fades out when zoomed out
   - acceptance: Palette with presets (PICO-8, Game Boy, NES-ish) and custom colours
@@ -115,7 +115,7 @@ Five more tools, in this order. **The CSP stays exactly as it is**: no new origi
   - acceptance: Unit test (tests/unit): flood fill stops at borders, line drawing hits the right pixels, undo/redo returns the exact pixels
   - acceptance: smoke.js: draw a pixel, check it changed colour, then undo and check it's back
 
-- [ ] `thumbnail-maker` - Thumbnail Maker: Make bold YouTube and TikTok thumbnails with big outlined text, glow and stickers.
+- [x] `thumbnail-maker` - Thumbnail Maker: Make bold YouTube and TikTok thumbnails with big outlined text, glow and stickers.
   - acceptance: Sizes: YouTube 1280x720, TikTok/Shorts 1080x1920, square 1080x1080
   - acceptance: Add your picture (file/drop/paste, never uploaded); move, scale and rotate it; background colour or gradient
   - acceptance: Text layers: the kit fonts only (Space Grotesk, Inter, JetBrains Mono), size, colour, thick outline, drop shadow, glow, tilt
