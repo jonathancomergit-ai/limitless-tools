@@ -51,7 +51,7 @@ Tonight's three for 🧰 Workshop, in this order.
 
 ### Batch 2
 
-- [ ] `sprite-slicer` - Sprite Sheet Slicer: Drop in a sprite sheet, cut it into frames and preview the animation. Export the frames or a JSON map.
+- [x] `sprite-slicer` - Sprite Sheet Slicer: Drop in a sprite sheet, cut it into frames and preview the animation. Export the frames or a JSON map.
   - acceptance: Load a PNG (pick or drop); pixel-perfect zoom
   - acceptance: Slice by cell size or by rows x columns, with margin and spacing; optional auto-detect by transparent gaps
   - acceptance: Grid overlay; tap frames to pick them (or pick all); reorder

@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <!-- Do not edit this line. It's the privacy lock, and the tests check it. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://gc.zgo.at; connect-src 'self' https://jonjoe1001.goatcounter.com; img-src 'self' data: blob: https://jonjoe1001.goatcounter.com; style-src 'self'; font-src 'self'; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+
+  <title>Sprite Sheet Slicer - Limitless Lab</title>
+  <meta name="description" content="Drop in a sprite sheet, cut it into frames and preview the animation. Export the frames or a JSON map.">
+  <meta name="theme-color" content="#07070C">
+
+  <link rel="icon" href="../../kit/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../../kit/kit.css">
+  <link rel="stylesheet" href="item.css">
+  <script type="module" src="main.js"></script>
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="item-bar">
+    <a class="back-link" href="../../"><span aria-hidden="true">&larr;</span> <span data-slot="wing-name">Hub</span></a>
+    <h1>Sprite Sheet Slicer</h1>
+  </header>
+
+  <main id="main">
+    <div class="wrap ss">
+      <div class="ss-col ss-col-main">
+
+        <!-- ===================== 1. DROP (the hero) ===================== -->
+        <section class="ss-drop" id="drop" aria-labelledby="drop-title">
+          <h2 id="drop-title">Drop a sprite sheet</h2>
+          <p class="ss-drop-sub" id="drop-sub">A PNG with a see-through background works best.</p>
+          <div class="ss-drop-actions">
+            <label class="btn btn-primary ss-pick" for="file">Choose a sheet</label>
+            <button class="btn btn-ghost ss-sample" id="sample" type="button">Try a sample</button>
+          </div>
+          <input class="sr-only" id="file" type="file" accept="image/png,image/gif,image/webp,image/*">
+          <p class="ss-private"><strong>Your files never leave this device.</strong> Nothing is uploaded.</p>
+          <p class="ss-status" id="status" role="status" aria-live="polite"></p>
+        </section>
+
+        <!-- ===================== 2. SHEET + GRID ===================== -->
+        <section class="ss-card ss-sheet" id="sheet-card" aria-labelledby="sheet-title" hidden>
+          <div class="ss-head">
+            <h2 id="sheet-title">Sheet</h2>
+            <p class="ss-count" id="count"></p>
+          </div>
+          <div class="ss-tools">
+            <div class="ss-zoom" role="group" aria-label="Zoom">
+              <button class="btn btn-sm" id="zoom-out" type="button" aria-label="Zoom out">&minus;</button>
+              <output class="ss-zoom-out" id="zoom-label" aria-live="polite">Fit</output>
+              <button class="btn btn-sm" id="zoom-in" type="button" aria-label="Zoom in">+</button>
+              <button class="btn btn-sm btn-ghost" id="zoom-fit" type="button">Fit</button>
+            </div>
+            <div class="ss-picks">
+              <button class="btn btn-sm" id="pick-all" type="button">Pick all</button>
+              <button class="btn btn-sm btn-ghost" id="pick-none" type="button">None</button>
+            </div>
+          </div>
+          <div class="ss-view" id="view">
+            <canvas id="sheet" tabindex="0" role="img" aria-label="The sprite sheet with its grid. Tap a frame to pick it."></canvas>
+          </div>
+          <p class="ss-hint">Tap frames to pick them, in the order you want. Keys: arrows move, <kbd>Space</kbd> picks, <kbd>+</kbd> <kbd>&minus;</kbd> zoom.</p>
+        </section>
+
+        <!-- ===================== 5. EXPORT ===================== -->
+        <section class="ss-card ss-export" id="export-card" aria-labelledby="export-title" hidden>
+          <h2 id="export-title">Export</h2>
+          <div class="field">
+            <label for="prefix">Frame name</label>
+            <input id="prefix" type="text" maxlength="40" autocomplete="off" spellcheck="false" placeholder="sprite">
+          </div>
+          <fieldset class="ss-fs">
+            <legend>JSON map for</legend>
+            <div class="ss-seg ss-seg-2">
+              <input type="radio" name="map" id="map-phaser" value="phaser"><label for="map-phaser">Phaser</label>
+              <input type="radio" name="map" id="map-godot" value="godot"><label for="map-godot">Godot</label>
+            </div>
+          </fieldset>
+          <p class="ss-hint" id="map-hint"></p>
+          <div class="ss-actions">
+            <button class="btn btn-primary" id="zip" type="button">Download frames (.zip)</button>
+            <button class="btn" id="json" type="button">Download JSON map</button>
+          </div>
+          <p class="ss-hint ss-zip-note">The .zip holds one PNG a frame, the JSON map and a copy of your sheet.</p>
+        </section>
+      </div>
+
+      <div class="ss-col ss-col-side">
+
+        <!-- ===================== 4. PREVIEW ===================== -->
+        <section class="ss-card ss-preview" id="preview-card" aria-labelledby="preview-title" hidden>
+          <div class="ss-head">
+            <h2 id="preview-title">Preview</h2>
+            <p class="ss-count" id="frame-label"></p>
+          </div>
+          <div class="ss-stage">
+            <canvas id="anim" role="img" aria-label="The animation preview"></canvas>
+          </div>
+          <div class="ss-play-row">
+            <button class="btn ss-play" id="play" type="button" aria-pressed="true">Pause</button>
+            <label class="ss-check"><input type="checkbox" id="pingpong"> Ping-pong</label>
+          </div>
+          <div class="field ss-range">
+            <label for="fps">Speed <output id="fps-out" for="fps">10 fps</output></label>
+            <input id="fps" type="range" min="1" max="60" step="1" value="10">
+          </div>
+
+          <h3 class="ss-sub">Frame order</h3>
+          <p class="ss-empty" id="order-empty">No frames picked. Tap some on the sheet.</p>
+          <ol class="ss-order" id="order" aria-label="Picked frames, in play order"></ol>
+          <div class="ss-order-tools" role="group" aria-label="Move the chosen frame">
+            <button class="btn btn-sm" id="move-left" type="button" aria-label="Move earlier">&larr; Earlier</button>
+            <button class="btn btn-sm" id="move-right" type="button" aria-label="Move later">Later &rarr;</button>
+            <button class="btn btn-sm btn-ghost" id="remove" type="button">Remove</button>
+            <button class="btn btn-sm btn-ghost" id="reverse" type="button">Reverse</button>
+          </div>
+        </section>
+
+        <!-- ===================== 3. SETTINGS ===================== -->
+        <section class="ss-card ss-settings" aria-labelledby="set-title">
+          <h2 id="set-title">Slice</h2>
+          <fieldset class="ss-fs">
+            <legend>Cut by</legend>
+            <div class="ss-seg">
+              <input type="radio" name="mode" id="mode-size" value="size"><label for="mode-size">Cell size</label>
+              <input type="radio" name="mode" id="mode-count" value="count"><label for="mode-count">Rows &times; cols</label>
+              <input type="radio" name="mode" id="mode-auto" value="auto"><label for="mode-auto">Auto</label>
+            </div>
+          </fieldset>
+
+          <div class="ss-pair" id="by-size">
+            <div class="field">
+              <label for="cell-w">Cell width</label>
+              <input id="cell-w" type="number" inputmode="numeric" min="1" max="8192" step="1">
+            </div>
+            <div class="field">
+              <label for="cell-h">Cell height</label>
+              <input id="cell-h" type="number" inputmode="numeric" min="1" max="8192" step="1">
+            </div>
+          </div>
+          <div class="ss-pair" id="by-count" hidden>
+            <div class="field">
+              <label for="cols">Columns</label>
+              <input id="cols" type="number" inputmode="numeric" min="1" max="256" step="1">
+            </div>
+            <div class="field">
+              <label for="rows">Rows</label>
+              <input id="rows" type="number" inputmode="numeric" min="1" max="256" step="1">
+            </div>
+          </div>
+          <div class="ss-pair" id="gaps">
+            <div class="field">
+              <label for="margin">Margin</label>
+              <input id="margin" type="number" inputmode="numeric" min="0" max="1024" step="1">
+            </div>
+            <div class="field">
+              <label for="spacing">Spacing</label>
+              <input id="spacing" type="number" inputmode="numeric" min="0" max="1024" step="1">
+            </div>
+          </div>
+          <p class="ss-hint" id="mode-hint">Pixels. Margin is the border round the sheet; spacing is the gap between cells.</p>
+          <label class="ss-check" id="skip-row"><input type="checkbox" id="skip-empty"> Leave out empty cells</label>
+          <p class="ss-hint ss-warn" id="grid-note" role="status"></p>
+        </section>
+      </div>
+    </div>
+
+    <!-- ===================== HOW TO ===================== -->
+    <div class="wrap item-info">
+      <section id="how" aria-labelledby="how-title">
+        <h2 id="how-title">How to use it</h2>
+        <ol>
+          <li>Drop or choose a sprite sheet (or try the sample).</li>
+          <li>Cut it by cell size, by rows &times; columns, or let Auto find the sprites.</li>
+          <li>Tap frames to pick them in order. Watch the preview.</li>
+          <li>Download the frames as a .zip, or just the JSON map.</li>
+        </ol>
+        <table class="controls">
+          <thead><tr><th scope="col">Do this</th><th scope="col">Phone</th><th scope="col">Keyboard</th></tr></thead>
+          <tbody>
+            <tr><td>Load a sheet</td><td>Tap Choose a sheet</td><td><kbd>Tab</kbd> to it, <kbd>Enter</kbd> (or <kbd>Ctrl</kbd> + <kbd>V</kbd>)</td></tr>
+            <tr><td>Pick a frame</td><td>Tap it</td><td>Arrows, then <kbd>Space</kbd></td></tr>
+            <tr><td>Zoom</td><td>&minus; and + buttons</td><td><kbd>+</kbd> <kbd>&minus;</kbd> on the sheet</td></tr>
+            <tr><td>Reorder</td><td>Tap a frame below, then Earlier / Later</td><td><kbd>Shift</kbd> + <kbd>&larr;</kbd> <kbd>&rarr;</kbd>, <kbd>Delete</kbd> removes</td></tr>
+            <tr><td>Speed</td><td>Drag the slider</td><td><kbd>&larr;</kbd> <kbd>&rarr;</kbd></td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <div id="save-panel"></div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap footer-inner">
+      <p class="privacy-note">
+        <strong>No accounts, no cookies.</strong> Saves stay on your device.
+        Cookie-free visit counts via GoatCounter.
+      </p>
+    </div>
+  </footer>
+
+  <script src="../../kit/stats.js" defer></script>
+</body>
+</html>
