@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <!-- Do not edit this line. It's the privacy lock, and the tests check it. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://gc.zgo.at; connect-src 'self' https://jonjoe1001.goatcounter.com; img-src 'self' data: blob: https://jonjoe1001.goatcounter.com; style-src 'self'; font-src 'self'; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+
+  <title>GIF Maker - Limitless Lab</title>
+  <meta name="description" content="Turn a few photos or a quick camera clip into a looping GIF, right in your browser. Nothing is uploaded.">
+  <meta name="theme-color" content="#07070C">
+
+  <link rel="icon" href="../../kit/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../../kit/kit.css">
+  <link rel="stylesheet" href="item.css">
+  <script type="module" src="main.js"></script>
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="item-bar">
+    <a class="back-link" href="../../"><span aria-hidden="true">&larr;</span> <span data-slot="wing-name">Hub</span></a>
+    <h1>GIF Maker</h1>
+  </header>
+
+  <main id="main">
+    <div class="wrap gm">
+      <div class="gm-col gm-col-main">
+
+        <!-- ===================== 1. ADD (the hero) ===================== -->
+        <section class="gm-drop" id="drop" aria-labelledby="drop-title">
+          <h2 id="drop-title">Drop photos here</h2>
+          <p class="gm-drop-sub" id="drop-sub">A few photos in a row make the best GIFs.</p>
+          <div class="gm-drop-actions">
+            <label class="btn btn-primary gm-pick" for="file">Choose photos</label>
+            <button class="btn gm-cam-btn" id="cam-open" type="button">Record clip</button>
+            <button class="btn btn-ghost gm-sample" id="sample" type="button">Try a sample</button>
+          </div>
+          <input class="sr-only" id="file" type="file" multiple accept="image/png,image/jpeg,image/webp,image/gif,image/*">
+          <p class="gm-private"><strong>Your photos never leave this device.</strong> Nothing is uploaded.</p>
+          <p class="gm-status" id="status" role="status" aria-live="polite"></p>
+        </section>
+
+        <!-- ===================== 2. CAMERA ===================== -->
+        <section class="gm-card gm-camera" id="cam-card" aria-labelledby="cam-title" hidden>
+          <div class="gm-head">
+            <h2 id="cam-title">Camera clip</h2>
+            <p class="gm-count" id="cam-plan"></p>
+          </div>
+          <div class="gm-video">
+            <video id="video" playsinline muted aria-label="What the camera sees"></video>
+          </div>
+          <fieldset class="gm-fs">
+            <legend>Length</legend>
+            <div class="gm-seg gm-seg-5">
+              <input type="radio" name="secs" id="secs-1" value="1"><label for="secs-1">1 s</label>
+              <input type="radio" name="secs" id="secs-2" value="2"><label for="secs-2">2 s</label>
+              <input type="radio" name="secs" id="secs-3" value="3"><label for="secs-3">3 s</label>
+              <input type="radio" name="secs" id="secs-4" value="4"><label for="secs-4">4 s</label>
+              <input type="radio" name="secs" id="secs-5" value="5"><label for="secs-5">5 s</label>
+            </div>
+          </fieldset>
+          <div class="gm-progress" id="rec-box" hidden>
+            <progress id="rec-progress" max="1" value="0"></progress>
+          </div>
+          <div class="gm-actions">
+            <button class="btn btn-primary" id="rec" type="button" disabled>Record</button>
+            <button class="btn btn-ghost" id="cam-close" type="button">Close camera</button>
+          </div>
+          <p class="gm-hint">One frame every frame-delay, so the clip plays back at real speed. The camera turns off when you finish.</p>
+        </section>
+
+        <!-- ===================== 3. FRAMES ===================== -->
+        <section class="gm-card gm-frames" id="frames-card" aria-labelledby="frames-title" hidden>
+          <div class="gm-head">
+            <h2 id="frames-title">Frames</h2>
+            <p class="gm-count" id="count"></p>
+          </div>
+          <ol class="gm-strip" id="strip" aria-label="Frames, in play order"></ol>
+          <p class="gm-hint">Drag a frame sideways to move it. Or tap it, then Earlier / Later. Keys: <kbd>Shift</kbd> + <kbd>&larr;</kbd> <kbd>&rarr;</kbd>, <kbd>Delete</kbd>.</p>
+          <div class="gm-order-tools" role="group" aria-label="Move the chosen frame">
+            <button class="btn btn-sm" id="move-left" type="button" aria-label="Move earlier">&larr; Earlier</button>
+            <button class="btn btn-sm" id="move-right" type="button" aria-label="Move later">Later &rarr;</button>
+            <button class="btn btn-sm btn-ghost" id="remove" type="button">Remove</button>
+            <button class="btn btn-sm btn-ghost" id="clear" type="button">Remove all</button>
+          </div>
+        </section>
+
+        <!-- ===================== 6. MAKE + RESULT ===================== -->
+        <section class="gm-card gm-make" id="make-card" aria-labelledby="make-title" hidden>
+          <div class="gm-head">
+            <h2 id="make-title">Make your GIF</h2>
+            <p class="gm-count" id="estimate" aria-live="polite"></p>
+          </div>
+          <div class="gm-actions">
+            <button class="btn btn-primary gm-go" id="make" type="button">Make GIF</button>
+            <button class="btn btn-ghost" id="cancel" type="button" hidden>Cancel</button>
+          </div>
+          <div class="gm-progress" id="progress-box" hidden>
+            <progress id="progress" max="1" value="0"></progress>
+          </div>
+          <p class="gm-note" id="make-status" role="status" aria-live="polite"></p>
+
+          <div class="gm-result" id="result" hidden>
+            <div class="gm-result-pic">
+              <img id="result-img" alt="Your finished GIF">
+            </div>
+            <p class="gm-result-info" id="result-info"></p>
+            <p class="gm-warn" id="stale" hidden>You changed something since. Press Make GIF again to update it.</p>
+            <a class="btn btn-primary gm-download" id="download" href="#result" download="animation.gif" hidden>Download GIF</a>
+          </div>
+        </section>
+      </div>
+
+      <div class="gm-col gm-col-side">
+
+        <!-- ===================== 4. PREVIEW ===================== -->
+        <section class="gm-card gm-preview" id="preview-card" aria-labelledby="preview-title" hidden>
+          <div class="gm-head">
+            <h2 id="preview-title">Preview</h2>
+            <p class="gm-count" id="frame-label"></p>
+          </div>
+          <div class="gm-stage" id="stage">
+            <canvas id="anim" role="img" aria-label="The GIF preview, before colours are packed"></canvas>
+          </div>
+          <div class="gm-play-row">
+            <button class="btn gm-play" id="play" type="button" aria-pressed="true">Pause</button>
+            <p class="gm-dims" id="dims"></p>
+          </div>
+        </section>
+
+        <!-- ===================== 5. SETTINGS ===================== -->
+        <section class="gm-card gm-settings" aria-labelledby="set-title">
+          <h2 id="set-title">Settings</h2>
+
+          <fieldset class="gm-fs">
+            <legend>Size (longest side)</legend>
+            <div class="gm-seg gm-seg-5">
+              <input type="radio" name="size" id="size-160" value="160"><label for="size-160">160</label>
+              <input type="radio" name="size" id="size-240" value="240"><label for="size-240">240</label>
+              <input type="radio" name="size" id="size-320" value="320"><label for="size-320">320</label>
+              <input type="radio" name="size" id="size-480" value="480"><label for="size-480">480</label>
+              <input type="radio" name="size" id="size-640" value="640"><label for="size-640">640</label>
+            </div>
+          </fieldset>
+
+          <fieldset class="gm-fs">
+            <legend>Crop</legend>
+            <div class="gm-seg">
+              <input type="radio" name="crop" id="crop-original" value="original"><label for="crop-original">Original</label>
+              <input type="radio" name="crop" id="crop-square" value="square"><label for="crop-square">Square</label>
+              <input type="radio" name="crop" id="crop-wide" value="wide"><label for="crop-wide">16:9</label>
+            </div>
+          </fieldset>
+
+          <div class="field gm-range">
+            <label for="delay">Frame delay <output id="delay-out" for="delay">200 ms</output></label>
+            <input id="delay" type="range" min="20" max="1000" step="10" value="200">
+          </div>
+
+          <fieldset class="gm-fs">
+            <legend>Loop</legend>
+            <div class="gm-seg">
+              <input type="radio" name="loop" id="loop-forever" value="forever"><label for="loop-forever">Forever</label>
+              <input type="radio" name="loop" id="loop-once" value="once"><label for="loop-once">Once</label>
+              <input type="radio" name="loop" id="loop-times" value="times"><label for="loop-times">Times</label>
+            </div>
+          </fieldset>
+          <div class="field gm-times" id="times-row" hidden>
+            <label for="loop-count">Play it this many times</label>
+            <input id="loop-count" type="number" inputmode="numeric" min="2" max="20" step="1" value="3">
+          </div>
+
+          <div class="field gm-range">
+            <label for="colors">Colours <output id="colors-out" for="colors">128</output></label>
+            <input id="colors" type="range" min="64" max="256" step="32" value="128">
+          </div>
+          <label class="gm-check"><input type="checkbox" id="dither"> Dithering (smoother shading, a bigger file)</label>
+        </section>
+      </div>
+    </div>
+
+    <!-- ===================== HOW TO ===================== -->
+    <div class="wrap item-info">
+      <section id="how" aria-labelledby="how-title">
+        <h2 id="how-title">How to use it</h2>
+        <ol>
+          <li>Add photos (choose, drop or paste), record a short camera clip, or try the sample.</li>
+          <li>Put the frames in order. Drag them, or use Earlier / Later.</li>
+          <li>Pick a size, crop, speed, loop and colours. Watch the preview.</li>
+          <li>Press Make GIF, then Download GIF.</li>
+        </ol>
+        <table class="controls">
+          <thead><tr><th scope="col">Do this</th><th scope="col">Phone</th><th scope="col">Keyboard</th></tr></thead>
+          <tbody>
+            <tr><td>Add photos</td><td>Tap Choose photos</td><td><kbd>Tab</kbd> to it, <kbd>Enter</kbd> (or <kbd>Ctrl</kbd> + <kbd>V</kbd> to paste)</td></tr>
+            <tr><td>Record a clip</td><td>Record clip, then Record</td><td><kbd>Tab</kbd> to the buttons, <kbd>Enter</kbd></td></tr>
+            <tr><td>Reorder</td><td>Drag a frame sideways, or tap it then Earlier / Later</td><td><kbd>Shift</kbd> + <kbd>&larr;</kbd> <kbd>&rarr;</kbd> on a frame</td></tr>
+            <tr><td>Remove a frame</td><td>Tap it, then Remove</td><td><kbd>Delete</kbd> on a frame</td></tr>
+            <tr><td>Settings</td><td>Tap the pills, drag the sliders</td><td><kbd>Tab</kbd>, then arrows</td></tr>
+            <tr><td>Make + save</td><td>Make GIF, then Download GIF</td><td><kbd>Tab</kbd> to it, <kbd>Enter</kbd></td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <div id="save-panel"></div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap footer-inner">
+      <p class="privacy-note">
+        <strong>No accounts, no cookies.</strong> Saves stay on your device.
+        Cookie-free visit counts via GoatCounter.
+      </p>
+    </div>
+  </footer>
+
+  <script src="../../kit/stats.js" defer></script>
+</body>
+</html>

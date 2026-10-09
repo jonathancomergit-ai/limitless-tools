@@ -94,7 +94,7 @@ Five more tools, in this order. **The CSP stays exactly as it is**: no new origi
   - acceptance: Unit test (tests/unit): black maps to the darkest character and white to the lightest, custom sets work, output has the right rows x columns
   - acceptance: smoke.js: press Try a sample, check the ASCII output is not empty
 
-- [ ] `gif-maker` - GIF Maker: Turn a few photos or a quick camera clip into a looping GIF.
+- [x] `gif-maker` - GIF Maker: Turn a few photos or a quick camera clip into a looping GIF.
   - acceptance: Add photos (choose files, drop, or paste); reorder by drag; remove; "Try a sample" set
   - acceptance: Or record a 1-5 second camera clip (button-started, as in ascii-cam), captured as frames
   - acceptance: Settings: size, frame delay, loop, colours (64-256), dithering on/off, crop to square/16:9/original

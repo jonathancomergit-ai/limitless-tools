@@ -1,0 +1,352 @@
+/* ============================================================
+   GIF Maker - item styles
+   Phone first: one column, in this order:
+     add, camera, frames, preview, make, settings.
+   From 900px: add, camera, frames and make on the left;
+   preview and settings in a column on the right.
+   ============================================================ */
+
+.gm {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+  padding-block: 1.1rem 0;
+}
+/* On phones the two columns melt away, so `order` can mix them. */
+.gm-col { display: contents; }
+.gm-drop     { order: 1; }
+.gm-camera   { order: 2; }
+.gm-frames   { order: 3; }
+.gm-preview  { order: 4; }
+.gm-make     { order: 5; }
+.gm-settings { order: 6; }
+
+@media (min-width: 900px) {
+  .gm {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 380px;
+    align-items: start;
+    gap: 1.4rem;
+    padding-top: 1.6rem;
+  }
+  .gm-col { display: flex; flex-direction: column; gap: 1.4rem; min-width: 0; }
+}
+
+.gm section { padding-block: 0; }
+.gm h2 { font-size: 1.2rem; margin: 0 0 .8rem; }
+
+/* ---- cards ---- */
+.gm .gm-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 1.1rem 1.1rem 1.2rem;
+  min-width: 0;
+}
+
+.gm-head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: .2rem 1rem;
+  margin-bottom: .7rem;
+}
+.gm-head h2 { margin: 0; }
+.gm-count { margin: 0; font-family: var(--font-mono); font-size: .85rem; color: var(--accent); }
+.gm-count:empty { display: none; }
+
+.gm-hint {
+  font-size: .85rem;
+  color: var(--text-faint);
+  margin: .2rem 0 .9rem;
+  line-height: 1.45;
+}
+.gm-hint:last-child { margin-bottom: 0; }
+.gm-hint kbd { font-size: .78rem; }
+.gm-warn { color: var(--amber); font-size: .9rem; margin: .4rem 0 .6rem; }
+.gm-note { margin: .6rem 0 0; font-size: .9rem; color: var(--text-dim); }
+.gm-note:empty { display: none; }
+
+/* ============================================================
+   1. ADD - the hero
+   ============================================================ */
+.gm .gm-drop {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: .3rem;
+  padding: 1.8rem 1.1rem 1.3rem;
+  border: 2px dashed var(--accent-line);
+  border-radius: var(--radius);
+  background: var(--accent-dim);
+}
+.gm-drop h2 { font-size: clamp(1.5rem, 6vw, 2.1rem); margin: 0; }
+.gm-drop-sub { color: var(--text-dim); margin: 0 0 .7rem; overflow-wrap: anywhere; }
+.gm-drop.is-over { border-color: var(--accent); border-style: solid; background: var(--surface-2); }
+
+/* Once there are frames, the hero gets out of the way. */
+.gm .gm-drop.is-loaded { padding: 1rem 1.1rem .9rem; }
+.gm-drop.is-loaded h2 { font-size: 1.25rem; }
+.gm-drop.is-loaded .gm-drop-sub { font-family: var(--font-mono); font-size: .85rem; margin-bottom: .5rem; }
+
+.gm-drop-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: .6rem;
+  width: 100%;
+}
+.gm-pick {
+  min-height: 56px;
+  min-width: min(100%, 220px);
+  font-size: 1.1rem;
+  padding-inline: 1.6rem;
+}
+.gm-cam-btn, .gm-sample { min-height: 56px; flex: 0 1 auto; }
+.gm-drop.is-loaded .gm-pick,
+.gm-drop.is-loaded .gm-cam-btn,
+.gm-drop.is-loaded .gm-sample { min-height: var(--tap); font-size: 1rem; }
+/* The real file input is invisible; show its focus on the button. */
+.gm-drop:has(#file:focus-visible) .gm-pick { outline: 2px solid var(--cyan); outline-offset: 3px; }
+
+.gm-private { margin: .9rem 0 0; color: var(--text-dim); font-size: .92rem; }
+.gm-private strong { color: var(--green); font-weight: 600; }
+.gm-status { margin: .3rem 0 0; font-size: .9rem; color: var(--amber); }
+.gm-status:empty { display: none; }
+
+/* ============================================================
+   2. CAMERA
+   ============================================================ */
+.gm-video {
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  margin-bottom: .9rem;
+}
+.gm-video video { display: block; width: 100%; height: auto; max-height: 50vh; object-fit: contain; }
+
+/* ============================================================
+   FIELDS (settings, camera)
+   ============================================================ */
+.gm-fs { border: 0; margin: 0 0 .9rem; padding: 0; min-width: 0; }
+.gm-fs legend {
+  font-family: var(--font-mono);
+  font-size: .72rem;
+  font-weight: 500;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin: 0 0 .45rem;
+  padding: 0;
+}
+
+/* Big radio "pills" in one row. */
+.gm-seg {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border: 1px solid var(--line-field);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+.gm-seg-5 { grid-template-columns: repeat(5, 1fr); }
+.gm-seg input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.gm-seg label {
+  display: grid;
+  place-items: center;
+  min-height: var(--tap);
+  padding: 0 .2rem;
+  text-align: center;
+  line-height: 1.15;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: .95rem;
+  cursor: pointer;
+  color: var(--text-dim);
+  border-left: 1px solid var(--line-field);
+  -webkit-user-select: none;
+          user-select: none;
+}
+.gm-seg label:first-of-type { border-left: 0; }
+.gm-seg label:hover { color: var(--text); background: var(--surface-2); }
+.gm-seg input:checked + label { background: var(--accent); color: var(--bg); }
+.gm-seg input:focus-visible + label { outline: 2px solid var(--cyan); outline-offset: -4px; border-radius: 6px; }
+
+.gm-times { margin: -.3rem 0 .9rem; }
+.gm-times input { max-width: 8rem; }
+
+/* A checkbox row with a big tap area. */
+.gm-check {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  min-height: var(--tap);
+  cursor: pointer;
+  color: var(--text);
+  font-size: .95rem;
+}
+.gm-check input { flex: none; width: 22px; height: 22px; accent-color: var(--accent); margin: 0; cursor: pointer; }
+
+.gm-range { margin: 0 0 .5rem; }
+.gm-range label { display: flex; justify-content: space-between; align-items: baseline; gap: .6rem; }
+.gm-range output {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+/* A slider with a fat, easy-to-grab thumb. */
+.gm .field input[type="range"] {
+  -webkit-appearance: none;
+          appearance: none;
+  height: var(--tap);
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+.gm .field input[type="range"]:focus { background: transparent; }
+.gm .field input[type="range"]::-webkit-slider-runnable-track { height: 6px; border-radius: 3px; background: var(--line-bright); }
+.gm .field input[type="range"]::-moz-range-track { height: 6px; border-radius: 3px; background: var(--line-bright); }
+.gm .field input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 28px; height: 28px; margin-top: -11px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 3px solid var(--bg);
+}
+.gm .field input[type="range"]::-moz-range-thumb {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 3px solid var(--bg);
+}
+.gm .field input[type="range"]:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
+
+/* ============================================================
+   3. FRAMES - the strip
+   ============================================================ */
+.gm-strip {
+  list-style: none;
+  margin: 0 0 .6rem;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: .45rem;
+}
+.gm-strip li { margin: 0; }
+.gm-chip {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  padding: 0;
+  border: 2px solid var(--line-bright);
+  border-radius: var(--radius-sm);
+  background: var(--bg-2);
+  cursor: grab;
+  touch-action: pan-y;            /* sideways = drag, up/down = scroll the page */
+  -webkit-user-select: none;
+          user-select: none;
+  -webkit-touch-callout: none;
+}
+.gm-chip canvas { width: 56px; height: 56px; border-radius: 4px; pointer-events: none; }
+.gm-chip span {
+  position: absolute;
+  left: 2px;
+  top: 2px;
+  min-width: 1.1rem;
+  padding: 0 .2rem;
+  border-radius: 4px;
+  background: var(--bg);
+  color: var(--text-dim);
+  font-family: var(--font-mono);
+  font-size: .62rem;
+  line-height: 1.3;
+  pointer-events: none;
+}
+.gm-chip:hover { border-color: var(--cyan); }
+.gm-chip[aria-pressed="true"] { border-color: var(--accent); }
+.gm-chip[aria-pressed="true"] span { background: var(--accent); color: var(--bg); font-weight: 700; }
+.gm-chip:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
+.gm-chip.is-dragging {
+  position: relative;
+  z-index: 2;
+  cursor: grabbing;
+  border-color: var(--accent);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, .55);
+}
+.gm-strip.is-sorting .gm-chip:not(.is-dragging) { opacity: .75; }
+
+.gm-order-tools { display: grid; grid-template-columns: 1fr 1fr; gap: .4rem; }
+.gm-order-tools .btn { min-height: var(--tap); }
+
+/* ============================================================
+   4. PREVIEW
+   ============================================================ */
+.gm-stage {
+  width: 100%;
+  margin: 0 auto .8rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: var(--bg-2);
+}
+.gm-stage canvas { display: block; width: 100%; height: 100%; }
+
+.gm-play-row { display: flex; align-items: center; justify-content: space-between; gap: .4rem .8rem; flex-wrap: wrap; }
+.gm-play { min-height: var(--tap); min-width: 7rem; }
+.gm-dims { margin: 0; font-family: var(--font-mono); font-size: .82rem; color: var(--text-dim); }
+
+/* ============================================================
+   5. MAKE + RESULT
+   ============================================================ */
+.gm-actions { display: flex; flex-wrap: wrap; gap: .6rem; }
+.gm-actions .btn { min-height: var(--tap); flex: 1 1 10rem; }
+.gm-go { min-height: 56px; font-size: 1.1rem; }
+
+.gm-progress { margin: .8rem 0 0; }
+.gm-progress progress {
+  display: block;
+  width: 100%;
+  height: 10px;
+  -webkit-appearance: none;
+          appearance: none;
+  border: 0;
+  border-radius: 5px;
+  background: var(--surface-2);
+  overflow: hidden;
+}
+.gm-progress progress::-webkit-progress-bar { background: var(--surface-2); }
+.gm-progress progress::-webkit-progress-value { background: var(--accent); }
+.gm-progress progress::-moz-progress-bar { background: var(--accent); }
+.gm-camera .gm-progress { margin: 0 0 .9rem; }
+
+.gm-result { margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--line); }
+.gm-result-pic {
+  display: grid;
+  place-items: center;
+  padding: .6rem;
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+}
+.gm-result-pic img { display: block; max-width: 100%; max-height: 420px; height: auto; }
+.gm-result-info { margin: .7rem 0 .4rem; font-family: var(--font-mono); font-size: .9rem; color: var(--accent); overflow-wrap: anywhere; }
+.gm-download {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 56px;
+  margin-top: .5rem;
+  font-size: 1.05rem;
+  overflow-wrap: anywhere;
+  text-align: center;
+}
