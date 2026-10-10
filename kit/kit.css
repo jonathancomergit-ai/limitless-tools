@@ -339,6 +339,14 @@ section { padding-block: var(--gap-lg); }
   border-radius: var(--radius-sm);
 }
 .nav-links a:hover { color: var(--text); background: var(--surface-2); text-decoration: none; }
+/* A button in the nav bar (the Home button) keeps its button look.
+   Without this, .nav-links a dims it and shrinks it below 44px. */
+.nav-links a.btn {
+  color: var(--text);
+  font-size: .85rem;
+  padding: .45rem .85rem;
+  min-height: 44px;
+}
 
 /* Wing switcher: a row of three pills under the header bar, so
    moving between Arcade, Lab and Workshop is one tap from anywhere
@@ -569,6 +577,22 @@ section { padding-block: var(--gap-lg); }
 }
 .chip:hover { color: var(--text); border-color: var(--line-bright); }
 .chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--bg); }
+
+/* Phones: the chips become one row you swipe sideways, so a wing
+   with many tags doesn't push every item below the first screen.
+   The fade on the right edge hints that there are more. */
+@media (max-width: 600px) {
+  .filters {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding-right: 2rem;
+    -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 2rem), transparent);
+    mask-image: linear-gradient(to right, #000 calc(100% - 2rem), transparent);
+  }
+  .filters::-webkit-scrollbar { display: none; }
+  .chip { flex: none; white-space: nowrap; }
+}
 
 .empty {
   border: 1px dashed var(--line-bright);
