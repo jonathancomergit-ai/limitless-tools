@@ -11,6 +11,10 @@
    3. Copy as text: the clipboard, or the fallback box holding
       exactly the same text.
    4. Download PNG: a real PNG file.
+   5. A pretend camera (a canvas stream stands in for
+      getUserMedia): Start, frames arrive, Stop. The last frame
+      is forgotten, so PNG and Copy are off again. Then the
+      camera "unplugs" (track ended): it stops with a message.
    ============================================================ */
 
 import fs from "node:fs";
@@ -68,4 +72,47 @@ export default async function smoke({ page, expect, isMobile }) {
   const bytes = fs.readFileSync(await download.path());
   expect(bytes.subarray(1, 4).toString("latin1")).toBe("PNG");
   expect((await item()).png.width).toBe(second.cols * 12);
+
+  /* ---- 5. a pretend camera: stop, and unplug ---- */
+  await page.evaluate(() => {
+    const c = document.createElement("canvas");
+    c.width = 64;
+    c.height = 48;
+    const g = c.getContext("2d");
+    let i = 0;
+    setInterval(() => {
+      i += 1;
+      g.fillStyle = `hsl(${(i * 20) % 360} 80% 50%)`;
+      g.fillRect(0, 0, 64, 48);
+      g.fillStyle = "#FFFFFF";
+      g.fillRect(i % 64, 10, 12, 24);
+    }, 40);
+    navigator.mediaDevices.getUserMedia = async () => {
+      const s = c.captureStream(30);
+      window.__fakeTracks = s.getVideoTracks();
+      return s;
+    };
+  });
+  const live = () => page.evaluate(() => ({ live: window.__item.live, source: window.__item.source, lines: window.__item.lines.length, frames: window.__item.frames }));
+  const startCam = async () => {
+    const before = (await live()).frames;
+    await page.locator("#start").click();
+    await expect.poll(async () => (await live()).live).toBe(true);
+    await expect.poll(async () => (await live()).frames).toBeGreaterThan(before + 2);
+    await expect(page.locator("#png")).toBeEnabled();
+  };
+
+  await startCam();
+  await page.locator("#start").click();                        // Stop camera
+  await expect.poll(live).toMatchObject({ live: false, source: "none", lines: 0 });
+  await expect(page.locator("#png")).toBeDisabled();
+  await expect(page.locator("#copy")).toBeDisabled();
+  await expect(page.locator("#size-label")).toHaveText("No picture yet");
+
+  await startCam();
+  await page.evaluate(() => { for (const t of window.__fakeTracks) { t.dispatchEvent(new Event("ended")); } });
+  await expect.poll(live).toMatchObject({ live: false, source: "none", lines: 0 });
+  await expect(page.locator("#status")).toContainText("camera stopped");
+  await expect(page.locator("#start")).toHaveText("Start camera");
+  await expect(page.locator("#png")).toBeDisabled();
 }
