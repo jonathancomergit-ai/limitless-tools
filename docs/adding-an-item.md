@@ -82,6 +82,7 @@ Read state with `page.evaluate(() => window.__item.score)`.
 - `items.json`: a real blurb (200 characters max) and 1 to 4 tags.
 - The how-to table in `index.html`.
 - **Remove every `TODO`.** The tests fail while one is left.
+- Run `npm run sitemap` so `sitemap.xml` lists the new item (a test fails if it's stale).
 
 ## 9. Test
 
