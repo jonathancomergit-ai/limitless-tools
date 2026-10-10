@@ -119,5 +119,38 @@
     ],
     "added": "2026-10-09",
     "thumb": "thumb.webp"
+  },
+  {
+    "slug": "particle-designer",
+    "title": "Particle Designer",
+    "blurb": "Design sparks, smoke, fire and magic effects with sliders, watch them live, then export them for your game.",
+    "tags": [
+      "game dev",
+      "design"
+    ],
+    "added": "2026-10-10",
+    "soon": true
+  },
+  {
+    "slug": "tilemap-painter",
+    "title": "Tilemap Painter",
+    "blurb": "Load a tileset, paint a level on a grid, and export it for Tiled or Godot. Nothing is uploaded.",
+    "tags": [
+      "game dev",
+      "images"
+    ],
+    "added": "2026-10-10",
+    "soon": true
+  },
+  {
+    "slug": "easing-editor",
+    "title": "Easing Curve Editor",
+    "blurb": "Drag a curve to shape how things speed up and slow down, see it live, then copy it as CSS, GDScript or JavaScript.",
+    "tags": [
+      "design",
+      "game dev"
+    ],
+    "added": "2026-10-10",
+    "soon": true
   }
 ]

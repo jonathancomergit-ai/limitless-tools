@@ -138,6 +138,43 @@ Five more tools, in this order. **The CSP stays exactly as it is**: no new origi
   - acceptance: Unit test (tests/unit): CSV with quotes and commas round-trips through JSON, the WAV header is right, the PDF and ZIP start with the right magic bytes
   - acceptance: smoke.js: paste a small CSV, convert to JSON, check the output
 
+### Batch 4
+
+Three game-dev tools. Everything runs on the device and exports files a game engine can use.
+
+- [ ] `particle-designer` - Particle Designer: Design sparks, smoke, fire and magic effects with sliders, watch them live, then export them for your game.
+  - acceptance: Live preview; emitter settings: rate, burst, lifetime, speed, spread, gravity, drag, size over life, colour gradient over life, blend (normal / additive), shape (circle, square, spark)
+  - acceptance: Presets: fire, smoke, sparks, magic, rain, explosion
+  - acceptance: Drag the emitter on the preview (touch + mouse); background colour picker
+  - acceptance: Export: JSON settings (format in README), a Godot 4 CPUParticles2D snippet (mapping notes in README), PNG sprite sheet and GIF (copy an encoder into this item's folder; kit/ stays unchanged)
+  - acceptance: Import JSON back in
+  - acceptance: Saves the current effect; Export/Import works
+  - acceptance: Reduced motion: no decorative animation; the preview has a Pause
+  - acceptance: Unit test (tests/unit): the same seed gives the same particles, JSON round-trips, colour gradient interpolation
+  - acceptance: smoke.js: pick a preset, change the rate, export JSON, check it has the new rate
+
+- [ ] `tilemap-painter` - Tilemap Painter: Load a tileset, paint a level on a grid, and export it for Tiled or Godot. Nothing is uploaded.
+  - acceptance: Load a tileset (pick or drop; nothing uploaded), set tile size and spacing; a sample tileset drawn in code so it works right away
+  - acceptance: Tools: brush, rectangle, flood fill, eraser, eyedropper; layers (add, hide, reorder); map size; pinch / wheel zoom and two-finger pan
+  - acceptance: Undo and redo (capped)
+  - acceptance: Export: Tiled JSON (.tmj), CSV per layer, PNG of the map; README explains importing into Godot 4
+  - acceptance: Import a .tmj made here back in
+  - acceptance: Saves the map and tileset settings (the tileset picture only if small; otherwise asks to add it again)
+  - acceptance: Keys: B, R, F, E, I for tools; Ctrl+Z / Ctrl+Y; arrows pan
+  - acceptance: Unit test (tests/unit): flood fill, Tiled JSON shape (1-based gids, 0 = empty), CSV round-trip
+  - acceptance: smoke.js: paint three tiles with the sample tileset, export .tmj, check the data has them
+
+- [ ] `easing-editor` - Easing Curve Editor: Drag a curve to shape how things speed up and slow down, see it live, then copy it as CSS, GDScript or JavaScript.
+  - acceptance: Cubic-bezier editor with two draggable handles (touch + mouse; arrow keys nudge); handles may go past 0-1 for overshoot
+  - acceptance: Live previews: a moving ball, a scaling box, a fade; Play / Loop; duration slider
+  - acceptance: Presets: the standard CSS eases plus back, bounce and elastic
+  - acceptance: Pin a second curve to race against the current one
+  - acceptance: Copy as: CSS cubic-bezier(), CSS linear() for bounce and elastic, GDScript (closest Tween trans/ease plus a custom curve function), JS function
+  - acceptance: Saves the current and pinned curves; Export/Import works
+  - acceptance: Reduced motion: previews don't autoplay
+  - acceptance: Unit test (tests/unit): the bezier solver matches known values for "ease" within 0.001; linear() output starts at 0, ends at 1 and its x values only go up
+  - acceptance: smoke.js: drag a handle, check the CSS output changed
+
 ## Ideas (not ready yet)
 
 - (add more here)
