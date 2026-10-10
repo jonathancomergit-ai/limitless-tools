@@ -22,6 +22,8 @@
    Pure functions, no DOM: unit tested in tests/unit/file-converter.test.js.
    ============================================================ */
 
+import { setKey } from "./csv.js";
+
 function fail(message, line) {
   const err = new Error(`Line ${line}: ${message}`);
   err.line = line;
@@ -145,7 +147,7 @@ function parseFlow(s, line) {
         let v = null;
         if (s[i] === ":") { i++; v = value("map"); ws(); }
         if (Object.prototype.hasOwnProperty.call(obj, key)) { throw fail(`the key "${key}" appears twice.`, line); }
-        obj[key] = v;
+        setKey(obj, key, v);
         if (s[i] === ",") { i++; ws(); if (s[i] === "}") { i++; return obj; } continue; }
         if (s[i] === "}") { i++; return obj; }
         throw fail(`expected , or } in a {flow map}.`, line);
@@ -282,7 +284,7 @@ export function parseYAML(text) {
       } else {
         v = inlineValue(kv.rest, p.line);
       }
-      obj[kv.key] = v;
+      setKey(obj, kv.key, v);
     }
     return obj;
   }
