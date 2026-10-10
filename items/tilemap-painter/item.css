@@ -1,0 +1,319 @@
+/* ============================================================
+   Tilemap Painter - item styles
+   Phone first: one column, in this order:
+     tools + map, tiles, layers, tileset, map size, export.
+   From 960px: the map on the left, everything else in a
+   column on the right.
+   ============================================================ */
+
+.tp {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+  padding-block: 1rem 0;
+}
+/* On phones the two columns melt away, so `order` can mix them. */
+.tp-col { display: contents; }
+.tp-draw    { order: 1; }
+.tp-tiles   { order: 2; }
+.tp-layers  { order: 3; }
+.tp-tileset { order: 4; }
+.tp-size    { order: 5; }
+.tp-export  { order: 6; }
+
+@media (min-width: 960px) {
+  .tp {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 360px;
+    align-items: start;
+    gap: 1.4rem;
+    padding-top: 1.4rem;
+  }
+  .tp-col { display: flex; flex-direction: column; gap: 1.1rem; min-width: 0; }
+  .tp-col-main { position: sticky; top: 1rem; }
+}
+
+.tp section { padding-block: 0; }
+.tp h2 { font-size: 1.2rem; margin: 0 0 .8rem; }
+
+/* ---- cards ---- */
+.tp .tp-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 1.1rem 1.1rem 1.2rem;
+  min-width: 0;
+}
+@media (min-width: 960px) {
+  .tp .tp-draw {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 1rem;
+  }
+}
+
+.tp-head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: .2rem 1rem;
+  margin-bottom: .7rem;
+}
+.tp-head h2 { margin: 0; }
+.tp-count { margin: 0; font-family: var(--font-mono); font-size: .85rem; color: var(--accent); }
+
+.tp-hint {
+  font-size: .85rem;
+  color: var(--text-faint);
+  margin: .5rem 0 0;
+  line-height: 1.45;
+}
+.tp-hint:empty { display: none; }
+.tp-hint kbd { font-size: .78rem; }
+.tp-status, .tp-warn { margin: .5rem 0 0; font-size: .9rem; color: var(--amber); overflow-wrap: anywhere; }
+.tp-status:empty, .tp-warn:empty { display: none; }
+
+.tp svg {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  flex: none;
+}
+
+/* ============================================================
+   1. TOOLS + MAP
+   ============================================================ */
+.tp-tools {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: .35rem;
+  margin-bottom: .5rem;
+}
+.tp-tool {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: .15rem;
+  min-height: 56px;
+  min-width: 0;
+  padding: .3rem 0;
+  border: 1px solid var(--line-bright);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  color: var(--text-dim);
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: .74rem;
+  cursor: pointer;
+}
+.tp-tool:hover { color: var(--text); border-color: var(--text-faint); }
+.tp-tool[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--bg); }
+.tp-tool:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
+
+.tp-opts {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .45rem;
+  margin-bottom: .5rem;
+}
+.tp-current {
+  display: flex;
+  align-items: center;
+  gap: .55rem;
+  flex: 1 1 10rem;
+  min-width: 0;
+  min-height: var(--tap);
+  padding: 0 .8rem 0 .4rem;
+  border: 1px solid var(--line-bright);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: .85rem;
+  text-align: left;
+  cursor: pointer;
+}
+.tp-current:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
+.tp-current-chip {
+  flex: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 4px;
+  border: 2px solid var(--text);
+  image-rendering: pixelated;
+}
+.tp-current-text { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tp-opt { min-height: var(--tap); padding: .4rem .8rem; gap: .4rem; }
+.tp-opt[aria-pressed="true"] { border-color: var(--cyan); color: var(--cyan); background: rgba(53, 214, 245, .1); }
+
+/* The map stage: the only place touch is ours (no scroll, no
+   browser zoom), so pinch and drag can paint and zoom. */
+.tp-stage {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  max-height: 72vh;
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  touch-action: none;
+  -webkit-user-select: none;
+          user-select: none;
+  -webkit-touch-callout: none;
+  cursor: crosshair;
+}
+.tp-stage canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.tp-stage:focus { outline: none; }
+.tp-stage:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
+.tp-stage.is-panning { cursor: grabbing; }
+@media (min-width: 960px) {
+  .tp-stage {
+    aspect-ratio: auto;
+    height: clamp(420px, calc(100vh - 290px), 760px);
+    max-height: none;
+  }
+}
+
+.tp-viewbar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: .45rem;
+  margin-top: .5rem;
+}
+.tp-group { display: flex; align-items: center; gap: .35rem; }
+.tp-icon {
+  min-width: var(--tap);
+  min-height: var(--tap);
+  padding: 0;
+  font-size: 1.3rem;
+}
+.tp-fit { font-size: .9rem; padding: 0 .7rem; }
+.tp-zoom {
+  min-width: 3.3rem;
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: .85rem;
+}
+
+/* ============================================================
+   2. TILES (the picker scrolls inside its own box)
+   ============================================================ */
+.tp-palette {
+  max-height: 22rem;
+  overflow: auto;
+  overscroll-behavior: contain;
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: 4px;
+}
+.tp-palette canvas {
+  display: block;
+  cursor: pointer;
+  border-radius: 4px;
+}
+.tp-palette canvas:focus { outline: none; }
+.tp-palette canvas:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
+
+/* ============================================================
+   3. LAYERS
+   ============================================================ */
+.tp-layer-list { list-style: none; margin: 0 0 .7rem; padding: 0; display: grid; gap: .35rem; }
+.tp-layer {
+  display: flex;
+  gap: .35rem;
+  margin: 0;
+}
+.tp-layer-name {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: var(--tap);
+  padding: 0 .9rem;
+  text-align: left;
+  border: 2px solid var(--line-bright);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  color: var(--text);
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: .95rem;
+  cursor: pointer;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.tp-layer.is-active .tp-layer-name { border-color: var(--accent); background: var(--accent-dim); }
+.tp-layer.is-hidden .tp-layer-name { color: var(--text-faint); }
+.tp-layer-name:focus-visible, .tp-eye:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
+.tp-eye {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: var(--tap);
+  min-height: var(--tap);
+  padding: 0;
+  border: 1px solid var(--line-bright);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+}
+.tp-eye[aria-pressed="false"] { color: var(--text-faint); }
+
+.tp-btns { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .4rem; }
+.tp-btns-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.tp-btns .btn { min-height: var(--tap); padding-inline: .3rem; }
+
+/* ============================================================
+   4. TILESET + 5. MAP SIZE
+   ============================================================ */
+.tp-tileset.is-over { border-color: var(--accent); border-style: dashed; background: var(--surface-2); }
+.tp-name {
+  margin: -.2rem 0 .7rem;
+  font-family: var(--font-mono);
+  font-size: .85rem;
+  color: var(--text-dim);
+  overflow-wrap: anywhere;
+}
+.tp-drop-actions { display: flex; flex-wrap: wrap; gap: .45rem; }
+.tp-drop-actions .btn { min-height: var(--tap); flex: 1 1 9rem; }
+.tp-pick { cursor: pointer; }
+
+.tp-pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: .2rem .8rem;
+  margin-top: .9rem;
+}
+.tp-pair .field { margin-bottom: .4rem; min-width: 0; }
+.tp-size .tp-pair { margin-top: 0; }
+.tp-size .tp-btns { margin-top: .3rem; }
+
+/* ============================================================
+   6. EXPORT
+   ============================================================ */
+.tp-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .45rem; }
+.tp-actions .btn { min-height: var(--tap); padding-inline: .5rem; }
+.tp-import { margin-top: .9rem; padding-top: .9rem; border-top: 1px solid var(--line); }
+.tp-full { width: 100%; min-height: var(--tap); cursor: pointer; }
+/* the file inputs are hidden: their buttons show the focus */
+.tp-import:has(input:focus-visible) .tp-full,
+.tp-drop-actions:has(input:focus-visible) .tp-pick { outline: 2px solid var(--cyan); outline-offset: 2px; }
+.tp-export-note { color: var(--text-dim); overflow-wrap: anywhere; }

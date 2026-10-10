@@ -153,7 +153,7 @@ Three game-dev tools. Everything runs on the device and exports files a game eng
   - acceptance: Unit test (tests/unit): the same seed gives the same particles, JSON round-trips, colour gradient interpolation
   - acceptance: smoke.js: pick a preset, change the rate, export JSON, check it has the new rate
 
-- [ ] `tilemap-painter` - Tilemap Painter: Load a tileset, paint a level on a grid, and export it for Tiled or Godot. Nothing is uploaded.
+- [x] `tilemap-painter` - Tilemap Painter: Load a tileset, paint a level on a grid, and export it for Tiled or Godot. Nothing is uploaded.
   - acceptance: Load a tileset (pick or drop; nothing uploaded), set tile size and spacing; a sample tileset drawn in code so it works right away
   - acceptance: Tools: brush, rectangle, flood fill, eraser, eyedropper; layers (add, hide, reorder); map size; pinch / wheel zoom and two-finger pan
   - acceptance: Undo and redo (capped)

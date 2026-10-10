@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <!-- Do not edit this line. It's the privacy lock, and the tests check it. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://gc.zgo.at; connect-src 'self' https://jonjoe1001.goatcounter.com; img-src 'self' data: blob: https://jonjoe1001.goatcounter.com; style-src 'self'; font-src 'self'; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+
+  <title>Tilemap Painter - Limitless Lab</title>
+  <meta name="description" content="Load a tileset, paint a level on a grid, and export it for Tiled or Godot. Nothing is uploaded.">
+  <meta name="theme-color" content="#07070C">
+
+  <link rel="icon" href="../../kit/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../../kit/kit.css">
+  <link rel="stylesheet" href="item.css">
+  <script type="module" src="main.js"></script>
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="item-bar">
+    <a class="back-link" href="../../"><span aria-hidden="true">&larr;</span> <span data-slot="wing-name">Hub</span></a>
+    <h1>Tilemap Painter</h1>
+  </header>
+
+  <main id="main">
+    <div class="wrap tp">
+      <div class="tp-col tp-col-main">
+
+        <!-- ===================== 1. PAINT ===================== -->
+        <section class="tp-draw" aria-labelledby="draw-title">
+          <h2 id="draw-title" class="sr-only">Painting</h2>
+
+          <div class="tp-tools" role="toolbar" aria-label="Tools">
+            <button class="tp-tool" type="button" data-tool="brush" aria-pressed="true" title="Brush (B)">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4l6 6-8 8H6v-6z M11 7l6 6"/></svg>
+              <span>Brush</span>
+            </button>
+            <button class="tp-tool" type="button" data-tool="rect" aria-pressed="false" title="Rectangle (R)">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 6.5h15v11h-15z M4.5 12h15 M12 6.5v11"/></svg>
+              <span>Box</span>
+            </button>
+            <button class="tp-tool" type="button" data-tool="fill" aria-pressed="false" title="Flood fill (F)">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11l7-7 7 7-7 7z M4 11h14 M20 15c0 2 1 3 1 4.2a1 1 0 0 1-2 0c0-1.2 1-2.2 1-4.2z"/></svg>
+              <span>Fill</span>
+            </button>
+            <button class="tp-tool" type="button" data-tool="eraser" aria-pressed="false" title="Eraser (E)">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 19h11 M4.5 14.5l9-9 5 5-8.5 8.5H8z M9 10l5 5"/></svg>
+              <span>Eraser</span>
+            </button>
+            <button class="tp-tool" type="button" data-tool="picker" aria-pressed="false" title="Eyedropper (I)">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4.5l5.5 5.5 M16.5 7.5L7 17l-3 1 1-3 9.5-9.5 M13 6l5 5"/></svg>
+              <span>Pick</span>
+            </button>
+          </div>
+
+          <div class="tp-opts">
+            <button class="tp-current" id="current" type="button">
+              <canvas class="tp-current-chip" id="current-chip" aria-hidden="true"></canvas>
+              <span class="tp-current-text"><span class="sr-only">Tile: </span><span id="current-name">Tile 1</span></span>
+            </button>
+            <button class="btn tp-opt" id="grid" type="button" aria-pressed="true" title="Grid (G)">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16v16H4z M4 9.3h16 M4 14.7h16 M9.3 4v16 M14.7 4v16"/></svg>
+              <span>Grid</span>
+            </button>
+          </div>
+
+          <div class="tp-stage" id="stage" tabindex="0" role="application"
+               aria-roledescription="tile map"
+               aria-label="Tile map. Arrows move the map under the cursor, Space or Enter paints."
+               aria-describedby="cursor-out">
+            <canvas id="view" aria-hidden="true"></canvas>
+          </div>
+          <p class="sr-only" id="cursor-out" aria-live="polite"></p>
+
+          <div class="tp-viewbar">
+            <div class="tp-group" role="group" aria-label="History">
+              <button class="btn tp-icon" id="undo" type="button" aria-label="Undo" title="Undo (Ctrl+Z)">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 14L4 9l5-5 M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg>
+              </button>
+              <button class="btn tp-icon" id="redo" type="button" aria-label="Redo" title="Redo (Ctrl+Y)">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 14l5-5-5-5 M20 9H9.5a5.5 5.5 0 0 0 0 11H13"/></svg>
+              </button>
+            </div>
+            <div class="tp-group" role="group" aria-label="Zoom">
+              <button class="btn tp-icon" id="zoom-out" type="button" aria-label="Zoom out">&minus;</button>
+              <output class="tp-zoom" id="zoom-label" aria-live="polite">1&times;</output>
+              <button class="btn tp-icon" id="zoom-in" type="button" aria-label="Zoom in">+</button>
+              <button class="btn tp-icon tp-fit" id="zoom-fit" type="button">Fit</button>
+            </div>
+          </div>
+          <p class="tp-hint">Pinch or scroll to zoom. Two fingers, <kbd>Space</kbd> + drag or the middle button to move around.</p>
+          <p class="tp-status" id="status" role="status" aria-live="polite"></p>
+        </section>
+      </div>
+
+      <div class="tp-col tp-col-side">
+
+        <!-- ===================== 2. TILES ===================== -->
+        <section class="tp-card tp-tiles" id="tiles-card" aria-labelledby="tiles-title">
+          <div class="tp-head">
+            <h2 id="tiles-title">Tiles</h2>
+            <p class="tp-count" id="tile-count">32 tiles</p>
+          </div>
+          <div class="tp-palette" id="palette-box">
+            <canvas id="palette" tabindex="0" role="application"
+                    aria-roledescription="tile picker"
+                    aria-label="Tile picker. Arrows choose a tile."
+                    aria-describedby="current-name"></canvas>
+          </div>
+          <p class="tp-hint">Tap a tile to paint with it. Keys: arrows here, or <kbd>[</kbd> <kbd>]</kbd> anywhere.</p>
+        </section>
+
+        <!-- ===================== 3. LAYERS ===================== -->
+        <section class="tp-card tp-layers" aria-labelledby="layers-title">
+          <div class="tp-head">
+            <h2 id="layers-title">Layers</h2>
+            <p class="tp-count" id="layer-count">1 / 8</p>
+          </div>
+          <ul class="tp-layer-list" id="layer-list" aria-label="Layers, top first"></ul>
+          <div class="tp-btns" role="group" aria-label="Layer actions">
+            <button class="btn btn-sm" id="layer-add" type="button">Add</button>
+            <button class="btn btn-sm" id="layer-up" type="button" aria-label="Move layer up">&uarr; Up</button>
+            <button class="btn btn-sm" id="layer-down" type="button" aria-label="Move layer down">&darr; Down</button>
+            <button class="btn btn-sm btn-ghost" id="layer-del" type="button">Delete</button>
+          </div>
+        </section>
+
+        <!-- ===================== 4. TILESET ===================== -->
+        <section class="tp-card tp-tileset" id="drop" aria-labelledby="tileset-title">
+          <div class="tp-head">
+            <h2 id="tileset-title">Tileset</h2>
+            <p class="tp-count" id="tileset-size">128 &times; 64</p>
+          </div>
+          <p class="tp-name" id="tileset-name">sample-tiles.png</p>
+          <div class="tp-drop-actions">
+            <label class="btn btn-primary tp-pick" for="file">Choose a tileset</label>
+            <button class="btn btn-ghost" id="sample" type="button">Use the sample</button>
+            <input class="sr-only" id="file" type="file" accept="image/png,image/gif,image/webp,image/*">
+          </div>
+          <p class="tp-hint">Or drop a picture on the page. <strong>Nothing is uploaded.</strong></p>
+          <div class="tp-pair">
+            <div class="field">
+              <label for="tile-w">Tile width</label>
+              <input id="tile-w" type="number" inputmode="numeric" min="4" max="256" step="1" value="16">
+            </div>
+            <div class="field">
+              <label for="tile-h">Tile height</label>
+              <input id="tile-h" type="number" inputmode="numeric" min="4" max="256" step="1" value="16">
+            </div>
+            <div class="field">
+              <label for="spacing">Spacing</label>
+              <input id="spacing" type="number" inputmode="numeric" min="0" max="64" step="1" value="0">
+            </div>
+            <div class="field">
+              <label for="margin">Margin</label>
+              <input id="margin" type="number" inputmode="numeric" min="0" max="64" step="1" value="0">
+            </div>
+          </div>
+          <p class="tp-hint">Pixels. Spacing is the gap between tiles; margin is the border round the picture.</p>
+          <p class="tp-warn" id="tileset-note" role="status" aria-live="polite"></p>
+        </section>
+
+        <!-- ===================== 5. MAP SIZE ===================== -->
+        <section class="tp-card tp-size" aria-labelledby="size-title">
+          <div class="tp-head">
+            <h2 id="size-title">Map</h2>
+            <p class="tp-count" id="size-label">20 &times; 12 tiles</p>
+          </div>
+          <div class="tp-pair">
+            <div class="field">
+              <label for="map-w">Width (tiles)</label>
+              <input id="map-w" type="number" inputmode="numeric" min="1" max="256" step="1" value="20">
+            </div>
+            <div class="field">
+              <label for="map-h">Height (tiles)</label>
+              <input id="map-h" type="number" inputmode="numeric" min="1" max="256" step="1" value="12">
+            </div>
+          </div>
+          <div class="tp-btns tp-btns-2">
+            <button class="btn btn-sm" id="resize" type="button">Resize</button>
+            <button class="btn btn-sm btn-ghost" id="clear-map" type="button">New empty map</button>
+          </div>
+          <p class="tp-hint" id="size-hint">Resizing keeps the tiles at the top-left. Both can be undone.</p>
+        </section>
+
+        <!-- ===================== 6. EXPORT ===================== -->
+        <section class="tp-card tp-export" aria-labelledby="export-title">
+          <h2 id="export-title">Export</h2>
+          <div class="tp-actions">
+            <button class="btn btn-primary" id="export-tmj" type="button">Tiled map (.tmj)</button>
+            <button class="btn" id="export-csv" type="button">CSV (this layer)</button>
+            <button class="btn" id="export-png" type="button">Map PNG</button>
+            <button class="btn" id="export-tiles" type="button">Tileset PNG</button>
+          </div>
+          <p class="tp-hint">The .tmj points at the tileset picture by name: keep the two in one folder.</p>
+          <div class="tp-import">
+            <label class="btn tp-full" for="tmj-file">Open a .tmj made here</label>
+            <input class="sr-only" id="tmj-file" type="file" accept=".tmj,.json,application/json">
+          </div>
+          <p class="tp-hint tp-export-note" id="export-status" role="status" aria-live="polite"></p>
+        </section>
+      </div>
+    </div>
+
+    <!-- ===================== HOW TO ===================== -->
+    <div class="wrap item-info">
+      <section id="how" aria-labelledby="how-title">
+        <h2 id="how-title">How to use it</h2>
+        <ol>
+          <li>Start with the sample tiles, or choose your own tileset and set its tile size.</li>
+          <li>Tap a tile, pick a tool, and paint on the map. Add layers for things that sit on top.</li>
+          <li>Export a Tiled map (.tmj) with the tileset PNG, a CSV per layer, or a PNG of the level.</li>
+        </ol>
+        <table class="controls">
+          <thead><tr><th scope="col">Do this</th><th scope="col">Phone</th><th scope="col">Keyboard</th></tr></thead>
+          <tbody>
+            <tr><td>Paint</td><td>Tap or drag on the map</td><td>Arrows move the map under the cursor, <kbd>Space</kbd> / <kbd>Enter</kbd> paints (hold <kbd>Space</kbd> + arrows to keep painting)</td></tr>
+            <tr><td>Tools</td><td>Brush, Box, Fill, Eraser, Pick</td><td><kbd>B</kbd> <kbd>R</kbd> <kbd>F</kbd> <kbd>E</kbd> <kbd>I</kbd></td></tr>
+            <tr><td>Box</td><td>Drag from corner to corner</td><td><kbd>Space</kbd> at one corner, move, <kbd>Space</kbd> at the other (<kbd>Esc</kbd> cancels)</td></tr>
+            <tr><td>Choose a tile</td><td>Tap it under Tiles</td><td><kbd>[</kbd> <kbd>]</kbd>, or arrows on the tile picker</td></tr>
+            <tr><td>Undo / redo</td><td>The arrow buttons</td><td><kbd>Ctrl</kbd> + <kbd>Z</kbd> / <kbd>Ctrl</kbd> + <kbd>Y</kbd></td></tr>
+            <tr><td>Zoom</td><td>Pinch, or &minus; + Fit</td><td><kbd>+</kbd> <kbd>&minus;</kbd> <kbd>0</kbd>, or the mouse wheel</td></tr>
+            <tr><td>Move around</td><td>Drag with two fingers</td><td>Arrows, <kbd>Space</kbd> + drag, or middle-button drag</td></tr>
+            <tr><td>Grid</td><td>Tap Grid</td><td><kbd>G</kbd></td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <div id="save-panel"></div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap footer-inner">
+      <p class="privacy-note">
+        <strong>No accounts, no cookies.</strong> Saves stay on your device.
+        Cookie-free visit counts via GoatCounter.
+        <a href="https://jonjoe1001.dev/privacy.html#limitless">Privacy</a>
+      </p>
+    </div>
+  </footer>
+
+  <script src="../../kit/stats.js" defer></script>
+</body>
+</html>
