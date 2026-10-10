@@ -323,6 +323,9 @@ test("scale up: every pixel becomes a k x k block", () => {
   assert.equal(fitScale(128 * 5, 128 * 5, 32), 9);    // 40 M pixels at most
   assert.equal(fitScale(128 * 5, 128, 32), 12);       // 8192 px a side at most
   assert.equal(fitScale(100, 100, 0), 1);
+  /* the exports pass iOS Safari's canvas cap: 4096 x 4096 worth */
+  assert.equal(fitScale(1024, 1024, 8, { maxPixels: 16_777_216 }), 4);
+  assert.equal(fitScale(640, 640, 32, { maxPixels: 16_777_216 }), 6);
 });
 
 test("sprite sheet layout + JSON", () => {

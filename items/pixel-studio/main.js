@@ -644,6 +644,9 @@ stage.addEventListener("pointerdown", (e) => {
   if (e.button !== 0) { return; }
   const px = toPixel(p);
   state.cursor = { x: Math.min(doc.w - 1, Math.max(0, px.x)), y: Math.min(doc.h - 1, Math.max(0, px.y)) };
+  /* A keyboard line / box still in progress: drop its preview, or
+     the new stroke would bake it in where Undo can't reach it. */
+  if (stroke) { cancelStroke(); say(""); }
   anchor = null;
   gesture = { kind: "draw", id: e.pointerId };
   beginStroke(px.x, px.y);
@@ -1267,11 +1270,13 @@ function toBlob(c) {
   return new Promise((resolve) => c.toBlob(resolve, "image/png"));
 }
 
-/* Sizes, kept inside what browsers can make. */
-function pngScale() { return fitScale(doc.w, doc.h, settings.scale); }
+/* Sizes, kept inside what browsers can make. iOS Safari refuses
+   any canvas over 16,777,216 pixels (4096 x 4096 worth). */
+const MAX_CANVAS = { maxPixels: 16_777_216 };
+function pngScale() { return fitScale(doc.w, doc.h, settings.scale, MAX_CANVAS); }
 function sheetPlan() {
   const one = sheetLayout(doc.frames.length, doc.w, doc.h);
-  const k = fitScale(one.width, one.height, settings.scale);
+  const k = fitScale(one.width, one.height, settings.scale, MAX_CANVAS);
   return { k, layout: sheetLayout(doc.frames.length, doc.w, doc.h, { scale: k }) };
 }
 function gifScale() {
@@ -1303,6 +1308,7 @@ function frameCanvas(f, k) {
   c.width = doc.w * k;
   c.height = doc.h * k;
   const g = c.getContext("2d");
+  if (!g) { return null; }
   g.imageSmoothingEnabled = false;
   g.drawImage(paintFrame(onion, f), 0, 0, c.width, c.height);
   return c;
@@ -1310,7 +1316,9 @@ function frameCanvas(f, k) {
 
 $("export-png").addEventListener("click", async () => {
   const k = pngScale();
-  const blob = await toBlob(frameCanvas(state.frame, k));
+  const c = frameCanvas(state.frame, k);
+  if (!c) { exportSay("This browser couldn't make a picture that big. Try a smaller scale."); return; }
+  const blob = await toBlob(c);
   if (!blob) { exportSay("This browser couldn't make a PNG."); return; }
   const name = `${NAME}-${doc.w}x${doc.h}${doc.frames.length > 1 ? `-frame${state.frame + 1}` : ""}@${k}x.png`;
   downloadBlob(blob, name);
@@ -1324,6 +1332,7 @@ $("export-sheet").addEventListener("click", async () => {
   c.width = layout.width;
   c.height = layout.height;
   const g = c.getContext("2d");
+  if (!g) { exportSay("This browser couldn't make a sheet that big. Try a smaller scale."); return; }
   g.imageSmoothingEnabled = false;
   layout.rects.forEach((r, f) => g.drawImage(paintFrame(onion, f), r.x, r.y, r.w, r.h));
   const blob = await toBlob(c);
