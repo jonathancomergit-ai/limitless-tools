@@ -566,6 +566,7 @@ $("undo").addEventListener("click", () => {
   if (!undoLayout) { return; }
   state.layout = undoLayout;
   undoLayout = null;
+  matchPhoto();
   $("undo").hidden = true;
   syncForms();
   select(-1);
@@ -593,6 +594,41 @@ async function decode(file) {
   }
 }
 
+/* The photo layer, resized for a picture of pw x ph: the same
+   shown width, the picture's own shape. */
+function fitLayer(old, pw, ph) {
+  const scale = old.pw === pw && old.ph === ph ? old.scale : clamp((old.pw * old.scale) / pw, 0.01, 4);
+  return { ...old, pw, ph, scale };
+}
+
+/* After Undo or Import the photo layer may hold another picture's
+   size: match it to the picture in memory, or it would stretch. */
+function matchPhoto() {
+  if (!state.photo) { return; }
+  const at = layers().findIndex((l) => l.kind === "photo");
+  if (at < 0) { return; }
+  const pw = state.photo.width || state.photo.naturalWidth;
+  const ph = state.photo.height || state.photo.naturalHeight;
+  layers()[at] = fitLayer(layers()[at], pw, ph);
+}
+
+/* Big pictures are shrunk once, at load, to MAX_PHOTO on the long
+   side, so dragging doesn't rescale a huge bitmap every frame. */
+const MAX_PHOTO = 4096;
+function shrink(pic, w, h) {
+  const k = MAX_PHOTO / Math.max(w, h);
+  if (k >= 1) { return pic; }
+  const c = document.createElement("canvas");
+  c.width = Math.max(1, Math.round(w * k));
+  c.height = Math.max(1, Math.round(h * k));
+  const g = c.getContext("2d");
+  if (!g) { return pic; }
+  g.imageSmoothingQuality = "high";
+  g.drawImage(pic, 0, 0, c.width, c.height);
+  if (pic.close) { pic.close(); }
+  return c;
+}
+
 function dropPhoto() {
   if (state.photo && state.photo.close) { state.photo.close(); }
   state.photo = null;
@@ -600,34 +636,39 @@ function dropPhoto() {
   document.querySelector(".tm-pick").textContent = "Choose a picture";
 }
 
+let loads = 0;          // only the newest picture chosen wins
+
 async function loadFile(file) {
   if (!file) { return; }
   if (file.type && !/^image\//.test(file.type)) { say("That isn't a picture. Try a JPG, PNG or WebP."); return; }
+  const ticket = ++loads;
   say("Opening…");
   let bmp;
   try { bmp = await decode(file); } catch {
-    say("Couldn't open that one. It may be damaged, or a type browsers can't read.");
+    if (ticket === loads) { say("Couldn't open that one. It may be damaged, or a type browsers can't read."); }
     return;
   }
+  if (ticket !== loads) { if (bmp.close) { bmp.close(); } return; }   // a newer one was picked meanwhile
+  const fw = bmp.width || bmp.naturalWidth;
+  const fh = bmp.height || bmp.naturalHeight;
+  if (!fw || !fh) { say("That picture is empty."); return; }
+  bmp = shrink(bmp, fw, fh);
   const pw = bmp.width || bmp.naturalWidth;
   const ph = bmp.height || bmp.naturalHeight;
-  if (!pw || !ph) { say("That picture is empty."); return; }
   if (state.photo && state.photo.close && state.photo !== bmp) { state.photo.close(); }
   state.photo = bmp;
   const { w: W, h: H } = dims();
   const at = layers().findIndex((l) => l.kind === "photo");
   if (at >= 0) {
     /* a saved spot: keep it, and keep the same shown width */
-    const old = layers()[at];
-    const scale = old.pw === pw && old.ph === ph ? old.scale : clamp((old.pw * old.scale) / pw, 0.01, 4);
-    layers()[at] = { ...old, pw, ph, scale, hidden: false };
+    layers()[at] = { ...fitLayer(layers()[at], pw, ph), hidden: false };
     select(at);
   } else {
     if (layers().length >= MAX_LAYERS) { layers().shift(); }
     layers().unshift(newPhoto(pw, ph, W, H));
     select(0);
   }
-  $("drop-sub").textContent = `${file.name || "Pasted picture"} · ${pw} × ${ph}`;
+  $("drop-sub").textContent = `${file.name || "Pasted picture"} · ${fw} × ${fh}`;
   document.querySelector(".tm-pick").textContent = "Choose another";
   say("");
   changed();
@@ -754,7 +795,7 @@ mountSavePanel($("save-panel"), save, {
 function reload() {
   state.layout = cleanLayout(save.get().layout) || templateLayout(TEMPLATES[0]);
   state.guides = save.get().guides === true;
-  if (!layers().some((l) => l.kind === "photo")) { dropPhoto(); }
+  if (!layers().some((l) => l.kind === "photo")) { dropPhoto(); } else { matchPhoto(); }
   undoLayout = null;
   $("undo").hidden = true;
   syncForms();

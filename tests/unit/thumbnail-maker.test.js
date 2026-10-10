@@ -132,6 +132,16 @@ test("layer sizes by kind", () => {
   assert.deepEqual(b, { cx: 10, cy: 20, w: 500, h: 250, rot: 30 });
 });
 
+test("a huge panorama keeps its shape (and its size on the canvas)", () => {
+  const p = cleanLayer({ kind: "photo", pw: 30000, ph: 4000, scale: 0.05 });
+  assert.equal(p.pw, 20000);
+  assert.equal(p.ph, 2667);
+  assert.ok(Math.abs(layerSize(p).w - 1500) < 1);
+  assert.ok(Math.abs(layerSize(p).h - 200) < 1);
+  const tall = cleanLayer({ kind: "photo", pw: 1000, ph: 40000, scale: 0.01 });
+  assert.deepEqual([tall.pw, tall.ph, tall.scale], [500, 20000, 0.02]);
+});
+
 test("hitTest finds the top-most visible layer", () => {
   const L = [
     { x: 100, y: 100, w: 200, h: 200, rot: 0 },

@@ -8,6 +8,10 @@
       events), the mouse on desktop. It moved. Desktop also
       nudges it with Shift + Arrow (10 px).
    4. Download PNG: a real 1280 x 720 PNG file.
+   5. Your picture (made in the page, set on the file input):
+      - a slow pick then a quick one: the quick one stays.
+      - template, new picture, Undo: the picture keeps its shape.
+      - a 5000 px wide one is shrunk to 4096 at load.
    ============================================================ */
 
 import fs from "node:fs";
@@ -72,4 +76,55 @@ export default async function smoke({ page, expect, isMobile }) {
   expect(bytes.subarray(1, 4).toString("latin1")).toBe("PNG");
   expect(bytes.readUInt32BE(16)).toBe(1280);
   expect(bytes.readUInt32BE(20)).toBe(720);
+
+  /* ---- 5. your picture ---- */
+  await page.evaluate(() => {
+    const real = window.createImageBitmap.bind(window);
+    window.createImageBitmap = async (src, ...rest) => {
+      if (src && src.name === "slow.png") { await new Promise((r) => setTimeout(r, 600)); }
+      return real(src, ...rest);
+    };
+    window.__pick = async (name, w, h) => {
+      const c = document.createElement("canvas");
+      c.width = w;
+      c.height = h;
+      const g = c.getContext("2d");
+      g.fillStyle = "#33AA77";
+      g.fillRect(0, 0, w, h);
+      const blob = await new Promise((r) => c.toBlob(r, "image/png"));
+      const dt = new DataTransfer();
+      dt.items.add(new File([blob], name, { type: "image/png" }));
+      const input = document.getElementById("file");
+      input.files = dt.files;
+      input.dispatchEvent(new Event("change"));
+    };
+  });
+  const photo = () => item(() => {
+    const l = window.__item.layout.layers.find((x) => x.kind === "photo");
+    const p = window.__item.photo;
+    return l && p ? { pw: l.pw, ph: l.ph, w: p.width, h: p.height } : null;
+  });
+
+  /* a slow pick, then a quick one: the quick one wins */
+  await page.evaluate(async () => { await window.__pick("slow.png", 300, 200); await window.__pick("quick.png", 200, 300); });
+  await expect.poll(photo).toEqual({ pw: 200, ph: 300, w: 200, h: 300 });
+  await page.waitForTimeout(800);
+  expect(await photo()).toEqual({ pw: 200, ph: 300, w: 200, h: 300 });
+
+  /* template, another picture, Undo: no stretching */
+  const tpl2 = page.locator('.tm-tpl[data-id="reaction"]');
+  await tpl2.scrollIntoViewIfNeeded();
+  if (isMobile) { await tpl2.tap(); } else { await tpl2.click(); }
+  await expect.poll(() => item(() => window.__item.template)).toBe("reaction");
+  await page.evaluate(() => window.__pick("wide.png", 300, 200));
+  await expect.poll(photo).toEqual({ pw: 300, ph: 200, w: 300, h: 200 });
+  const undo = page.locator("#undo");
+  if (isMobile) { await undo.tap(); } else { await undo.click(); }
+  await expect(undo).toBeHidden();
+  expect(await photo()).toEqual({ pw: 300, ph: 200, w: 300, h: 200 });
+
+  /* a big one is shrunk at load */
+  await page.evaluate(() => window.__pick("big.png", 5000, 1000));
+  await expect.poll(photo).toEqual({ pw: 4096, ph: 819, w: 4096, h: 819 });
+  await expect(page.locator("#drop-sub")).toContainText("5000 × 1000");
 }

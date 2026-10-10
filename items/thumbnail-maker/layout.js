@@ -344,11 +344,16 @@ export function cleanLayer(l, W = 1280, H = 720) {
     return { ...base, shape, size: num(l.size, 20, 2000, 200), color: color(l.color, STICKERS[shape].color) };
   }
   if (l.kind === "photo") {
+    /* at most 20000 a side: both sides by the same factor, so a
+       panorama keeps its shape (and its size on the canvas) */
+    const pw = num(l.pw, 1, Infinity, 1280);
+    const ph = num(l.ph, 1, Infinity, 720);
+    const k = Math.min(1, 20000 / Math.max(pw, ph));
     return {
       ...base,
-      scale: num(l.scale, 0.01, 4, 1),
-      pw: Math.round(num(l.pw, 1, 20000, 1280)),
-      ph: Math.round(num(l.ph, 1, 20000, 720))
+      scale: num(num(l.scale, 0.01, 4, 1) / k, 0.01, 4, 1),
+      pw: Math.max(1, Math.round(pw * k)),
+      ph: Math.max(1, Math.round(ph * k))
     };
   }
   return null;
