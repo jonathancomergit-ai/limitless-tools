@@ -108,7 +108,7 @@ export function dibToRgba(data) {
   let p = hdr + (compression === 3 && hdr === 40 ? 12 : 0);
   const palette = [];
   if (bpp <= 8) {
-    const used = v.getUint32(32, true) || 1 << bpp;
+    const used = Math.min(v.getUint32(32, true) || 1 << bpp, 1 << bpp);   // never trust a huge count
     for (let k = 0; k < used; k++) { palette.push([data[p + 2], data[p + 1], data[p], 255]); p += 4; }
   }
   const stride = Math.ceil((width * bpp) / 32) * 4;

@@ -387,6 +387,11 @@ function keyText(k) {
   return plain ? k : JSON.stringify(k);
 }
 
+/* push(...list) overflows the stack on long lists: one at a time. */
+function pushAll(out, list) {
+  for (const x of list) { out.push(x); }
+}
+
 function lines(v, indent) {
   const pad = " ".repeat(indent);
   if (Array.isArray(v)) {
@@ -396,7 +401,7 @@ function lines(v, indent) {
       if ((Array.isArray(item) || isObj(item)) && (Array.isArray(item) ? item.length : Object.keys(item).length)) {
         const sub = lines(item, indent + 2);
         sub[0] = `${pad}- ${sub[0].slice(indent + 2)}`;
-        out.push(...sub);
+        pushAll(out, sub);
       } else {
         out.push(`${pad}- ${Array.isArray(item) ? "[]" : isObj(item) ? "{}" : scalar(item)}`);
       }
@@ -410,7 +415,7 @@ function lines(v, indent) {
     for (const k of keys) {
       const val = v[k];
       const kt = keyText(k);
-      if (Array.isArray(val) && val.length) { out.push(`${pad}${kt}:`, ...lines(val, indent + 2)); } else if (isObj(val) && Object.keys(val).length) { out.push(`${pad}${kt}:`, ...lines(val, indent + 2)); } else if (Array.isArray(val)) { out.push(`${pad}${kt}: []`); } else if (isObj(val)) { out.push(`${pad}${kt}: {}`); } else { out.push(`${pad}${kt}: ${scalar(val)}`); }
+      if (Array.isArray(val) && val.length) { out.push(`${pad}${kt}:`); pushAll(out, lines(val, indent + 2)); } else if (isObj(val) && Object.keys(val).length) { out.push(`${pad}${kt}:`); pushAll(out, lines(val, indent + 2)); } else if (Array.isArray(val)) { out.push(`${pad}${kt}: []`); } else if (isObj(val)) { out.push(`${pad}${kt}: {}`); } else { out.push(`${pad}${kt}: ${scalar(val)}`); }
     }
     return out;
   }
