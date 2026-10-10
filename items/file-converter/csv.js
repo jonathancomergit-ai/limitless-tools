@@ -20,6 +20,13 @@
 
 export const DELIMITERS = [",", ";", "\t", "|"];
 
+/* obj[key] = v, but a key like "__proto__" stays a plain column
+   (a normal assignment would swallow it). */
+export function setKey(obj, key, v) {
+  Object.defineProperty(obj, key, { value: v, enumerable: true, writable: true, configurable: true });
+  return obj;
+}
+
 function fail(message, line) {
   const err = new Error(`Line ${line}: ${message}`);
   err.line = line;
@@ -170,7 +177,7 @@ export function rowsToObjects(rows, { types = true } = {}) {
     const o = {};
     head.forEach((k, i) => {
       const v = r[i] ?? "";
-      o[k] = types ? typed(v) : v;
+      setKey(o, k, types ? typed(v) : v);
     });
     return o;
   });

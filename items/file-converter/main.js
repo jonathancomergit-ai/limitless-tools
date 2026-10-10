@@ -91,13 +91,15 @@ try {
   });
 } catch { worker = null; }
 
-function job(op, data, transfer = []) {
+/* The data is copied to the worker, not transferred: if the worker
+   crashes, the same-thread retry still has the real bytes. */
+function job(op, data) {
   const local = () => Promise.resolve().then(() => runJob(op, data));
   if (!worker) { return local(); }
   return new Promise((resolve, reject) => {
     const id = ++jobs;
     waiting.set(id, { resolve, reject, retry: () => local().then(resolve, reject) });
-    worker.postMessage({ id, op, data }, transfer);
+    worker.postMessage({ id, op, data });
   });
 }
 
@@ -308,7 +310,7 @@ async function convertImage(row) {
     row.info = `Sizes inside: ${images.map((im) => im.width).join(", ")}`;
   } else if (t === "pdf") {
     const bytes = await jpegBytes(canvas);
-    const pdf = await job("pdf", { jpegs: [bytes], title: baseName(row.name) }, [bytes.buffer]);
+    const pdf = await job("pdf", { jpegs: [bytes], title: baseName(row.name) });
     blob = new Blob([pdf], { type: "application/pdf" });
   }
   if (!blob || !blob.size) { throw new Error("This browser ran out of room making it. Try a smaller picture."); }
@@ -333,7 +335,7 @@ async function convertSound(row) {
   }
   const channels = [];
   for (let c = 0; c < buf.numberOfChannels; c++) { channels.push(buf.getChannelData(c).slice()); }
-  const bytes = await job("wav", { channels, sampleRate: buf.sampleRate, mono: state.settings.mono }, channels.map((c) => c.buffer));
+  const bytes = await job("wav", { channels, sampleRate: buf.sampleRate, mono: state.settings.mono });
   const ch = state.settings.mono ? 1 : buf.numberOfChannels;
   row.info = `${buf.duration.toFixed(1)} s · ${ch === 1 ? "mono" : ch === 2 ? "stereo" : `${ch} channels`} · ${buf.sampleRate / 1000} kHz`;
   row.out = { blob: new Blob([bytes], { type: "audio/wav" }), name: outputName(row.name, "wav") };
@@ -425,6 +427,7 @@ function makeRowEl(row) {
 }
 
 function renderRow(row) {
+  if (!state.rows.includes(row)) { return; }    // removed (or cleared) while it was busy: don't bring it back
   let li = rowEls.get(row.id);
   if (!li) {
     li = makeRowEl(row);
@@ -609,7 +612,7 @@ $("zip").addEventListener("click", async () => {
     for (let i = 0; i < done.length; i++) {
       entries.push({ name: names[i], data: new Uint8Array(await done[i].out.blob.arrayBuffer()) });
     }
-    const zip = await job("zip", { entries }, entries.map((e) => e.data.buffer));
+    const zip = await job("zip", { entries });
     downloadBlob(new Blob([zip], { type: "application/zip" }), "converted-files.zip");
     state.zipped = { files: entries.length, bytes: zip.length };
     say(`Zip ready: ${entries.length} ${entries.length === 1 ? "file" : "files"}, ${formatBytes(zip.length)}.`);
@@ -636,7 +639,7 @@ $("pdf").addEventListener("click", async () => {
       canvas.width = canvas.height = 0;
     }
     say("PDF: putting it together…");
-    const pdf = await job("pdf", { jpegs, title: pics.length === 1 ? baseName(pics[0].name) : "Pictures" }, jpegs.map((j) => j.buffer));
+    const pdf = await job("pdf", { jpegs, title: pics.length === 1 ? baseName(pics[0].name) : "Pictures" });
     const name = pics.length === 1 ? outputName(pics[0].name, "pdf") : "pictures.pdf";
     downloadBlob(new Blob([pdf], { type: "application/pdf" }), name);
     state.pdf = { pages: pics.length, bytes: pdf.length };

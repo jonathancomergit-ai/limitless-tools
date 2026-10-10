@@ -26,7 +26,7 @@
    Pure functions, no DOM: unit tested in tests/unit/file-converter.test.js.
    ============================================================ */
 
-import { typed } from "./csv.js";
+import { typed, setKey } from "./csv.js";
 
 function lineAt(src, pos) {
   let n = 1;
@@ -163,7 +163,7 @@ export function parseXML(text) {
       const raw = src.slice(i + 1, end);
       if (raw.includes("<")) { throw fail(`a "<" inside the value of ${an}. Write it as &lt;`, src, i); }
       if (Object.prototype.hasOwnProperty.call(el.attrs, an)) { throw fail(`the attribute ${an} appears twice in <${nm}>.`, src, i); }
-      el.attrs[an] = decode(raw.replace(/[\t\n\r]/g, " "), src, i + 1);
+      setKey(el.attrs, an, decode(raw.replace(/[\t\n\r]/g, " "), src, i + 1));
       i = end + 1;
     }
     const selfClose = src.startsWith("/>", i);
@@ -228,11 +228,11 @@ function content(el, types) {
   const attrs = Object.entries(el.attrs || {});
   if (!elems.length && !attrs.length) { return types ? typed(text) : text; }
   const o = {};
-  for (const [k, v] of attrs) { o[`@${k}`] = types ? typed(v) : v; }
+  for (const [k, v] of attrs) { setKey(o, `@${k}`, types ? typed(v) : v); }
   for (const c of elems) {
     const v = content(c, types);
     /* content() never returns a list, so a list here means "seen before". */
-    if (!Object.prototype.hasOwnProperty.call(o, c.name)) { o[c.name] = v; } else if (Array.isArray(o[c.name])) { o[c.name].push(v); } else { o[c.name] = [o[c.name], v]; }
+    if (!Object.prototype.hasOwnProperty.call(o, c.name)) { setKey(o, c.name, v); } else if (Array.isArray(o[c.name])) { o[c.name].push(v); } else { o[c.name] = [o[c.name], v]; }
   }
   if (text.trim()) {
     const t = elems.length ? text.trim() : text;
@@ -267,7 +267,7 @@ function build(name, v, listName = "item") {
   }
   if (isObj(v)) {
     for (const [k, val] of Object.entries(v)) {
-      if (k.startsWith("@") && k.length > 1 && !isObj(val) && !Array.isArray(val)) { el.attrs[xmlName(k.slice(1))] = scalarText(val); continue; }
+      if (k.startsWith("@") && k.length > 1 && !isObj(val) && !Array.isArray(val)) { setKey(el.attrs, xmlName(k.slice(1)), scalarText(val)); continue; }
       if (k === "#text") { el.children.push(scalarText(val)); continue; }
       if (Array.isArray(val)) {
         for (const item of val) { el.children.push(build(k, item)); }   // an empty list writes nothing
