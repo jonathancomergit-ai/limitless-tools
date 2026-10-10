@@ -142,7 +142,7 @@ Five more tools, in this order. **The CSP stays exactly as it is**: no new origi
 
 Three game-dev tools. Everything runs on the device and exports files a game engine can use.
 
-- [ ] `particle-designer` - Particle Designer: Design sparks, smoke, fire and magic effects with sliders, watch them live, then export them for your game.
+- [x] `particle-designer` - Particle Designer: Design sparks, smoke, fire and magic effects with sliders, watch them live, then export them for your game.
   - acceptance: Live preview; emitter settings: rate, burst, lifetime, speed, spread, gravity, drag, size over life, colour gradient over life, blend (normal / additive), shape (circle, square, spark)
   - acceptance: Presets: fire, smoke, sparks, magic, rain, explosion
   - acceptance: Drag the emitter on the preview (touch + mouse); background colour picker

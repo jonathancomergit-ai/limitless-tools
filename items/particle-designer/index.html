@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <!-- Do not edit this line. It's the privacy lock, and the tests check it. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://gc.zgo.at; connect-src 'self' https://jonjoe1001.goatcounter.com; img-src 'self' data: blob: https://jonjoe1001.goatcounter.com; style-src 'self'; font-src 'self'; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+
+  <title>Particle Designer - Limitless Lab</title>
+  <meta name="description" content="Design sparks, smoke, fire and magic effects with sliders, watch them live, then export JSON, a Godot 4 scene, a sprite sheet or a GIF.">
+  <meta name="theme-color" content="#07070C">
+
+  <link rel="icon" href="../../kit/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../../kit/kit.css">
+  <link rel="stylesheet" href="item.css">
+  <script type="module" src="main.js"></script>
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="item-bar">
+    <a class="back-link" href="../../"><span aria-hidden="true">&larr;</span> <span data-slot="wing-name">Hub</span></a>
+    <h1>Particle Designer</h1>
+  </header>
+
+  <main id="main">
+    <div class="wrap pd">
+
+      <!-- ===================== 1. PREVIEW (hero) ===================== -->
+      <section class="pd-hero" aria-labelledby="preview-title">
+        <h2 class="sr-only" id="preview-title">Preview</h2>
+        <div class="pd-stage" id="stage" tabindex="0" role="application"
+             aria-roledescription="effect preview"
+             aria-label="Effect preview. Drag or tap to move the emitter. Arrow keys move it, Space fires a burst."
+             aria-describedby="count">
+          <canvas aria-hidden="true"></canvas>
+          <p class="pd-count" id="count" aria-live="off">0 particles</p>
+          <p class="pd-paused" id="paused-msg" hidden>Paused</p>
+        </div>
+        <div class="pd-bar">
+          <button class="btn pd-pause" id="pause" type="button" aria-pressed="false">Pause <kbd>P</kbd></button>
+          <button class="btn" id="burst" type="button">Burst <kbd>B</kbd></button>
+          <label class="pd-bg" for="bg">
+            <span>Background</span>
+            <input id="bg" type="color" value="#0b0c13">
+          </label>
+        </div>
+        <p class="pd-hint">Drag on the preview to move the emitter. Made on this device, nothing is uploaded.</p>
+      </section>
+
+      <!-- ===================== 2. PRESETS ===================== -->
+      <section class="pd-card pd-presets" aria-labelledby="pre-title">
+        <h2 id="pre-title">Presets</h2>
+        <div class="pd-grid" id="presets"></div>
+      </section>
+
+      <!-- ===================== 3. EMISSION ===================== -->
+      <section class="pd-card pd-emit" aria-labelledby="emit-title">
+        <h2 id="emit-title">Emission</h2>
+        <div class="pd-sliders" id="sliders-emit"></div>
+      </section>
+
+      <!-- ===================== 4. MOTION ===================== -->
+      <section class="pd-card pd-motion" aria-labelledby="motion-title">
+        <h2 id="motion-title">Motion</h2>
+        <div class="pd-sliders" id="sliders-motion"></div>
+      </section>
+
+      <!-- ===================== 5. LOOK ===================== -->
+      <section class="pd-card pd-look" aria-labelledby="look-title">
+        <h2 id="look-title">Look</h2>
+        <fieldset class="pd-fs">
+          <legend>Shape</legend>
+          <div class="pd-seg pd-seg-3">
+            <input type="radio" name="shape" id="shape-circle" value="circle"><label for="shape-circle">Circle</label>
+            <input type="radio" name="shape" id="shape-square" value="square"><label for="shape-square">Square</label>
+            <input type="radio" name="shape" id="shape-spark" value="spark"><label for="shape-spark">Spark</label>
+          </div>
+        </fieldset>
+        <fieldset class="pd-fs">
+          <legend>Blend</legend>
+          <div class="pd-seg pd-seg-2">
+            <input type="radio" name="blend" id="blend-normal" value="normal"><label for="blend-normal">Normal</label>
+            <input type="radio" name="blend" id="blend-add" value="add"><label for="blend-add">Additive (glow)</label>
+          </div>
+        </fieldset>
+        <div class="pd-sliders" id="sliders-look"></div>
+
+        <h3 class="pd-sub" id="grad-title">Colour over life</h3>
+        <div class="pd-grad" aria-hidden="true"><div class="pd-grad-fill" id="grad-bar"></div></div>
+        <div class="pd-grad-ends" aria-hidden="true"><span>born</span><span>gone</span></div>
+        <ol class="pd-stops" id="stops" aria-labelledby="grad-title"></ol>
+        <button class="btn btn-sm" id="add-stop" type="button">Add colour</button>
+      </section>
+
+      <!-- ===================== 6. EXPORT ===================== -->
+      <section class="pd-card pd-export" aria-labelledby="export-title">
+        <h2 id="export-title">Export</h2>
+        <div class="field pd-name">
+          <label for="name">Name</label>
+          <input id="name" type="text" maxlength="40" autocomplete="off" spellcheck="false">
+        </div>
+
+        <h3 class="pd-sub">Settings</h3>
+        <div class="pd-actions">
+          <button class="btn btn-primary" id="export-json" type="button">JSON</button>
+          <button class="btn" id="import-json" type="button">Import JSON</button>
+          <input id="import-file" type="file" accept=".json,application/json" hidden>
+        </div>
+
+        <h3 class="pd-sub">Godot 4</h3>
+        <div class="pd-actions">
+          <button class="btn" id="export-godot" type="button">Scene (.tscn)</button>
+          <button class="btn" id="copy-godot" type="button">Copy</button>
+        </div>
+        <details class="pd-details">
+          <summary>Show the CPUParticles2D scene</summary>
+          <label class="sr-only" for="godot-text">Godot scene text</label>
+          <textarea class="pd-code" id="godot-text" rows="12" readonly wrap="off" spellcheck="false"></textarea>
+        </details>
+
+        <h3 class="pd-sub">Pictures</h3>
+        <fieldset class="pd-fs">
+          <legend>Frame size</legend>
+          <div class="pd-seg pd-seg-3">
+            <input type="radio" name="frame-size" id="fs-64" value="64"><label for="fs-64">64</label>
+            <input type="radio" name="frame-size" id="fs-128" value="128"><label for="fs-128">128</label>
+            <input type="radio" name="frame-size" id="fs-256" value="256"><label for="fs-256">256</label>
+          </div>
+        </fieldset>
+        <div class="pd-sliders" id="sliders-sheet"></div>
+        <label class="pd-check"><input type="checkbox" id="transparent"> See-through sheet (no background)</label>
+        <div class="pd-actions">
+          <button class="btn" id="export-sheet" type="button">Sprite sheet PNG</button>
+          <button class="btn" id="export-gif" type="button">GIF</button>
+        </div>
+        <p class="pd-status" id="export-status" role="status" aria-live="polite"></p>
+      </section>
+    </div>
+
+    <!-- ===================== HOW TO ===================== -->
+    <div class="wrap item-info">
+      <section id="how" aria-labelledby="how-title">
+        <h2 id="how-title">How to use it</h2>
+        <ol>
+          <li>Pick a preset: fire, smoke, sparks, magic, rain or explosion.</li>
+          <li>Drag the sliders and watch it change live.</li>
+          <li>Export JSON to keep it, a Godot scene for your game, or a sprite sheet / GIF.</li>
+        </ol>
+        <table class="controls">
+          <thead><tr><th scope="col">Do this</th><th scope="col">Phone</th><th scope="col">Keyboard</th></tr></thead>
+          <tbody>
+            <tr><td>Preset</td><td>Tap a preset</td><td><kbd>1</kbd> to <kbd>6</kbd></td></tr>
+            <tr><td>Move the emitter</td><td>Drag or tap the preview</td><td><kbd>Tab</kbd> to the preview, arrows (<kbd>Shift</kbd> = bigger steps)</td></tr>
+            <tr><td>Burst</td><td>Burst button</td><td><kbd>B</kbd>, or <kbd>Space</kbd> on the preview</td></tr>
+            <tr><td>Pause / play</td><td>Pause button</td><td><kbd>P</kbd></td></tr>
+            <tr><td>Change a setting</td><td>Drag a slider</td><td><kbd>Tab</kbd> to it, <kbd>&larr;</kbd> <kbd>&rarr;</kbd></td></tr>
+            <tr><td>Export / import</td><td>Tap the buttons</td><td><kbd>Tab</kbd> to them, <kbd>Enter</kbd></td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <div id="save-panel"></div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap footer-inner">
+      <p class="privacy-note">
+        <strong>No accounts, no cookies.</strong> Saves stay on your device.
+        Cookie-free visit counts via GoatCounter.
+        <a href="https://jonjoe1001.dev/privacy.html#limitless">Privacy</a>
+      </p>
+    </div>
+  </footer>
+
+  <script src="../../kit/stats.js" defer></script>
+</body>
+</html>
