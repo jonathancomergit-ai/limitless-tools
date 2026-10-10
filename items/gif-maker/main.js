@@ -289,10 +289,22 @@ async function openCamera() {
     say(cameraProblem(err));
     return;
   }
+  const mine = stream;
+  /* The tab was hidden while we waited: no camera light in the background. */
+  if (document.hidden) { closeCamera(); say("Camera turned off because the tab was hidden."); return; }
+  /* An unplugged camera, or one taken by another app: close it cleanly. */
+  for (const t of mine.getVideoTracks()) {
+    t.onended = () => {
+      if (stream !== mine) { return; }
+      closeCamera();
+      say("The camera stopped. It may have been unplugged or taken by another app.");
+    };
+  }
   say("");
   $("cam-card").hidden = false;
   video.srcObject = stream;
   try { await video.play(); } catch { /* muted + playsinline usually plays */ }
+  if (stream !== mine) { return; }      // closed while starting (tab hidden, Close, unplugged)
   $("rec").disabled = false;
   camPlan();
   $("cam-card").scrollIntoView({ block: "nearest" });
@@ -330,20 +342,30 @@ async function record() {
   const bar = $("rec-progress");
   bar.value = 0;
   const shots = [];
-  const start = performance.now();
-  for (let i = 0; i < plan.count; i++) {
-    await wait(start + i * plan.interval - performance.now());
-    if (!stream) { break; }               // tab hidden or closed mid-clip
-    shots.push(toSource(video, vw, vh));
-    bar.value = (i + 1) / plan.count;
+  let failed = false;
+  try {
+    const start = performance.now();
+    for (let i = 0; i < plan.count; i++) {
+      await wait(start + i * plan.interval - performance.now());
+      if (!stream) { break; }               // tab hidden or closed mid-clip
+      shots.push(toSource(video, vw, vh));
+      bar.value = (i + 1) / plan.count;
+    }
+  } catch {
+    failed = true;                          // a frame couldn't be read: keep what we have
+  } finally {
+    state.recording = false;
+    btn.textContent = "Record";
+    $("rec-box").hidden = true;
+    closeCamera();
   }
-  state.recording = false;
-  btn.textContent = "Record";
-  $("rec-box").hidden = true;
-  closeCamera();
   if (shots.length) {
     addFrames(shots, "clip");
-    say(`Recorded ${plural(shots.length, "frame")}. The camera is off.`);
+    say(failed
+      ? `The camera stopped early. Kept ${plural(shots.length, "frame")}. The camera is off.`
+      : `Recorded ${plural(shots.length, "frame")}. The camera is off.`);
+  } else if (failed) {
+    say("Couldn't record from the camera. The camera is off. Try again, or add photos instead.");
   }
 }
 
