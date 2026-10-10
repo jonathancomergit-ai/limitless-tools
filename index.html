@@ -29,8 +29,10 @@
         <span data-slot="brand">Limitless Lab</span>
       </a>
       <nav class="nav-links" aria-label="Site">
-        <a href="#grid">Items</a>
         <a href="#your-data">Your data</a>
+        <!-- Back to the main site. kit/config.js (applyWing) points every
+             a[data-home] at site.config.js home.url. -->
+        <a class="btn btn-sm" href="https://jonjoe1001.dev/" data-home><span aria-hidden="true">&larr;</span> Home</a>
       </nav>
     </div>
     <div class="wrap">
