@@ -107,6 +107,8 @@ for (const file of html) {
     const footer = src.match(/<footer[\s\S]*<\/footer>/i);
     assert.ok(footer, "no <footer>");
     assert.ok(squash(footer[0]).includes(PRIVACY_NOTE), "privacy note missing or reworded");
+    const note = footer[0].match(/<p class="privacy-note">[\s\S]*?<\/p>/);
+    assert.ok(note && note[0].includes('href="https://jonjoe1001.dev/privacy.html#limitless"'), "Privacy link missing from the privacy note");
   });
 
   test(`${name}: has lang, viewport and a title`, () => {
