@@ -164,7 +164,7 @@ Three game-dev tools. Everything runs on the device and exports files a game eng
   - acceptance: Unit test (tests/unit): flood fill, Tiled JSON shape (1-based gids, 0 = empty), CSV round-trip
   - acceptance: smoke.js: paint three tiles with the sample tileset, export .tmj, check the data has them
 
-- [ ] `easing-editor` - Easing Curve Editor: Drag a curve to shape how things speed up and slow down, see it live, then copy it as CSS, GDScript or JavaScript.
+- [x] `easing-editor` - Easing Curve Editor: Drag a curve to shape how things speed up and slow down, see it live, then copy it as CSS, GDScript or JavaScript.
   - acceptance: Cubic-bezier editor with two draggable handles (touch + mouse; arrow keys nudge); handles may go past 0-1 for overshoot
   - acceptance: Live previews: a moving ball, a scaling box, a fade; Play / Loop; duration slider
   - acceptance: Presets: the standard CSS eases plus back, bounce and elastic
