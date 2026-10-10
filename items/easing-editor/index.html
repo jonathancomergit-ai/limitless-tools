@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <!-- Do not edit this line. It's the privacy lock, and the tests check it. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://gc.zgo.at; connect-src 'self' https://jonjoe1001.goatcounter.com; img-src 'self' data: blob: https://jonjoe1001.goatcounter.com; style-src 'self'; font-src 'self'; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+
+  <title>Easing Curve Editor - Limitless Lab</title>
+  <meta name="description" content="Drag a curve to shape how things speed up and slow down, see it live, then copy it as CSS, GDScript or JavaScript.">
+  <meta name="theme-color" content="#07070C">
+
+  <link rel="icon" href="../../kit/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../../kit/kit.css">
+  <link rel="stylesheet" href="item.css">
+  <script type="module" src="main.js"></script>
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="item-bar">
+    <a class="back-link" href="../../"><span aria-hidden="true">&larr;</span> <span data-slot="wing-name">Hub</span></a>
+    <h1>Easing Curve Editor</h1>
+  </header>
+
+  <main id="main">
+    <div class="wrap ee">
+
+      <!-- ===================== 1. THE CURVE (hero) ===================== -->
+      <section class="ee-hero" aria-labelledby="curve-title">
+        <h2 class="sr-only" id="curve-title">Your curve</h2>
+        <div class="ee-editor" id="editor">
+          <canvas role="img" aria-label="The easing curve: time goes left to right, progress goes up"></canvas>
+          <button class="ee-handle" id="h1" type="button" data-handle="0"></button>
+          <button class="ee-handle is-two" id="h2" type="button" data-handle="1"></button>
+        </div>
+        <div class="ee-readout">
+          <p class="ee-name" id="name"></p>
+          <code class="ee-value" id="value"></code>
+        </div>
+        <div class="ee-nums" id="nums"></div>
+        <div class="ee-pin-row">
+          <button class="btn ee-pin" id="pin" type="button">Pin to race <kbd>P</kbd></button>
+          <p class="ee-pinned" id="pinned"></p>
+        </div>
+        <p class="ee-note" id="status" role="status" aria-live="polite"></p>
+      </section>
+
+      <!-- ===================== 2. PREVIEWS ===================== -->
+      <section class="ee-card ee-previews" aria-labelledby="prev-title">
+        <h2 id="prev-title">See it move</h2>
+        <div class="ee-controls">
+          <button class="btn btn-primary ee-play" id="play" type="button"><span aria-hidden="true">&#9654;</span> Play <kbd>Space</kbd></button>
+          <button class="btn ee-loop" id="loop" type="button" aria-pressed="false">Loop <kbd>L</kbd></button>
+        </div>
+        <div class="field ee-slider">
+          <label for="duration">Duration <output id="duration-out" for="duration"></output></label>
+          <input id="duration" type="range" min="100" max="3000" step="50">
+        </div>
+
+        <div class="ee-stage" id="stage">
+          <div class="ee-move">
+            <p class="ee-label">Move</p>
+            <div class="ee-lanes" id="lanes"></div>
+          </div>
+          <div class="ee-pair">
+            <div class="ee-box-wrap">
+              <p class="ee-label">Scale</p>
+              <div class="ee-boxes" id="scales"></div>
+            </div>
+            <div class="ee-box-wrap">
+              <p class="ee-label">Fade</p>
+              <div class="ee-boxes" id="fades"></div>
+            </div>
+          </div>
+        </div>
+        <p class="ee-hint">Faint dots: where the ball is at each tenth of the time. Bunched dots = slow, spread out = fast.</p>
+      </section>
+
+      <!-- ===================== 3. PRESETS ===================== -->
+      <section class="ee-card ee-presets" aria-labelledby="pre-title">
+        <h2 id="pre-title">Presets</h2>
+        <div class="ee-grid" id="presets"></div>
+        <fieldset class="ee-dirs" id="dirs-box" hidden>
+          <legend>Direction</legend>
+          <div class="ee-seg" id="dirs"></div>
+        </fieldset>
+      </section>
+
+      <!-- ===================== 4. COPY AS ===================== -->
+      <section class="ee-card ee-export" aria-labelledby="exp-title">
+        <h2 id="exp-title">Copy as</h2>
+        <div class="ee-seg ee-formats" id="formats" role="radiogroup" aria-label="Format"></div>
+        <pre class="ee-code" id="code" tabindex="0" aria-label="Code to copy"></pre>
+        <div class="ee-actions">
+          <button class="btn btn-primary" id="copy" type="button">Copy</button>
+        </div>
+        <p class="ee-hint ee-for" id="format-hint"></p>
+      </section>
+    </div>
+
+    <!-- ===================== HOW TO ===================== -->
+    <div class="wrap item-info">
+      <section id="how" aria-labelledby="how-title">
+        <h2 id="how-title">How to use it</h2>
+        <ol>
+          <li>Pick a preset, or drag the two round handles.</li>
+          <li>Press Play to watch the ball, the box and the fade.</li>
+          <li>Pin a curve, then change the other, to race them.</li>
+          <li>Copy it as CSS, GDScript (Godot 4) or JavaScript.</li>
+        </ol>
+        <table class="controls">
+          <thead><tr><th scope="col">Do this</th><th scope="col">Phone</th><th scope="col">Keyboard</th></tr></thead>
+          <tbody>
+            <tr><td>Shape the curve</td><td>Drag a handle</td><td><kbd>Tab</kbd> to a handle, arrows (<kbd>Shift</kbd> = bigger steps)</td></tr>
+            <tr><td>Exact numbers</td><td>Type in the boxes</td><td><kbd>Tab</kbd> to a box, type</td></tr>
+            <tr><td>Play</td><td>Play button</td><td><kbd>Space</kbd></td></tr>
+            <tr><td>Loop on / off</td><td>Loop button</td><td><kbd>L</kbd></td></tr>
+            <tr><td>Pin to race</td><td>Pin button</td><td><kbd>P</kbd></td></tr>
+            <tr><td>Copy</td><td>Pick a format, Copy</td><td><kbd>Tab</kbd> to it, <kbd>Enter</kbd></td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <div id="save-panel"></div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap footer-inner">
+      <p class="privacy-note">
+        <strong>No accounts, no cookies.</strong> Saves stay on your device.
+        Cookie-free visit counts via GoatCounter.
+        <a href="https://jonjoe1001.dev/privacy.html#limitless">Privacy</a>
+      </p>
+    </div>
+  </footer>
+
+  <script src="../../kit/stats.js" defer></script>
+</body>
+</html>
