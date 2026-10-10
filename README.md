@@ -2,6 +2,8 @@
 
 One wing of **Limitless Lab**. Free tools for devs, creators and makers. Your files never leave your device.
 
+© 2026 Jonathan Comer. All rights reserved. The code and content here are public to read, but not licensed for reuse.
+
 ## The kit
 
 One kit, three wings, each in its own repo:
