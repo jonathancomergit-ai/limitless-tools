@@ -195,7 +195,7 @@ export function tableRows(value) {
   const list = records(value);
   if (!list.length) { return [[]]; }
   if (list.every((v) => Array.isArray(v))) {
-    const width = Math.max(0, ...list.map((r) => r.length));
+    const width = list.reduce((n, r) => Math.max(n, r.length), 0);   // no spread: big files overflow the stack
     return [Array.from({ length: width }, (_, i) => `column_${i + 1}`), ...list];
   }
   if (list.every((v) => v && typeof v === "object")) { return objectsToRows(list); }

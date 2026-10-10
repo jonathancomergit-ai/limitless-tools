@@ -146,6 +146,7 @@ async function inspect(row) {
     return;
   }
   row.det = det;
+  if ((det.kind === "audio" || det.kind === "video") && row.size > MAX_SOUND) { throw new Error(TOO_BIG_SOUND); }
   row.note = blockedNote(det);
 }
 
@@ -323,9 +324,13 @@ async function convertImage(row) {
 }
 
 /* ---- sound ---- */
+const MAX_SOUND = 150 * 1024 * 1024;    // sound and video: decoded, they grow many times over
+const TOO_BIG_SOUND = "This file is too big to convert here (150 MB is the limit for sound and video).";
+
 async function convertSound(row) {
   const Ctx = globalThis.OfflineAudioContext || globalThis.webkitOfflineAudioContext;
   if (!Ctx) { throw new Error("This browser can't decode sound."); }
+  if (row.size > MAX_SOUND) { throw new Error(TOO_BIG_SOUND); }
   const rate = state.settings.sampleRate;
   const ctx = new Ctx(1, 1, rate);
   let buf;

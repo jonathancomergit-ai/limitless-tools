@@ -164,7 +164,7 @@ export function headerNames(row) {
 export function rowsToObjects(rows, { types = true } = {}) {
   if (!rows.length) { return []; }
   const head = headerNames(rows[0]);
-  const width = Math.max(...rows.map((r) => r.length));
+  const width = rows.reduce((n, r) => Math.max(n, r.length), 0);   // no spread: big files overflow the stack
   for (let i = head.length; i < width; i++) { head.push(headerNames([...head, ""])[i]); }
   return rows.slice(1).map((r) => {
     const o = {};
