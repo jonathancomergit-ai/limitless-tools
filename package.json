@@ -13,7 +13,8 @@
     "test:e2e": "playwright test",
     "serve": "node tests/server.js",
     "new-item": "node scripts/new-item.js",
-    "kit:hash": "node scripts/kit-hash.js"
+    "kit:hash": "node scripts/kit-hash.js",
+    "sitemap": "node scripts/build-sitemap.js"
   },
   "devDependencies": {
     "@playwright/test": "1.56.1"

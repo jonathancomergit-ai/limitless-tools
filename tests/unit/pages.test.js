@@ -135,6 +135,8 @@ for (const file of code) {
       /* site.config.js holds plain links (home page, other wings) that
          become <a href>s - clicked, never fetched. */
       if (name === "site.config.js") { continue; }
+      /* The sitemap's XML namespace is a name, never fetched. */
+      if (name === path.join("scripts", "build-sitemap.js") && host === "www.sitemaps.org") { continue; }
       if (/smoke\.js$/.test(name) || /^playwright\.config\.js$/.test(name)) { continue; }
       assert.fail(`outside URL in ${name}: ${m[0]}`);
     }
