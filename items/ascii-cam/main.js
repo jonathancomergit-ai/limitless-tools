@@ -74,6 +74,7 @@ const sctx = screen.getContext("2d");
 const view = $("view");
 let stream = null;
 let current = null;        // the toAscii result on screen
+let shot = null;           // the toAscii result of the last real picture (lines + colours together)
 let charRatio = 0.6;       // glyph width / font size, measured once the font is in
 
 function say(text) { $("status").textContent = text; }
@@ -226,6 +227,7 @@ function render() {
   current = out;
 
   if (src.real) {
+    shot = out;
     state.lines = out.lines;
     state.text = asText(out.lines);
     state.inked = hasInk(out.lines);
@@ -335,6 +337,16 @@ function stopCamera() {
   stopTracks();
   state.live = false;
   loop.pause();
+  /* No camera, no picture: forget the last frame so Save PNG and
+     Copy can't export a stale one, and show the title again. */
+  if (state.source === "camera") {
+    state.source = "none";
+    shot = null;
+    state.lines = [];
+    state.text = "";
+    state.inked = false;
+    render();
+  }
   heroUi();
 }
 
@@ -357,15 +369,24 @@ async function startCamera() {
     });
     if (document.hidden) { stopTracks(); resumeOnShow = true; say(""); return; }
     video.srcObject = stream;
+    /* An unplugged camera, or one taken by another app: stop cleanly. */
+    const mine = stream;
+    for (const t of mine.getVideoTracks()) {
+      t.onended = () => {
+        if (stream !== mine) { return; }
+        stopCamera();
+        say("The camera stopped. It may have been unplugged or taken by another app.");
+      };
+    }
     await video.play();
+    if (document.hidden) { stopTracks(); resumeOnShow = true; say(""); return; }
     state.live = true;
     state.source = "camera";
     say("");
     loop.resume();
     countCameras();
   } catch (err) {
-    stopTracks();
-    state.live = false;
+    stopCamera();
     say(cameraError(err));
   } finally {
     starting = false;
@@ -449,7 +470,7 @@ function downloadBlob(blob, name) {
 
 /* A big, sharp PNG: 12 px a column, 24 px a row. */
 async function savePng() {
-  const out = { lines: state.lines, cols: state.cols, rows: state.rows, colors: current && current.colors };
+  const out = { lines: state.lines, cols: state.cols, rows: state.rows, colors: shot && shot.colors };
   if (!out.lines.length) { return; }
   const W = out.cols * 12;
   const H = out.rows * 24;
