@@ -1,0 +1,321 @@
+/* ============================================================
+   Particle Designer - item styles
+   Phone: one column, the preview first. From 900px: the
+   preview across the top, the cards in 2 or 3 columns below.
+   ============================================================ */
+
+.pd {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas: "hero" "presets" "look" "emit" "motion" "export";
+  gap: 1.1rem;
+  padding-block: 1.1rem 0;
+}
+.pd-hero    { grid-area: hero; }
+.pd-presets { grid-area: presets; }
+.pd-emit    { grid-area: emit; }
+.pd-motion  { grid-area: motion; }
+.pd-look    { grid-area: look; }
+.pd-export  { grid-area: export; }
+
+/* Desktop: the preview full width on top, settings below. */
+@media (min-width: 900px) {
+  .pd {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-areas:
+      "hero    hero"
+      "presets look"
+      "emit    look"
+      "motion  export";
+    align-items: start;
+    gap: 1.2rem;
+    padding-top: 1.6rem;
+  }
+}
+@media (min-width: 1100px) {
+  .pd {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-areas:
+      "hero    hero hero"
+      "presets look emit"
+      "export  look emit"
+      "export  look motion";
+  }
+}
+
+.pd > section { padding-block: 0; min-width: 0; }
+.pd h2 { font-size: 1.2rem; margin: 0 0 .8rem; }
+
+.pd-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+.pd > .pd-card { padding: 1.1rem 1.1rem 1.2rem; }
+
+/* ============================================================
+   1. PREVIEW
+   ============================================================ */
+.pd-stage {
+  position: relative;
+  height: clamp(260px, 50svh, 520px);
+  background: var(--bg-2);
+  border: 1px solid var(--accent-line);
+  border-radius: var(--radius);
+  overflow: hidden;
+  cursor: crosshair;
+  touch-action: none;
+  -webkit-user-select: none;
+          user-select: none;
+  -webkit-touch-callout: none;
+}
+.pd-stage:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
+.pd-stage > canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+
+.pd-count,
+.pd-paused {
+  position: absolute;
+  margin: 0;
+  pointer-events: none;
+  font-family: var(--font-mono);
+  font-size: .75rem;
+  color: var(--text);
+  background: rgba(7, 7, 12, .7);
+  border-radius: 6px;
+  padding: .2rem .5rem;
+}
+.pd-count  { left: .5rem; bottom: .5rem; }
+.pd-paused { right: .5rem; top: .5rem; color: var(--accent); }
+
+.pd-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .6rem;
+  margin-top: .8rem;
+}
+.pd-bar .btn { min-height: var(--tap); flex: 1 1 7rem; }
+.pd-bar kbd,
+.pd-preset kbd { font-size: .72rem; color: var(--text-faint); background: var(--bg-2); }
+.pd-bg {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  flex: 1 1 9rem;
+  justify-content: flex-end;
+  font-size: .9rem;
+  color: var(--text-dim);
+  cursor: pointer;
+}
+
+/* Colour pickers: a big square swatch. */
+.pd input[type="color"] {
+  width: var(--tap);
+  height: var(--tap);
+  padding: 3px;
+  background: var(--bg-2);
+  border: 1px solid var(--line-field);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  flex: none;
+}
+.pd input[type="color"]:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
+
+.pd-hint { margin: .6rem 0 0; font-size: .85rem; color: var(--text-faint); }
+
+/* ============================================================
+   2. PRESETS
+   ============================================================ */
+.pd-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 8.5rem), 1fr));
+  gap: .5rem;
+}
+.pd-preset { min-height: var(--tap); justify-content: space-between; padding-inline: .9rem; }
+.pd-preset[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-dim); }
+
+/* ============================================================
+   3. SLIDERS (same fat-thumb sliders as SFX Maker)
+   ============================================================ */
+.pd-fs { border: 0; margin: 0 0 .8rem; padding: 0; min-width: 0; }
+.pd-fs legend,
+.pd-slider label,
+.pd-name label,
+.pd-stop-field label {
+  font-family: var(--font-mono);
+  font-size: .72rem;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  padding: 0;
+}
+.pd-fs legend { margin-bottom: .45rem; }
+
+.pd-slider { margin-bottom: .3rem; }
+.pd-slider label { display: flex; justify-content: space-between; align-items: baseline; gap: .5rem; margin-bottom: 0; }
+.pd-slider output {
+  font-family: var(--font-mono);
+  font-size: .85rem;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--text);
+  white-space: nowrap;
+}
+.pd-slider.is-off { opacity: .5; }
+
+.pd input[type="range"] {
+  -webkit-appearance: none;
+          appearance: none;
+  width: 100%;
+  height: 40px;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+.pd input[type="range"]:focus { background: transparent; }
+.pd input[type="range"]::-webkit-slider-runnable-track { height: 6px; border-radius: 3px; background: var(--line-bright); }
+.pd input[type="range"]::-moz-range-track { height: 6px; border-radius: 3px; background: var(--line-bright); }
+.pd input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 26px; height: 26px; margin-top: -10px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 3px solid var(--bg);
+}
+.pd input[type="range"]::-moz-range-thumb {
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 3px solid var(--bg);
+}
+.pd input[type="range"]:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
+
+/* ---- segmented radio buttons ---- */
+.pd-seg {
+  display: grid;
+  border: 1px solid var(--line-field);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+.pd-seg-2 { grid-template-columns: 1fr 1fr; }
+.pd-seg-3 { grid-template-columns: repeat(3, 1fr); }
+.pd-seg input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.pd-seg label {
+  display: grid;
+  place-items: center;
+  min-height: var(--tap);
+  padding: 0 .3rem;
+  text-align: center;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: .9rem;
+  cursor: pointer;
+  color: var(--text-dim);
+  border-left: 1px solid var(--line-field);
+  -webkit-user-select: none;
+          user-select: none;
+}
+.pd-seg label:first-of-type { border-left: 0; }
+.pd-seg label:hover { color: var(--text); background: var(--surface-2); }
+.pd-seg input:checked + label { background: var(--accent); color: var(--bg); }
+.pd-seg input:focus-visible + label { outline: 2px solid var(--cyan); outline-offset: -4px; border-radius: 6px; }
+
+/* ============================================================
+   4. COLOUR OVER LIFE
+   ============================================================ */
+.pd-sub {
+  font-size: .95rem;
+  margin: 1.1rem 0 .55rem;
+  color: var(--text);
+}
+.pd-grad {
+  height: 28px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--line-field);
+  overflow: hidden;
+  /* A checkerboard behind, so see-through stops show as see-through. */
+  background-color: #2b2e3f;
+  background-image:
+    linear-gradient(45deg, #363a4e 25%, transparent 25%, transparent 75%, #363a4e 75%),
+    linear-gradient(45deg, #363a4e 25%, transparent 25%, transparent 75%, #363a4e 75%);
+  background-size: 14px 14px;
+  background-position: 0 0, 7px 7px;
+}
+.pd-grad-fill { height: 100%; background: var(--grad, transparent); }
+.pd-grad-ends {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: .72rem;
+  color: var(--text-faint);
+  margin: .2rem 0 .4rem;
+}
+
+.pd-stops { list-style: none; margin: 0 0 .6rem; padding: 0; display: grid; gap: .45rem; }
+.pd-stop {
+  display: flex;
+  align-items: center;
+  gap: .55rem;
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: .4rem .45rem;
+}
+.pd-stop-fields { flex: 1; min-width: 0; display: grid; gap: 0; }
+.pd-stop-field label { display: block; font-size: .66rem; letter-spacing: .08em; margin-top: .15rem; }
+.pd-stop-field input[type="range"] { height: 32px; }
+.pd-stop-del { min-width: var(--tap); min-height: var(--tap); padding: 0; border: 0; color: var(--text-faint); flex: none; }
+.pd-stop-del:hover { color: var(--hot); }
+
+/* ============================================================
+   5. EXPORT
+   ============================================================ */
+.pd-name { margin-bottom: .2rem; }
+.pd-name input { min-height: var(--tap); }
+.pd-actions {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 9rem), 1fr));
+  gap: .5rem;
+  margin-top: .3rem;
+}
+.pd-actions .btn { min-height: var(--tap); }
+.pd-check {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  min-height: var(--tap);
+  font-size: .92rem;
+  color: var(--text-dim);
+  cursor: pointer;
+}
+.pd-check input { width: 22px; height: 22px; accent-color: var(--accent); flex: none; }
+
+.pd-details { margin-top: .6rem; }
+.pd-details summary {
+  min-height: var(--tap);
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  color: var(--cyan);
+  font-size: .92rem;
+}
+.pd-code {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  min-height: 12rem;
+  resize: vertical;
+  font-family: var(--font-mono);
+  font-size: .75rem;
+  line-height: 1.45;
+  color: var(--text);
+  background: var(--bg-2);
+  border: 1px solid var(--line-field);
+  border-radius: var(--radius-sm);
+  padding: .6rem .7rem;
+  overflow: auto;
+}
+.pd-status { margin: .7rem 0 0; font-size: .88rem; color: var(--green); min-height: 1.3em; overflow-wrap: anywhere; }
+.pd-status:empty { min-height: 0; margin: 0; }
