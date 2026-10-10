@@ -23,7 +23,7 @@ import { mountSavePanel } from "../../kit/save-ui.js";
 import { detect, detectText, targetsFor, blockedNote, defaultTarget, FORMATS } from "./detect.js";
 import {
   DEFAULTS, normalizeSettings, parseData, stringifyData, toTable,
-  outputName, uniqueNames, formatBytes, baseName, icoSizesFor
+  outputName, uniqueNames, formatBytes, baseName, icoSizesFor, fitPicture
 } from "./convert.js";
 import { readIco, largestEntry, dibToRgba, makeIco } from "./ico.js";
 import { makeBmp, hexToRgb } from "./bmp.js";
@@ -34,7 +34,7 @@ bootItem();
 const $ = (id) => document.getElementById(id);
 const MAX_TEXT = 30 * 1024 * 1024;      // data files bigger than this are too much for a phone
 const MAX_SIDE = 8192;
-const MAX_AREA = 40_000_000;
+const MAX_AREA = 16_777_216;           // iOS Safari's canvas limit (4096 x 4096): bigger gives no context
 
 /* ============================================================
    1. SAVE - settings only. Files are never stored anywhere.
@@ -203,6 +203,13 @@ function canvasOf(w, h) {
   return c;
 }
 
+/* A canvas past the device's limit gives no context (iOS Safari): say so kindly. */
+function ctx2d(canvas, opts) {
+  const ctx = canvas.getContext("2d", opts);
+  if (!ctx) { throw new Error("This picture is too big for this device. Try a smaller one."); }
+  return ctx;
+}
+
 function toBlob(canvas, mime, quality) {
   return new Promise((resolve) => {
     try { canvas.toBlob(resolve, mime, quality); } catch { resolve(null); }
@@ -236,23 +243,21 @@ async function decodePicture(row) {
       } else {
         const { width, height, rgba } = dibToRgba(best.data);
         const c = canvasOf(width, height);
-        c.getContext("2d").putImageData(new ImageData(rgba, width, height), 0, 0);
+        ctx2d(c).putImageData(new ImageData(rgba, width, height), 0, 0);
         src = c;
       }
     } else {
       src = await bitmapOf(row.file);
     }
   } catch (err) {
-    throw new Error(err && /icon/i.test(err.message) ? err.message : "Couldn't open this picture. It may be damaged, or a type this browser can't read.");
+    throw new Error(err && /icon|too big/i.test(err.message) ? err.message : "Couldn't open this picture. It may be damaged, or a type this browser can't read.");
   }
-  let w = src.width || src.naturalWidth;
-  let h = src.height || src.naturalHeight;
-  if (!w || !h) { throw new Error("This picture has no size."); }
-  const k = Math.min(1, MAX_SIDE / w, MAX_SIDE / h, Math.sqrt(MAX_AREA / (w * h)));
-  w = Math.max(1, Math.round(w * k));
-  h = Math.max(1, Math.round(h * k));
+  const sw = src.width || src.naturalWidth;
+  const sh = src.height || src.naturalHeight;
+  if (!sw || !sh) { throw new Error("This picture has no size."); }
+  const { width: w, height: h } = fitPicture(sw, sh, MAX_SIDE, MAX_AREA);
   const c = canvasOf(w, h);
-  const ctx = c.getContext("2d", { willReadFrequently: true });
+  const ctx = ctx2d(c, { willReadFrequently: true });
   ctx.imageSmoothingQuality = "high";
   ctx.drawImage(src, 0, 0, w, h);
   if (src.close) { src.close(); }
@@ -262,7 +267,7 @@ async function decodePicture(row) {
 /* The same picture on a solid background (for JPG / PDF). */
 function flatten(canvas) {
   const c = canvasOf(canvas.width, canvas.height);
-  const ctx = c.getContext("2d");
+  const ctx = ctx2d(c);
   ctx.fillStyle = state.settings.background;
   ctx.fillRect(0, 0, c.width, c.height);
   ctx.drawImage(canvas, 0, 0);
@@ -288,13 +293,13 @@ async function convertImage(row) {
   } else if (t === "jpg") {
     blob = new Blob([await jpegBytes(canvas)], { type: "image/jpeg" });
   } else if (t === "bmp") {
-    const data = canvas.getContext("2d").getImageData(0, 0, canvas.width, canvas.height).data;
+    const data = ctx2d(canvas).getImageData(0, 0, canvas.width, canvas.height).data;
     blob = new Blob([makeBmp(data, canvas.width, canvas.height, { background: hexToRgb(state.settings.background) })], { type: "image/bmp" });
   } else if (t === "ico") {
     const images = [];
     for (const size of icoSizesFor(state.settings, canvas.width, canvas.height)) {
       const c = canvasOf(size, size);
-      const ctx = c.getContext("2d");
+      const ctx = ctx2d(c);
       const k = Math.min(size / canvas.width, size / canvas.height);
       const w = Math.max(1, Math.round(canvas.width * k));
       const h = Math.max(1, Math.round(canvas.height * k));

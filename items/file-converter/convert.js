@@ -258,6 +258,14 @@ export function formatBytes(n) {
   return `${(n / 1024 / 1024).toFixed(1)} MB`;
 }
 
+/* Shrink a picture to fit a canvas: at most maxSide a side and
+   maxArea pixels in all. Rounds down, so it never goes over. */
+export function fitPicture(w, h, maxSide, maxArea) {
+  const k = Math.min(1, maxSide / w, maxSide / h, Math.sqrt(maxArea / (w * h)));
+  if (k >= 1) { return { width: w, height: h }; }
+  return { width: Math.max(1, Math.floor(w * k)), height: Math.max(1, Math.floor(h * k)) };
+}
+
 /* ICO sizes to make: the chosen ones, plus the picture's own size. */
 export function icoSizesFor(settings, w, h) {
   const s = normalizeSettings(settings);
