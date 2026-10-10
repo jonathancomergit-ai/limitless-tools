@@ -1,0 +1,369 @@
+/* ============================================================
+   Easing Curve Editor - item styles
+   Values come in as CSS custom properties set by main.js
+   (el.style.setProperty, which the CSP allows):
+     --x / --y   a handle's spot on the editor, in px
+     --x         a ball or a dot along its lane, 0..1
+     --s         a box's scale       --o   a fade's opacity
+   Phone: one column. From 900px: curve + presets on the
+   left, previews + code on the right.
+   ============================================================ */
+
+.ee {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas: "hero" "previews" "presets" "export";
+  gap: 1.1rem;
+  padding-block: 1.1rem 0;
+}
+.ee-hero     { grid-area: hero; }
+.ee-previews { grid-area: previews; }
+.ee-presets  { grid-area: presets; }
+.ee-export   { grid-area: export; }
+
+@media (min-width: 900px) {
+  .ee {
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    grid-template-areas: "hero previews" "hero export" "presets export";
+    grid-template-rows: auto auto 1fr;
+    align-items: start;
+    gap: 1.4rem;
+    padding-top: 1.6rem;
+  }
+}
+
+.ee > section { padding-block: 0; min-width: 0; }
+.ee h2 { font-size: 1.2rem; margin: 0 0 .8rem; }
+
+.ee-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+.ee > .ee-card { padding: 1.1rem 1.1rem 1.2rem; }
+
+.ee-hint { font-size: .85rem; color: var(--text-faint); margin: .8rem 0 0; line-height: 1.5; }
+.ee-note { font-size: .88rem; color: var(--text-dim); margin: .5rem 0 0; min-height: 1.4em; }
+
+/* ============================================================
+   1. THE CURVE (the hero)
+   ============================================================ */
+.ee-editor {
+  position: relative;
+  height: clamp(320px, 56svh, 500px);
+  background: var(--bg-2);
+  border: 1px solid var(--accent-line);
+  border-radius: var(--radius);
+  overflow: hidden;
+  /* A finger dragging a handle must not scroll the page. */
+  touch-action: none;
+  -webkit-user-select: none;
+          user-select: none;
+  -webkit-touch-callout: none;
+}
+.ee-editor > canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+.ee-editor.is-near { cursor: grab; }
+.ee-editor.is-dragging { cursor: grabbing; }
+
+/* Invisible buttons sitting on the drawn handles: they take
+   keyboard focus (arrow keys) and show the focus ring. The
+   editor box handles the dragging, so they ignore pointers. */
+.ee-handle {
+  position: absolute;
+  left: var(--x, 0);
+  top: var(--y, 0);
+  width: 44px;
+  height: 44px;
+  margin: -22px 0 0 -22px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  pointer-events: none;
+}
+.ee-handle:focus-visible { outline: 3px solid var(--text); outline-offset: -6px; }
+
+.ee-readout {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: .2rem .8rem;
+  margin-top: .8rem;
+}
+.ee-name {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: var(--accent);
+}
+.ee-value {
+  min-width: 0;
+  font-family: var(--font-mono);
+  font-size: .9rem;
+  color: var(--text);
+  background: none;
+  border: 0;
+  padding: 0;
+  overflow-wrap: anywhere;
+}
+
+/* x1 y1 x2 y2 number boxes: four in a row, even at 360px. */
+.ee-nums {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: .45rem;
+  margin-top: .8rem;
+}
+.ee-num label {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: .72rem;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: .25rem;
+}
+.ee-num input {
+  width: 100%;
+  min-width: 0;
+  min-height: var(--tap);
+  padding: 0 .45rem;
+  font-family: var(--font-mono);
+  font-size: 1rem;
+  color: var(--text);
+  background: var(--bg-2);
+  border: 1px solid var(--line-field);
+  border-radius: var(--radius-sm);
+}
+.ee-num input:focus { outline: none; border-color: var(--accent); }
+.ee-num input:disabled { opacity: .5; }
+
+.ee-pin-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .6rem 1rem;
+  margin-top: .9rem;
+}
+.ee-pin { min-height: var(--tap); border-color: rgba(53, 214, 245, .45); }
+.ee-pin[aria-pressed="true"] { background: var(--cyan); border-color: var(--cyan); color: var(--bg); }
+.ee-pin kbd,
+.ee-controls kbd { font-size: .72rem; background: rgba(0, 0, 0, .15); color: inherit; border-color: rgba(0, 0, 0, .25); }
+.ee-pinned { margin: 0; font-size: .88rem; color: var(--cyan); min-width: 0; overflow-wrap: anywhere; }
+
+/* ============================================================
+   2. PREVIEWS
+   ============================================================ */
+.ee-controls { display: flex; gap: .6rem; }
+.ee-controls .btn { min-height: 56px; }
+.ee-play { flex: 2 1 auto; font-size: 1.1rem; }
+.ee-loop { flex: 1 1 auto; }
+.ee-loop[aria-pressed="true"] { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
+
+.ee-slider { margin: .8rem 0 .4rem; }
+.ee-slider label {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: .5rem;
+  margin-bottom: 0;
+  font-family: var(--font-mono);
+  font-size: .72rem;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+.ee-slider output { font-size: .85rem; letter-spacing: 0; text-transform: none; color: var(--text); }
+.ee-slider input[type="range"] {
+  -webkit-appearance: none;
+          appearance: none;
+  width: 100%;
+  height: 40px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+.ee-slider input[type="range"]:focus { background: transparent; }
+.ee-slider input[type="range"]::-webkit-slider-runnable-track { height: 6px; border-radius: 3px; background: var(--line-bright); }
+.ee-slider input[type="range"]::-moz-range-track { height: 6px; border-radius: 3px; background: var(--line-bright); }
+.ee-slider input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 26px; height: 26px; margin-top: -10px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 3px solid var(--bg);
+}
+.ee-slider input[type="range"]::-moz-range-thumb {
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 3px solid var(--bg);
+}
+.ee-slider input[type="range"]:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
+
+.ee-stage {
+  display: grid;
+  gap: .8rem;
+  padding: .8rem;
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+.ee-label {
+  margin: 0 0 .35rem;
+  font-family: var(--font-mono);
+  font-size: .72rem;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+/* ---- move: a lane per curve, the ball runs along it ---- */
+.ee-lanes { display: grid; gap: .4rem; }
+.ee-lane {
+  position: relative;
+  height: 44px;
+  border-radius: 22px;
+  background: var(--surface);
+  overflow: hidden;
+}
+/* The ball's 0..1 run sits in the middle, leaving room for overshoot. */
+.ee-run { position: absolute; inset: 0 14%; }
+.ee-run::before,
+.ee-run::after {
+  content: "";
+  position: absolute;
+  top: 8px;
+  bottom: 8px;
+  width: 2px;
+  background: var(--line-bright);
+}
+.ee-run::before { left: -1px; }
+.ee-run::after { right: -1px; }
+.ee-dot,
+.ee-ball {
+  position: absolute;
+  top: 50%;
+  left: calc(var(--x, 1) * 100%);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}
+.ee-dot { width: 6px; height: 6px; background: var(--accent); opacity: .4; }
+.ee-ball { width: 28px; height: 28px; background: var(--accent); box-shadow: 0 0 0 3px var(--bg-2); }
+.ee-lane.is-pinned .ee-dot,
+.ee-lane.is-pinned .ee-ball { background: var(--cyan); }
+
+/* ---- scale + fade ---- */
+.ee-pair { display: grid; grid-template-columns: 1fr 1fr; gap: .8rem; }
+.ee-boxes {
+  display: flex;
+  justify-content: center;
+  gap: .6rem;
+  height: 92px;
+  align-items: center;
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+}
+.ee-box,
+.ee-fade {
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  background: var(--accent);
+}
+.ee-box { transform: scale(var(--s, 1)); }
+.ee-fade { opacity: var(--o, 1); }
+.ee-box.is-pinned,
+.ee-fade.is-pinned { background: var(--cyan); }
+
+/* ============================================================
+   3. PRESETS
+   ============================================================ */
+.ee-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 8.6rem), 1fr));
+  gap: .5rem;
+}
+.ee-preset {
+  min-height: 52px;
+  justify-content: flex-start;
+  gap: .55rem;
+  padding: .4rem .7rem;
+  font-size: .9rem;
+}
+.ee-preset svg { flex-shrink: 0; width: 34px; height: 30px; overflow: visible; }
+.ee-preset path { fill: none; stroke: var(--text-dim); stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.ee-preset[aria-pressed="true"] { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
+.ee-preset[aria-pressed="true"] path { stroke: var(--accent); }
+
+.ee-dirs { border: 0; margin: .9rem 0 0; padding: 0; min-width: 0; }
+.ee-dirs legend {
+  font-family: var(--font-mono);
+  font-size: .72rem;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: .45rem;
+  padding: 0;
+}
+
+/* Segmented buttons: bounce / elastic direction, and the formats. */
+.ee-seg {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border: 1px solid var(--line-field);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+.ee-seg input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.ee-seg label,
+.ee-fmt {
+  display: grid;
+  place-items: center;
+  min-height: var(--tap);
+  padding: 0 .2rem;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: .9rem;
+  text-align: center;
+  cursor: pointer;
+  color: var(--text-dim);
+  background: transparent;
+  border: 0;
+  border-left: 1px solid var(--line-field);
+  -webkit-user-select: none;
+          user-select: none;
+}
+.ee-seg label:first-of-type,
+.ee-fmt:first-child { border-left: 0; }
+.ee-seg label:hover,
+.ee-fmt:hover { color: var(--text); background: var(--surface-2); }
+.ee-seg input:checked + label,
+.ee-fmt[aria-checked="true"] { background: var(--accent); color: var(--bg); }
+.ee-seg input:focus-visible + label { outline: 2px solid var(--cyan); outline-offset: -4px; border-radius: 6px; }
+.ee-fmt:focus-visible { outline-offset: -4px; }
+
+/* ============================================================
+   4. COPY AS
+   ============================================================ */
+.ee-code {
+  margin: .8rem 0;
+  padding: .8rem .9rem;
+  max-height: 18rem;
+  overflow: auto;
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: .78rem;
+  line-height: 1.55;
+  color: var(--text);
+  white-space: pre;
+  tab-size: 4;
+}
+.ee-actions { display: flex; gap: .6rem; flex-wrap: wrap; }
+.ee-actions .btn { min-height: var(--tap); flex: 1 1 8rem; }
+.ee-for { margin: .7rem 0 0; }
