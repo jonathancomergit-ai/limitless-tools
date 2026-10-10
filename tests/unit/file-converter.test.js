@@ -18,7 +18,7 @@ import { makeBmp, hexToRgb } from "../../items/file-converter/bmp.js";
 import { detect, detectText, targetsFor, blockedNote, defaultTarget } from "../../items/file-converter/detect.js";
 import {
   DEFAULTS, normalizeSettings, parseData, stringifyData, convertText, toTable, records,
-  outputName, uniqueNames, formatBytes, icoSizesFor
+  outputName, uniqueNames, formatBytes, icoSizesFor, fitPicture
 } from "../../items/file-converter/convert.js";
 import { runJob } from "../../items/file-converter/worker.js";
 
@@ -549,4 +549,16 @@ test("names and sizes", () => {
   assert.equal(formatBytes(500), "500 B");
   assert.equal(formatBytes(2048), "2.0 KB");
   assert.equal(formatBytes(3 * 1024 * 1024), "3.0 MB");
+});
+
+test("pictures fit the iPhone canvas limit (16,777,216 px), never over", () => {
+  const LIMIT = 16_777_216;
+  for (const [w, h] of [[8064, 6048], [8000, 6000], [6048, 8064], [4284, 5712], [8192, 8192], [12000, 3000]]) {
+    const fit = fitPicture(w, h, 8192, LIMIT);
+    assert.ok(fit.width * fit.height <= LIMIT, `${w}x${h} -> ${fit.width}x${fit.height}`);
+    assert.ok(fit.width <= 8192 && fit.height <= 8192);
+    assert.ok(Math.abs(fit.width / fit.height - w / h) < 0.01);
+  }
+  assert.deepEqual(fitPicture(4032, 3024, 8192, LIMIT), { width: 4032, height: 3024 });   // a 12 MP photo stays as it is
+  assert.deepEqual(fitPicture(1, 100000, 8192, LIMIT), { width: 1, height: 8192 });
 });
