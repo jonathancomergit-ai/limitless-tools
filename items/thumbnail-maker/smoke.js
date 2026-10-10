@@ -60,13 +60,20 @@ export default async function smoke({ page, expect, isMobile }) {
     await expect.poll(() => item(() => window.__item.layout.layers[window.__item.selected].x)).toBe(x1 + 10);
   }
 
-  /* ---- 4. download a PNG ---- */
+  /* ---- 4. download a PNG ----
+     On slow CI machines the phone tap sometimes lands while the
+     browser is still settling the CDP drag above, and no click fires
+     (seen on main, never locally). So the tap is retried: it still
+     has to be a real tap that starts a download. */
   const png = page.locator("#png");
-  await png.scrollIntoViewIfNeeded();
-  const [download] = await Promise.all([
-    page.waitForEvent("download"),
-    isMobile ? png.tap() : png.click()
-  ]);
+  let download;
+  await expect(async () => {
+    await png.scrollIntoViewIfNeeded();
+    [download] = await Promise.all([
+      page.waitForEvent("download", { timeout: 5000 }),
+      isMobile ? png.tap() : png.click()
+    ]);
+  }).toPass({ timeout: 25000 });
   expect(download.suggestedFilename()).toBe("thumbnail-youtube-1280x720.png");
   const bytes = fs.readFileSync(await download.path());
   expect(bytes.subarray(1, 4).toString("latin1")).toBe("PNG");
